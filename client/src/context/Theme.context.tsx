@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, CssBaseline } from "@mui/material";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ReactNode } from "react";
 
 const ThemeContent = createContext({
@@ -13,16 +13,46 @@ export const useThemeContext = () => useContext(ThemeContent);
 export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
   const [isDark, setDark] = useState(true);
 
-  const toggleIsDark = () => setDark(!isDark);
+  const getIsDark = () => {
+    const localIsDark = localStorage.getItem("statalize_dark");
+
+    if (!localIsDark) {
+      localStorage.setItem("statalize_dark", "active");
+      setDark(true);
+    } else {
+      if (localIsDark === "active") {
+        setDark(true);
+      } else {
+        setDark(false);
+      }
+    }
+  };
+
+  const toggleIsDark = () => {
+    localStorage.setItem(
+      "statalize_dark",
+      isDark === true ? "inactive" : "active"
+    );
+
+    setDark(!isDark);
+    getIsDark();
+  };
+
+  useEffect(() => {
+    getIsDark();
+  }, []);
 
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
       primary: {
-        main: "#f56521",
+        main: "#73caff",
       },
       secondary: {
-        main: "#f18f06",
+        main: "#42d2ec",
+      },
+      info: {
+        main: "#8685ff",
       },
       background: {
         default: "#0d0d12",
@@ -35,10 +65,13 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
     palette: {
       mode: "light",
       primary: {
-        main: "#f56521",
+        main: "#5bb7f0",
       },
       secondary: {
-        main: "#f18f06",
+        main: "#42d2ec",
+      },
+      info: {
+        main: "#7270fa",
       },
     },
   });

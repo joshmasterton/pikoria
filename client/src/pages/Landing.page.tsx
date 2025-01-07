@@ -1,24 +1,24 @@
 import {
-  alpha,
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
+  Divider,
   Stack,
   Typography,
-  useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import logo from "../assets/statalize.png";
 import {
   DatasetLinkedOutlined,
   EqualizerOutlined,
   ReceiptLongRounded,
 } from "@mui/icons-material";
+import bannerOne from "../assets/bannerOne.png";
+import bannerTwo from "../assets/bannerTwo.png";
+import { Footer } from "../comps/Footer.comp";
 
 export const Landing = () => {
-  const theme = useTheme();
-
   return (
     <>
       <Grid container sx={{ minWidth: "100%" }}>
@@ -30,12 +30,8 @@ export const Landing = () => {
             justifyContent: "center",
             alignItems: "center",
             flexWrap: "wrap",
-            background: `linear-gradient(145deg,  transparent, transparent, ${alpha(
-              theme.palette.primary.main,
-              0.1
-            )}, ${alpha(theme.palette.secondary.main, 0.1)})`,
             p: 5,
-            pt: 12,
+            pt: 10,
             gap: 7,
           }}
         >
@@ -45,18 +41,28 @@ export const Landing = () => {
             gap={3}
           >
             <Typography variant="h3">
-              Transform Your Business with Statalize
+              Explore the World of Data with Statalize
             </Typography>
             <Typography>
-              Unlock the power of your data to drive smarter decisions, optimize
-              performance, and stay ahead in today's fast-paced digital world
-              with Statalize.
+              Dive into a world of endless possibilities with a platform that
+              brings you fascinating data and insights across a wide range of
+              topics—whether you're curious about global trends, niche facts, or
+              surprising statistics.
             </Typography>
+            <Button variant="contained" fullWidth>
+              Get started
+            </Button>
           </Box>
           <Box>
-            <Avatar sx={{ width: 250, height: 250 }} alt="logo" src={logo} />
+            <Avatar
+              sx={{ width: "100%", maxWidth: "100%", height: 350 }}
+              alt="A graphical representation of graph insights"
+              variant="square"
+              src={bannerOne}
+            />
           </Box>
         </Grid>
+        <Divider sx={{ width: "100%" }} />
         <Grid
           size={12}
           minHeight={"100vh"}
@@ -67,7 +73,6 @@ export const Landing = () => {
             alignItems: "center",
             flexWrap: "wrap",
             p: 5,
-            pt: 12,
             gap: 7,
           }}
         >
@@ -78,14 +83,13 @@ export const Landing = () => {
             textAlign="center"
           >
             <Typography variant="h4">
-              Empower Every Decision with Statalize, Simple, Scalable, and
-              Secure Analytics
+              Empowering Your Curiosity with Data: Accessible, Versatile, and
+              Reliable Insights
             </Typography>
             <Typography variant="caption">
-              Leverage advanced analytics tailored to your unique business
-              needs. From seamless integrations to predictive insights,
-              Statalize provides the tools to make confident, data-driven
-              decisions at every level of your organization.
+              Explore data with ease and versatility. Whether you're uncovering
+              trends or seeking quick insights, our platform provides the tools
+              to make informed decisions—wherever your curiosity takes you.
             </Typography>
           </Box>
           <Box>
@@ -96,40 +100,44 @@ export const Landing = () => {
             >
               <Card sx={{ maxWidth: 300 }} variant="outlined">
                 <CardContent>
-                  <EqualizerOutlined color="error" />
+                  <EqualizerOutlined color="secondary" />
                   <Typography variant="h6">Your Data, Your Way </Typography>
                   <Typography variant="caption">
                     Track only what matters to you. With customizable metrics,
-                    Statalize lets you focus on insights that drive your
-                    success.
+                    Statalize lets you focus on the insights that matter most.
                   </Typography>
                 </CardContent>
               </Card>
               <Card sx={{ maxWidth: 300 }} variant="outlined">
                 <CardContent>
-                  <DatasetLinkedOutlined color="primary" />
+                  <DatasetLinkedOutlined color="info" />
                   <Typography variant="h6">Insights in an Instant</Typography>
                   <Typography variant="caption">
-                    Access real-time data that updates as your business evolves.
-                    Make faster, smarter decisions with live analytics at your
-                    fingertips.
+                    Access real-time data on demand and explore insights as they
+                    happen. Whether you're tracking trends, comparing
+                    statistics, or diving into detailed analyses, get the
+                    information you need when you need it.
                   </Typography>
                 </CardContent>
               </Card>
               <Card sx={{ maxWidth: 300 }} variant="outlined">
                 <CardContent>
-                  <ReceiptLongRounded color="warning" />
-                  <Typography variant="h6">Data That Drives Action </Typography>
+                  <ReceiptLongRounded color="primary" />
+                  <Typography variant="h6">
+                    Data That Inspires Change
+                  </Typography>
                   <Typography variant="caption">
-                    Transform raw data into meaningful insights. Statalize
-                    empowers you to take action and achieve measurable results
-                    with confidence.
+                    Turn complex data into clear insights that drive informed
+                    decisions. With Statalize, you can act on the information
+                    that matters most, unlocking new opportunities along the
+                    way.
                   </Typography>
                 </CardContent>
               </Card>
             </Stack>
           </Box>
         </Grid>
+        <Divider sx={{ width: "100%" }} />
         <Grid
           size={12}
           minHeight={"100vh"}
@@ -143,23 +151,29 @@ export const Landing = () => {
           }}
         >
           <Box>
-            <Avatar sx={{ width: 250, height: 250 }} alt="logo" src={logo} />
+            <Avatar
+              sx={{ width: "100%", maxWidth: "100%", height: 350 }}
+              alt="A graphical representation of data insights"
+              variant="square"
+              src={bannerTwo}
+            />
           </Box>
           <Box
             maxWidth={400}
             sx={{ display: "flex", flexDirection: "column" }}
             gap={3}
           >
-            <Typography variant="h4">
-              Transform Your Business with Statalize
-            </Typography>
+            <Typography variant="h4">Seamless Data Exploration</Typography>
             <Typography>
-              Unlock the power of your data to drive smarter decisions, optimize
-              performance, and stay ahead in today's fast-paced digital world
-              with Statalize.
+              Effortlessly browse, filter, and compare data across diverse
+              categories. With intuitive tools and customizable features,
+              Statalize makes it easy to find the insights you need in just a
+              few clicks.
             </Typography>
           </Box>
         </Grid>
+        <Divider sx={{ width: "100%" }} />
+        <Footer />
       </Grid>
     </>
   );

@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.test
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client/src:/app/src
+      - ./client/__test__:/app/__test__
+      - ./client/index.html:/app/index.html
+      - ./client/vite.config.ts:/app/vite.config.ts
+      - ./client/vitest.setup.ts:/app/vitest.setup.ts
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
