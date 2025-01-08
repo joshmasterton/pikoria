@@ -46,13 +46,13 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
     palette: {
       mode: "dark",
       primary: {
-        main: "#73caff",
+        main: "#6A44F2",
       },
       secondary: {
-        main: "#42d2ec",
+        main: "#A75CF2",
       },
       info: {
-        main: "#8685ff",
+        main: "#0D9FD9",
       },
       background: {
         default: "#0d0d12",
@@ -65,13 +65,13 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
     palette: {
       mode: "light",
       primary: {
-        main: "#5bb7f0",
+        main: "#6A44F2",
       },
       secondary: {
-        main: "#42d2ec",
+        main: "#A75CF2",
       },
       info: {
-        main: "#7270fa",
+        main: "#0D9FD9",
       },
     },
   });

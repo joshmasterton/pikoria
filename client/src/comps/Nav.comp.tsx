@@ -4,16 +4,15 @@ import {
   Box,
   Button,
   Divider,
+  Drawer,
   Fab,
   Fade,
   IconButton,
   List,
   ListItem,
   Slide,
-  SwipeableDrawer,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
   Typography,
   useMediaQuery,
   useScrollTrigger,
@@ -26,6 +25,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { KeyboardArrowUp } from "@mui/icons-material";
+import { useNavigate } from "react-router";
+import { CustomTooltip } from "./CustomTooltip";
 
 const HideOnScroll = ({ children }: { children: ReactElement }) => {
   const trigger = useScrollTrigger();
@@ -65,13 +66,19 @@ const ScrollTop = ({ children }: { children: ReactElement }) => {
   );
 };
 
-export const Nav = () => {
+export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const [open, setOpen] = useState(false);
   const { isDark, toggleIsDark } = useThemeContext();
 
   const toggleIsOpen = () => setOpen(!open);
+
+  const handleNavigate = (to: string) => {
+    navigate(to);
+    toggleIsOpen();
+  };
 
   return (
     <>
@@ -92,11 +99,14 @@ export const Nav = () => {
             borderLeft: 0,
             borderRight: 0,
             borderTop: 0,
+
+            borderBottom: isDashboard ? 1 : 0,
+            borderColor: isDashboard ? theme.palette.divider : null,
           }}
         >
           <Box
             width="100%"
-            maxWidth={1100}
+            maxWidth={isDashboard ? "100%" : 1100}
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -130,18 +140,24 @@ export const Nav = () => {
               }}
             >
               <Box sx={{ display: "flex", gap: 1 }}>
-                <Button color="inherit">
-                  <Typography>Navigate</Typography>
-                </Button>
-                <Button color="inherit">
-                  <Typography>Navigate</Typography>
-                </Button>
-                <Button color="inherit">
-                  <Typography>Navigate</Typography>
-                </Button>
+                <CustomTooltip title="Navigate">
+                  <Button onClick={() => navigate("/")} color="inherit">
+                    <Typography>Navigate</Typography>
+                  </Button>
+                </CustomTooltip>
+                <CustomTooltip title="Navigate">
+                  <Button onClick={() => navigate("/")} color="inherit">
+                    <Typography>Navigate</Typography>
+                  </Button>
+                </CustomTooltip>
+                <CustomTooltip title="Navigate">
+                  <Button onClick={() => navigate("/")} color="inherit">
+                    <Typography>Navigate</Typography>
+                  </Button>
+                </CustomTooltip>
               </Box>
             </Box>
-            <Tooltip title="Switch light mode">
+            <CustomTooltip title="Change theme mode">
               <IconButton
                 color="primary"
                 aria-label="theme button"
@@ -150,9 +166,9 @@ export const Nav = () => {
               >
                 {isDark ? <DarkModeIcon /> : <LightModeIcon />}
               </IconButton>
-            </Tooltip>
+            </CustomTooltip>
           </Box>
-          <SwipeableDrawer
+          <Drawer
             PaperProps={{
               sx: {
                 backgroundColor: alpha(theme.palette.background.default, 1),
@@ -165,9 +181,7 @@ export const Nav = () => {
             anchor="top"
             elevation={0}
             open={!isLargeScreen && open}
-            onOpen={toggleIsOpen}
             onClose={toggleIsOpen}
-            ModalProps={{ keepMounted: true }}
           >
             <Box>
               <Box
@@ -186,6 +200,7 @@ export const Nav = () => {
               <List>
                 <ListItem>
                   <Button
+                    onClick={() => handleNavigate("/")}
                     color="inherit"
                     sx={{ display: "flex", justifyContent: "start" }}
                     fullWidth
@@ -195,6 +210,7 @@ export const Nav = () => {
                 </ListItem>
                 <ListItem>
                   <Button
+                    onClick={() => handleNavigate("/")}
                     color="inherit"
                     sx={{ display: "flex", justifyContent: "start" }}
                     fullWidth
@@ -223,7 +239,7 @@ export const Nav = () => {
                 </ToggleButton>
               </ToggleButtonGroup>
             </Box>
-          </SwipeableDrawer>
+          </Drawer>
         </AppBar>
       </HideOnScroll>
     </>

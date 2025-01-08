@@ -27,7 +27,7 @@ export const Footer = () => {
       <Stack direction="row" alignItems="end" gap={1}>
         <Typography>@</Typography>
         <Typography variant="caption">
-          {`${new Date().getFullYear()} Statalize. All rights reserved`}
+          {`${new Date().getFullYear()} Pikoria. All rights reserved`}
         </Typography>
       </Stack>
     </Stack>

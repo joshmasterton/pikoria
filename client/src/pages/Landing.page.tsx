@@ -17,8 +17,11 @@ import {
 import bannerOne from "../assets/bannerOne.png";
 import bannerTwo from "../assets/bannerTwo.png";
 import { Footer } from "../comps/Footer.comp";
+import { useNavigate } from "react-router";
 
 export const Landing = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <Grid container sx={{ minWidth: "100%" }}>
@@ -41,15 +44,18 @@ export const Landing = () => {
             gap={3}
           >
             <Typography variant="h3">
-              Explore the World of Data with Statalize
+              Dive Into Your Next Obsession with Pikoria
             </Typography>
             <Typography>
-              Dive into a world of endless possibilities with a platform that
-              brings you fascinating data and insights across a wide range of
-              topics—whether you're curious about global trends, niche facts, or
-              surprising statistics.
+              Fill out a quick form about your personality or interests, and let
+              Pikoria provide you with personalized recommendations—from games
+              to movies and everything in between!
             </Typography>
-            <Button variant="contained" fullWidth>
+            <Button
+              onClick={() => navigate("/categories")}
+              variant="contained"
+              sx={{ alignSelf: "start" }}
+            >
               Get started
             </Button>
           </Box>
@@ -83,13 +89,13 @@ export const Landing = () => {
             textAlign="center"
           >
             <Typography variant="h4">
-              Empowering Your Curiosity with Data: Accessible, Versatile, and
-              Reliable Insights
+              Find Recommendations Perfectly Tailored to Your Interests and
+              Preferences
             </Typography>
             <Typography variant="caption">
-              Explore data with ease and versatility. Whether you're uncovering
-              trends or seeking quick insights, our platform provides the tools
-              to make informed decisions—wherever your curiosity takes you.
+              Discover the best options for your interests, whether you're
+              exploring new hobbies, finding the right partner, or searching for
+              your next favorite thing.
             </Typography>
           </Box>
           <Box>
@@ -101,36 +107,30 @@ export const Landing = () => {
               <Card sx={{ maxWidth: 300 }} variant="outlined">
                 <CardContent>
                   <EqualizerOutlined color="secondary" />
-                  <Typography variant="h6">Your Data, Your Way </Typography>
+                  <Typography variant="h6">Simple and Fun</Typography>
                   <Typography variant="caption">
-                    Track only what matters to you. With customizable metrics,
-                    Statalize lets you focus on the insights that matter most.
+                    Answer a few engaging questions, and watch Pikoria work its
+                    magic to suggest options you'll love.
                   </Typography>
                 </CardContent>
               </Card>
               <Card sx={{ maxWidth: 300 }} variant="outlined">
                 <CardContent>
                   <DatasetLinkedOutlined color="info" />
-                  <Typography variant="h6">Insights in an Instant</Typography>
+                  <Typography variant="h6">Find What You’ll Love</Typography>
                   <Typography variant="caption">
-                    Access real-time data on demand and explore insights as they
-                    happen. Whether you're tracking trends, comparing
-                    statistics, or diving into detailed analyses, get the
-                    information you need when you need it.
+                    Pikoria helps you uncover new favorites tailored to your
+                    interests, making every discovery exciting and relevant.
                   </Typography>
                 </CardContent>
               </Card>
               <Card sx={{ maxWidth: 300 }} variant="outlined">
                 <CardContent>
                   <ReceiptLongRounded color="primary" />
-                  <Typography variant="h6">
-                    Data That Inspires Change
-                  </Typography>
+                  <Typography variant="h6">Endless Possibilities</Typography>
                   <Typography variant="caption">
-                    Turn complex data into clear insights that drive informed
-                    decisions. With Statalize, you can act on the information
-                    that matters most, unlocking new opportunities along the
-                    way.
+                    Whether you're looking for inspiration or just curious,
+                    Pikoria offers a world of options tailored to you.
                   </Typography>
                 </CardContent>
               </Card>
@@ -163,12 +163,13 @@ export const Landing = () => {
             sx={{ display: "flex", flexDirection: "column" }}
             gap={3}
           >
-            <Typography variant="h4">Seamless Data Exploration</Typography>
+            <Typography variant="h4">
+              Seamless Exploration, Endless Ideas
+            </Typography>
             <Typography>
-              Effortlessly browse, filter, and compare data across diverse
-              categories. With intuitive tools and customizable features,
-              Statalize makes it easy to find the insights you need in just a
-              few clicks.
+              Dive into your personalized results and discover new favorites
+              across various categories. Pikoria makes finding what you love
+              effortless and enjoyable.
             </Typography>
           </Box>
         </Grid>
