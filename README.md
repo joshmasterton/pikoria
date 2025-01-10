@@ -1,6 +1,6 @@
 # Pikoria 
 
-### Pikoria is a personalized recommendation platform designed to match users with tailored suggestions based on their personality, interests, and preferences. By leveraging the power of AI, Pikoria helps users discover new products, services, or content that resonate with them, making decision-making easier and more enjoyable.
+Pikoria is a personalized recommendation platform designed to match users with tailored suggestions based on their personality, interests, and preferences. By leveraging the power of AI, Pikoria helps users discover new products, services, or content that resonate with them, making decision-making easier and more enjoyable.
 
 ## Features
 
