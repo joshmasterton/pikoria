@@ -1,2 +1,29 @@
-# statalize
-Statalize is a data visualization platform designed to turn raw statistics into clear, meaningful insights. The app leverages real-time data from various sources and presents it through sleek, interactive charts and graphs
+# Pikoria 
+
+### Pikoria is a personalized recommendation platform designed to match users with tailored suggestions based on their personality, interests, and preferences. By leveraging the power of AI, Pikoria helps users discover new products, services, or content that resonate with them, making decision-making easier and more enjoyable.
+
+## Features
+
+ - AI-Powered Recommendations: Get personalized suggestions based on your inputs.
+
+ - User-Friendly Interface: A sleek and intuitive design for seamless interaction.
+
+ - Dynamic Forms: Fill out forms about your interests or personality to generate tailored recommendations.
+
+ - Secure Authentication: Built-in authentication using Firebase for secure access.
+
+ - Scalable Architecture: Dockerized setup for development and deployment.
+
+## Tech Stack
+
+ - Frontend: React, TypeScript, MUI (Material-UI), Framer Motion (for animations)
+
+ - Backend: Node.js, Express, PostgreSQL
+
+ - Authentication: Firebase Authentication
+
+ - Hosting: Vercel
+
+ - Testing: Vitest
+
+ - Containerization: Docker
