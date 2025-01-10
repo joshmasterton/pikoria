@@ -1,5 +1,5 @@
-<p align="start">
-  <img src="client/src/assets/pikoria.png" alt="Pikoria Logo" width="100" />
+<p align="center">
+  <img src="client/src/assets/pikoria.png" alt="Pikoria Logo" width="150" />
 </p>
 
 # Pikoria 
