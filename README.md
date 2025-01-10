@@ -16,7 +16,7 @@ Pikoria is a personalized recommendation platform designed to match users with t
 
 ## Tech Stack
 
- - Frontend: React, TypeScript, MUI (Material-UI), Framer Motion (for animations)
+ - Frontend: React, TypeScript, MUI (Material-UI).
 
  - Backend: Node.js, Express, PostgreSQL
 
