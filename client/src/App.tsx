@@ -6,6 +6,12 @@ import { Landing } from "./pages/Landing.page";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { Home } from "./pages/Home.page";
 import { Nav } from "./comps/Nav.comp";
+import { ThemeContextProvider } from "./context/Theme.context";
+import { AuthContextProvider } from "./context/Auth.context";
+import { Login, Signup } from "./pages/Auth.page";
+import { ResetPassword } from "./pages/ResetPassword.page";
+import { DialogContextProvider } from "./context/Dialog.context";
+import { AlertDialog } from "./comps/AlertDialog.comp";
 
 export const routes = [
   {
@@ -26,10 +32,31 @@ export const routes = [
       </>
     ),
   },
+  {
+    path: "/auth/login",
+    element: <Login />,
+  },
+  {
+    path: "/auth/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/auth/resetPassword",
+    element: <ResetPassword />,
+  },
 ];
 
 export const App = () => {
   const router = createBrowserRouter(routes);
 
-  return <RouterProvider router={router} />;
+  return (
+    <DialogContextProvider>
+      <AuthContextProvider>
+        <ThemeContextProvider>
+          <RouterProvider router={router} />
+          <AlertDialog />
+        </ThemeContextProvider>
+      </AuthContextProvider>
+    </DialogContextProvider>
+  );
 };
