@@ -1,6 +1,15 @@
-import { DarkMode, LightMode, StarBorderSharp } from "@mui/icons-material";
+import {
+  DarkMode,
+  LightMode,
+  Login,
+  Logout,
+  StarBorderSharp,
+} from "@mui/icons-material";
 import {
   alpha,
+  Avatar,
+  Box,
+  CircularProgress,
   Divider,
   Drawer,
   List,
@@ -10,17 +19,20 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { SyntheticEvent } from "react";
 import { useNavigate } from "react-router";
 import { useThemeContext } from "../context/Theme.context";
+import { useAuthContext } from "../context/Auth.context";
 
 export const SideBar = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const { user, logout, loadingUpdatedUser } = useAuthContext();
   const { isDark, toggleIsDark } = useThemeContext();
 
   return (
@@ -58,6 +70,51 @@ export const SideBar = () => {
                   <StarBorderSharp />
                 </ListItemIcon>
                 Navigate
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              {user ? (
+                <Box width="100%">
+                  <ListItemButton
+                    disabled={loadingUpdatedUser}
+                    onClick={logout}
+                  >
+                    <ListItemIcon>
+                      {!loadingUpdatedUser && <Logout />}
+                    </ListItemIcon>
+                    Logout
+                    {loadingUpdatedUser && (
+                      <CircularProgress
+                        size={24}
+                        sx={{ position: "absolute" }}
+                      />
+                    )}
+                  </ListItemButton>
+                </Box>
+              ) : (
+                <Box width="100%">
+                  <ListItemButton onClick={() => navigate("/auth/login")}>
+                    <ListItemIcon>
+                      <Login />
+                    </ListItemIcon>
+                    Login
+                  </ListItemButton>
+                </Box>
+              )}
+            </ListItem>
+            <ListItem>
+              <ListItemButton>
+                {user?.displayName && user.photoURL && (
+                  <>
+                    <ListItemIcon>
+                      <Avatar
+                        sx={{ width: 30, height: 30 }}
+                        src={user?.photoURL}
+                      />
+                    </ListItemIcon>
+                    <Typography>{user?.displayName}</Typography>
+                  </>
+                )}
               </ListItemButton>
             </ListItem>
           </List>

@@ -22,9 +22,7 @@ import { ReactElement, SyntheticEvent, useState } from "react";
 import { Logo } from "./Logo.comp";
 import { useThemeContext } from "../context/Theme.context";
 import MenuIcon from "@mui/icons-material/Menu";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { KeyboardArrowUp } from "@mui/icons-material";
+import { DarkMode, KeyboardArrowUp, LightMode } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { CustomTooltip } from "./CustomTooltip";
 
@@ -99,7 +97,6 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
             borderLeft: 0,
             borderRight: 0,
             borderTop: 0,
-
             borderBottom: isDashboard ? 1 : 0,
             borderColor: isDashboard ? theme.palette.divider : null,
           }}
@@ -164,7 +161,7 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
                 onClick={toggleIsDark}
                 sx={{ display: { xs: "none", sm: "flex" } }}
               >
-                {isDark ? <DarkModeIcon /> : <LightModeIcon />}
+                {isDark ? <DarkMode /> : <LightMode />}
               </IconButton>
             </CustomTooltip>
           </Box>
@@ -232,10 +229,10 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
                 sx={{ p: 2, display: "flex", justifyContent: "end" }}
               >
                 <ToggleButton value={true}>
-                  <DarkModeIcon />
+                  <DarkMode />
                 </ToggleButton>
                 <ToggleButton value={false}>
-                  <LightModeIcon />
+                  <LightMode />
                 </ToggleButton>
               </ToggleButtonGroup>
             </Box>
