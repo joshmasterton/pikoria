@@ -52,7 +52,7 @@ export const Landing = () => {
               to movies and everything in between!
             </Typography>
             <Button
-              onClick={() => navigate("/categories")}
+              onClick={() => navigate("/home")}
               variant="contained"
               sx={{ alignSelf: "start" }}
             >

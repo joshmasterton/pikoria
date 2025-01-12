@@ -12,6 +12,7 @@ import { Login, Signup } from "./pages/Auth.page";
 import { ResetPassword } from "./pages/ResetPassword.page";
 import { DialogContextProvider } from "./context/Dialog.context";
 import { AlertDialog } from "./comps/AlertDialog.comp";
+import { Explore } from "./pages/Explore.page";
 
 export const routes = [
   {
@@ -24,11 +25,20 @@ export const routes = [
     ),
   },
   {
-    path: "/categories",
+    path: "/home",
     element: (
       <>
         <Nav isDashboard={true} />
         <Home />
+      </>
+    ),
+  },
+  {
+    path: "/explore",
+    element: (
+      <>
+        <Nav isDashboard={true} />
+        <Explore />
       </>
     ),
   },

@@ -10,6 +10,8 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemButton,
+  ListItemIcon,
   Slide,
   ToggleButton,
   ToggleButtonGroup,
@@ -22,7 +24,13 @@ import { ReactElement, SyntheticEvent, useState } from "react";
 import { Logo } from "./Logo.comp";
 import { useThemeContext } from "../context/Theme.context";
 import MenuIcon from "@mui/icons-material/Menu";
-import { DarkMode, KeyboardArrowUp, LightMode } from "@mui/icons-material";
+import {
+  DarkMode,
+  GraphicEq,
+  Home,
+  KeyboardArrowUp,
+  LightMode,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { CustomTooltip } from "./CustomTooltip";
 
@@ -137,14 +145,14 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
               }}
             >
               <Box sx={{ display: "flex", gap: 1 }}>
-                <CustomTooltip title="Navigate">
-                  <Button onClick={() => navigate("/")} color="inherit">
-                    <Typography>Navigate</Typography>
+                <CustomTooltip title="Home">
+                  <Button onClick={() => navigate("/home")} color="inherit">
+                    <Typography>Home</Typography>
                   </Button>
                 </CustomTooltip>
-                <CustomTooltip title="Navigate">
-                  <Button onClick={() => navigate("/")} color="inherit">
-                    <Typography>Navigate</Typography>
+                <CustomTooltip title="Explore">
+                  <Button onClick={() => navigate("/explore")} color="inherit">
+                    <Typography>Explore</Typography>
                   </Button>
                 </CustomTooltip>
                 <CustomTooltip title="Navigate">
@@ -196,24 +204,20 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
               <Divider />
               <List>
                 <ListItem>
-                  <Button
-                    onClick={() => handleNavigate("/")}
-                    color="inherit"
-                    sx={{ display: "flex", justifyContent: "start" }}
-                    fullWidth
-                  >
-                    Navigate
-                  </Button>
+                  <ListItemButton onClick={() => handleNavigate("/home")}>
+                    <ListItemIcon>
+                      <Home />
+                    </ListItemIcon>
+                    Home
+                  </ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <Button
-                    onClick={() => handleNavigate("/")}
-                    color="inherit"
-                    sx={{ display: "flex", justifyContent: "start" }}
-                    fullWidth
-                  >
-                    Navigate
-                  </Button>
+                  <ListItemButton onClick={() => handleNavigate("/explore")}>
+                    <ListItemIcon>
+                      <GraphicEq />
+                    </ListItemIcon>
+                    Explore
+                  </ListItemButton>
                 </ListItem>
               </List>
               <Divider />
