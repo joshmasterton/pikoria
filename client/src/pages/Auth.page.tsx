@@ -112,7 +112,7 @@ export const Signup = () => {
               <form onSubmit={handleSubmit}>
                 <Stack useFlexGap gap={2} sx={{ position: "relative" }}>
                   <IconButton
-                    onClick={() => navigate("/categories")}
+                    onClick={() => navigate("/home")}
                     sx={{ position: "absolute", right: 9 }}
                   >
                     <CloseRounded />
@@ -322,7 +322,7 @@ export const Login = () => {
               <form onSubmit={handleSubmit}>
                 <Stack useFlexGap gap={2} sx={{ position: "relative" }}>
                   <IconButton
-                    onClick={() => navigate("/categories")}
+                    onClick={() => navigate("/home")}
                     sx={{ position: "absolute", right: 9 }}
                   >
                     <CloseRounded />

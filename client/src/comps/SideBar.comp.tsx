@@ -1,9 +1,10 @@
 import {
   DarkMode,
+  GraphicEq,
+  Home,
   LightMode,
   Login,
   Logout,
-  StarBorderSharp,
 } from "@mui/icons-material";
 import {
   alpha,
@@ -57,19 +58,19 @@ export const SideBar = () => {
         <Stack sx={{ height: "100%" }}>
           <List sx={{ height: "100%" }}>
             <ListItem>
-              <ListItemButton onClick={() => navigate("/")}>
+              <ListItemButton onClick={() => navigate("/home")}>
                 <ListItemIcon>
-                  <StarBorderSharp />
+                  <Home />
                 </ListItemIcon>
-                Navigate
+                Home
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton onClick={() => navigate("/")}>
+              <ListItemButton onClick={() => navigate("/explore")}>
                 <ListItemIcon>
-                  <StarBorderSharp />
+                  <GraphicEq />
                 </ListItemIcon>
-                Navigate
+                Explore
               </ListItemButton>
             </ListItem>
             <ListItem>
@@ -108,7 +109,7 @@ export const SideBar = () => {
                   <>
                     <ListItemIcon>
                       <Avatar
-                        sx={{ width: 30, height: 30 }}
+                        sx={{ width: 25, height: 25 }}
                         src={user?.photoURL}
                       />
                     </ListItemIcon>
