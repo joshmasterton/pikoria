@@ -58,7 +58,7 @@ export const Explore = () => {
           </DialogContent>
         </Dialog>
         <Grid size={12} spacing={3} sx={{ p: 3 }} container>
-          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 12 }}>
             <Card
               variant="outlined"
               sx={{
@@ -93,7 +93,7 @@ export const Explore = () => {
               </CardActionArea>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 12 }}>
             <Card
               variant="outlined"
               sx={{

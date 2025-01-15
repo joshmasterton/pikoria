@@ -22,6 +22,7 @@ import {
   ToggleButtonGroup,
   Typography,
   useMediaQuery,
+  useScrollTrigger,
   useTheme,
 } from "@mui/material";
 import { SyntheticEvent } from "react";
@@ -35,6 +36,7 @@ export const SideBar = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const { user, logout, loadingUpdatedUser } = useAuthContext();
   const { isDark, toggleIsDark } = useThemeContext();
+  const trigger = useScrollTrigger();
 
   return (
     <>
@@ -48,7 +50,11 @@ export const SideBar = () => {
             backdropFilter: "blur(24px)",
             borderLeft: 0,
             borderTop: 0,
-            pt: 7,
+            pt: trigger ? 0 : 7,
+            transition: theme.transitions.create("padding", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            }),
           },
         }}
         anchor="left"
@@ -103,9 +109,9 @@ export const SideBar = () => {
                 </Box>
               )}
             </ListItem>
-            <ListItem>
-              <ListItemButton>
-                {user?.displayName && user.photoURL && (
+            {user?.displayName && user.photoURL && (
+              <ListItem>
+                <ListItemButton>
                   <>
                     <ListItemIcon>
                       <Avatar
@@ -115,9 +121,9 @@ export const SideBar = () => {
                     </ListItemIcon>
                     <Typography>{user?.displayName}</Typography>
                   </>
-                )}
-              </ListItemButton>
-            </ListItem>
+                </ListItemButton>
+              </ListItem>
+            )}
           </List>
           <Divider />
           <ToggleButtonGroup

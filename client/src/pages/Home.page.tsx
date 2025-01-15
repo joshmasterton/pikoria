@@ -1,11 +1,25 @@
-import { Box, Card, useMediaQuery, useTheme } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { SideBar } from "../comps/SideBar.comp";
 import { BreadCrumb } from "../comps/BreadCrumb.comp";
+import Grid from "@mui/material/Grid2";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { useEffect } from "react";
+import { fetchMoviesSeries } from "../store/moviesSeries.slice";
+import { MovieSeriesCard } from "../comps/ItemCard.comp";
 
 export const Home = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { moviesSeries } = useSelector(
+    (state: RootState) => state.moviesSeries
+  );
+
+  useEffect(() => {
+    dispatch(fetchMoviesSeries());
+  }, [dispatch]);
 
   return (
     <Box>
@@ -23,33 +37,10 @@ export const Home = () => {
       >
         <BreadCrumb />
         <Grid size={12} spacing={3} sx={{ p: 3 }} container>
-          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-            <Card
-              variant="outlined"
-              sx={{ minWidth: "100%", minHeight: 400 }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-            <Card
-              variant="outlined"
-              sx={{
-                minWidth: "100%",
-                minHeight: 400,
-              }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-            <Card
-              variant="outlined"
-              sx={{ minWidth: "100%", minHeight: 400 }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-            <Card
-              variant="outlined"
-              sx={{ minWidth: "100%", minHeight: 400 }}
-            />
-          </Grid>
+          {moviesSeries?.data &&
+            moviesSeries.data?.map((movieSeries) => (
+              <MovieSeriesCard key={movieSeries.id} movieSeries={movieSeries} />
+            ))}
         </Grid>
       </Grid>
     </Box>

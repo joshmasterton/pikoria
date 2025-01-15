@@ -37,8 +37,6 @@ import { CustomTooltip } from "./CustomTooltip";
 const HideOnScroll = ({ children }: { children: ReactElement }) => {
   const trigger = useScrollTrigger();
 
-  return children;
-
   return (
     <Slide appear={false} direction="down" in={!trigger}>
       {children}
@@ -105,6 +103,7 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
             borderLeft: 0,
             borderRight: 0,
             borderTop: 0,
+            p: !isDashboard && isLargeScreen ? 2 : 0,
             borderBottom: isDashboard ? 1 : 0,
             borderColor: isDashboard ? theme.palette.divider : null,
           }}
