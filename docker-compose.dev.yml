@@ -1,5 +1,5 @@
 services:
-  app:
+  client:
     build:
       context: ./client
       dockerfile: Dockerfile.dev
@@ -11,3 +11,25 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    ports:
+      - "80:80"
+    volumes:
+      - ./api/src:/app/src
+    env_file:
+      - ./api/dev.env
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    env_file:
+      - ./api/dev.env
+    ports:
+      - "5432:5432"

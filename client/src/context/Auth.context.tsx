@@ -15,7 +15,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { auth } from "../config/firebase,config";
+import { auth } from "../config/firebase.config";
 import { AuthContextType } from "../types/auth.type";
 import { useDialogContext } from "./Dialog.context";
 

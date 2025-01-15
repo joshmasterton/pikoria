@@ -13,6 +13,8 @@ import { ResetPassword } from "./pages/ResetPassword.page";
 import { DialogContextProvider } from "./context/Dialog.context";
 import { AlertDialog } from "./comps/AlertDialog.comp";
 import { Explore } from "./pages/Explore.page";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 export const routes = [
   {
@@ -60,13 +62,15 @@ export const App = () => {
   const router = createBrowserRouter(routes);
 
   return (
-    <DialogContextProvider>
-      <AuthContextProvider>
-        <ThemeContextProvider>
-          <RouterProvider router={router} />
-          <AlertDialog />
-        </ThemeContextProvider>
-      </AuthContextProvider>
-    </DialogContextProvider>
+    <Provider store={store}>
+      <DialogContextProvider>
+        <AuthContextProvider>
+          <ThemeContextProvider>
+            <RouterProvider router={router} />
+            <AlertDialog />
+          </ThemeContextProvider>
+        </AuthContextProvider>
+      </DialogContextProvider>
+    </Provider>
   );
 };
