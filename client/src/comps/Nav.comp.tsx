@@ -34,26 +34,14 @@ import {
 import { useNavigate } from "react-router";
 import { CustomTooltip } from "./CustomTooltip";
 
-const HideOnScroll = ({
-  children,
-  isDashboard,
-}: {
-  children: ReactElement;
-  isDashboard: boolean;
-}) => {
-  const theme = useTheme();
+const HideOnScroll = ({ children }: { children: ReactElement }) => {
   const trigger = useScrollTrigger();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
 
-  if (isLargeScreen && isDashboard) {
-    return children;
-  } else {
-    return (
-      <Slide appear={false} direction="down" in={!trigger}>
-        {children}
-      </Slide>
-    );
-  }
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
 };
 
 const ScrollTop = ({ children }: { children: ReactElement }) => {
@@ -103,7 +91,7 @@ export const Nav = ({ isDashboard }: { isDashboard: boolean }) => {
           <KeyboardArrowUp />
         </Fab>
       </ScrollTop>
-      <HideOnScroll isDashboard={isDashboard}>
+      <HideOnScroll>
         <AppBar
           color="inherit"
           elevation={0}

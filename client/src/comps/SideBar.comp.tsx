@@ -22,6 +22,7 @@ import {
   ToggleButtonGroup,
   Typography,
   useMediaQuery,
+  useScrollTrigger,
   useTheme,
 } from "@mui/material";
 import { SyntheticEvent } from "react";
@@ -32,6 +33,7 @@ import { useAuthContext } from "../context/Auth.context";
 export const SideBar = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const trigger = useScrollTrigger();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const { user, logout, loadingUpdatedUser } = useAuthContext();
   const { isDark, toggleIsDark } = useThemeContext();
@@ -48,7 +50,11 @@ export const SideBar = () => {
             backdropFilter: "blur(24px)",
             borderLeft: 0,
             borderTop: 0,
-            pt: 7,
+            pt: trigger ? 0 : 7,
+            transition: theme.transitions.create("padding", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            }),
           },
         }}
         anchor="left"
