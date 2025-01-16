@@ -1,4 +1,4 @@
-import { pool } from "../../config/database.config";
+import { pool } from "../../config/pool.config";
 
 export const createMoviesSeriesTable = async () => {
   const query = `
@@ -44,15 +44,13 @@ export const createMoviesSeriesTable = async () => {
 
 export const deleteMoviesSeriesTable = async () => {
   const client = await pool.connect();
-
   try {
-    await client.query(`DROP TABLE IF EXISTS movies_series`);
-    console.log("movies_series table deleted successfully");
+    await client.query("DROP TABLE IF EXISTS movies_series");
   } catch (error) {
     if (error instanceof Error) {
       throw error;
     } else {
-      throw new Error("Error deleteing movies_series table");
+      throw new Error("Error deleting movies_series table");
     }
   } finally {
     client.release();

@@ -13,11 +13,13 @@ import {
 } from "@mui/material";
 import { Formik } from "formik";
 import { moviesSeriesSchema } from "../validation/forms.validate";
-import axios, { AxiosError } from "axios";
-import { MoviesSeriesFormType } from "../types/forms.type";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { submitMoviesSeriesForm } from "../store/moviesSeries.slice";
 
 export const MoviesSeriesForm = () => {
   const currentYear = new Date().getFullYear();
+  const dispatch = useDispatch<AppDispatch>();
 
   const movieGenreArray = [
     { value: 0, title: "All" },
@@ -58,25 +60,6 @@ export const MoviesSeriesForm = () => {
     { value: 53, title: "Thriller" },
   ];
 
-  const onMovieSeriesSubmit = async (values: MoviesSeriesFormType) => {
-    try {
-      const moviesSeriesResponse = await axios.post(
-        "http://localhost:80/movies-series/recommend",
-        values
-      );
-
-      console.log(moviesSeriesResponse.data);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error(error.response?.data.errors);
-      } else if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("Error on movies/series recommendation request");
-      }
-    }
-  };
-
   return (
     <Formik
       initialValues={{
@@ -88,7 +71,9 @@ export const MoviesSeriesForm = () => {
         region: "All",
       }}
       validationSchema={moviesSeriesSchema}
-      onSubmit={onMovieSeriesSubmit}
+      onSubmit={async (values) =>
+        await dispatch(submitMoviesSeriesForm(values))
+      }
     >
       {({
         values,

@@ -1,4 +1,4 @@
-import { pool } from "../../config/database.config";
+import { pool } from "../../config/pool.config";
 import {
   MovieSeriesType,
   TMDBMovieSeriesType,
@@ -121,7 +121,7 @@ export const getMoviesSeries = async (
     );
 
     return {
-      data: result.rows as MovieSeriesType[],
+      data: result.rows[0] ? (result.rows as MovieSeriesType[]) : undefined,
       total: parseInt(countResult.rows[0].count),
       totalPages: Math.ceil(parseInt(countResult.rows[0].count) / pageSize),
       currentPage: page,
@@ -132,5 +132,7 @@ export const getMoviesSeries = async (
     } else {
       throw new Error("Error getting movies/series");
     }
+  } finally {
+    client.release();
   }
 };

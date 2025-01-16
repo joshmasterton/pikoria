@@ -12,7 +12,7 @@ services:
       - ./client/vite.config.ts:/app/vite.config.ts
       - ./client/vitest.setup.ts:/app/vitest.setup.ts
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=test
       - CHOKIDAR_USEPOLLING=true
   api:
     build:
@@ -24,6 +24,18 @@ services:
       - ./api/src:/app/src
       - ./api/__test__:/app/__test__
       - ./api/vitest.config.ts:/app/vitest.config.ts
+      - ./api/vitest.setup.ts:/app/vitest.setup.ts
+    env_file:
+      - ./api/test.env
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=test
       - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    env_file:
+      - ./api/test.env
+    ports:
+      - "5432:5432"

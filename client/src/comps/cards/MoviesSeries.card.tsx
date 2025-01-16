@@ -5,6 +5,7 @@ import {
   CardContent,
   CardMedia,
   Collapse,
+  Divider,
   IconButton,
   Paper,
   Stack,
@@ -12,7 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { MovieSeriesType } from "../types/movieSeries.type";
+import { MovieSeriesType } from "../../types/movieSeries.type";
 
 export const MovieSeriesCard = ({
   movieSeries,
@@ -27,12 +28,18 @@ export const MovieSeriesCard = ({
   };
 
   return (
-    <Card variant="outlined" sx={{ width: "100%", position: "relative" }}>
+    <Card
+      variant="outlined"
+      sx={{
+        width: "100%",
+        position: "relative",
+      }}
+    >
       <Paper
         sx={{
           position: "absolute",
           right: 0,
-          p: 2,
+          p: 1.5,
           mt: 2,
           mr: 2,
         }}
@@ -40,22 +47,24 @@ export const MovieSeriesCard = ({
         {Math.round(movieSeries.vote_average * 10) / 10}
       </Paper>
       <CardMedia
+        height={300}
         component="img"
-        sx={{ height: 500 }}
+        sx={{ objectPosition: "top" }}
         src={movieSeries.poster_path}
       />
       <CardContent>
-        <CardActions sx={{ p: 0 }}>
-          <Stack direction="row" width="100%" alignItems="center" gap={1}>
-            <Typography variant="h6">
+        <CardActions sx={{ p: 0, alignItems: "center" }}>
+          <Stack width="100%">
+            <Typography
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              maxWidth={227}
+            >
               {movieSeries.title || movieSeries.name}
             </Typography>
-            <Typography variant="body2">
-              {movieSeries.title
-                ? movieSeries.original_title !== movieSeries.title &&
-                  `(${movieSeries.original_title})`
-                : movieSeries.name !== movieSeries.name &&
-                  `(${movieSeries.name})`}
+            <Typography variant="caption">
+              {movieSeries.release_date || movieSeries.first_air_date}
             </Typography>
           </Stack>
           <IconButton
@@ -72,6 +81,7 @@ export const MovieSeriesCard = ({
           </IconButton>
         </CardActions>
         <Collapse in={expand}>
+          <Divider sx={{ mt: 1, mb: 1 }} />
           <Typography variant="caption">{movieSeries.overview}</Typography>
         </Collapse>
       </CardContent>

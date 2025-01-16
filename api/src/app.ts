@@ -11,10 +11,12 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: `${__dirname}/../dev.env` });
 
-const { PORT } = process.env;
+const { PORT, NODE_ENV } = process.env;
 export const app = express();
 
-startApi();
+if (NODE_ENV !== "test") {
+  startApi();
+}
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +28,8 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use("/movies-series", moviesSeriesRouter);
 
-app.listen(PORT, () => {
-  console.log(`Listening to server on port: ${PORT}`);
-});
+if (NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`Listening to server on port: ${PORT}`);
+  });
+}

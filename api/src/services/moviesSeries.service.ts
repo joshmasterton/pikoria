@@ -21,7 +21,7 @@ export const processMoviesSeriesRecommendation = async (
         ? {
             api_key: TMDB_API_KEY,
             include_video: true,
-            "vote_count.gte": 100,
+            "vote_count.gte": 400,
             ...(recommendationData.genre !== 0 && {
               with_genres: recommendationData.genre,
             }),
@@ -38,7 +38,7 @@ export const processMoviesSeriesRecommendation = async (
         : {
             api_key: TMDB_API_KEY,
             include_video: true,
-            "vote_count.gte": 100,
+            "vote_count.gte": 400,
             ...(recommendationData.genre !== 0 && {
               with_genres: recommendationData.genre,
             }),
