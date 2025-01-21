@@ -5,12 +5,13 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "5173:5173"
+    environment:
+      - NODE_ENV=test
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - postgres
     volumes:
       - ./client/src:/app/src
-      - ./client/index.html:/app/index.html
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
   api:
     build:
       context: ./api

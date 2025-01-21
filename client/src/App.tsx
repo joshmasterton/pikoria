@@ -1,76 +1,56 @@
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import { Landing } from "./pages/Landing.page";
-import { createBrowserRouter, RouterProvider } from "react-router";
-import { Home } from "./pages/Home.page";
-import { Nav } from "./comps/Nav.comp";
-import { ThemeContextProvider } from "./context/Theme.context";
-import { AuthContextProvider } from "./context/Auth.context";
-import { Login, Signup } from "./pages/Auth.page";
-import { ResetPassword } from "./pages/ResetPassword.page";
-import { DialogContextProvider } from "./context/Dialog.context";
-import { AlertDialog } from "./comps/AlertDialog.comp";
-import { Explore } from "./pages/Explore.page";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Signin } from "./pages/auth/Signin.page";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Signup } from "./pages/auth/Signup.page";
+import { ForgotPassword } from "./pages/auth/ForgotPassword.page";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { store } from "./redux/store.redux";
+import { AuthWrapper } from "./comp/AuthWrapper.comp";
 
 export const routes = [
   {
     path: "/",
-    element: (
-      <>
-        <Nav isDashboard={false} />
-        <Landing />
-      </>
-    ),
+    element: <Signin />,
   },
   {
-    path: "/home",
-    element: (
-      <>
-        <Nav isDashboard={true} />
-        <Home />
-      </>
-    ),
-  },
-  {
-    path: "/explore",
-    element: (
-      <>
-        <Nav isDashboard={true} />
-        <Explore />
-      </>
-    ),
-  },
-  {
-    path: "/auth/login",
-    element: <Login />,
+    path: "/auth/signin",
+    element: <Signin />,
   },
   {
     path: "/auth/signup",
     element: <Signup />,
   },
   {
-    path: "/auth/resetPassword",
-    element: <ResetPassword />,
+    path: "/auth/forgotPassword",
+    element: <ForgotPassword />,
   },
 ];
+
+export const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#5E75FF",
+    },
+    background: {
+      default: "#0a090d",
+      paper: "#0a090d",
+    },
+  },
+});
 
 export const App = () => {
   const router = createBrowserRouter(routes);
 
   return (
     <Provider store={store}>
-      <DialogContextProvider>
-        <AuthContextProvider>
-          <ThemeContextProvider>
-            <RouterProvider router={router} />
-            <AlertDialog />
-          </ThemeContextProvider>
-        </AuthContextProvider>
-      </DialogContextProvider>
+      <AuthWrapper>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </AuthWrapper>
     </Provider>
   );
 };

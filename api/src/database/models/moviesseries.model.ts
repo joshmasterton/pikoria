@@ -68,12 +68,6 @@ export const addMoviesSeries = async (moviesSeries: TMDBMovieSeriesType[]) => {
           vote_average,
           vote_count,
         ]);
-
-        console.log(
-          `Inserted ${title || name} into movies_series successfully`
-        );
-      } else {
-        console.log(`${title || name} already exists in database`);
       }
     }
 
