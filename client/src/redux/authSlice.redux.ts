@@ -51,6 +51,7 @@ export const signinWithGoogle = createAsyncThunk<AuthSliceType["user"]>(
   "/auth/signinWithGoogle",
   async (_, { rejectWithValue }) => {
     try {
+      googleProvider.setCustomParameters({ prompt: "select_account" });
       const userCredential = await signInWithPopup(auth, googleProvider);
       const { user } = userCredential;
       return {
