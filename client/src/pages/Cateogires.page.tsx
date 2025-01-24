@@ -27,7 +27,7 @@ export const Categories = () => {
           open={moviesSeriesFormOpen}
           onClose={() => setMoviesSeriesFormOpen(false)}
         >
-          <MoviesSeriesForm />
+          <MoviesSeriesForm close={setMoviesSeriesFormOpen} />
         </Dialog>
         <Card variant="outlined" sx={{ width: "100%", height: 400 }}>
           <CardActionArea
@@ -65,6 +65,7 @@ export const Categories = () => {
                 width: 1000,
                 height: 500,
                 filter: "blur(2000px)",
+                WebkitFilter: "blur(2000px)",
               }}
             />
           </CardActionArea>
@@ -104,6 +105,7 @@ export const Categories = () => {
                 width: 1000,
                 height: 500,
                 filter: "blur(2000px)",
+                WebkitFilter: "blur(2000px)",
               }}
             />
           </CardActionArea>

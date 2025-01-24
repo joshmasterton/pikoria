@@ -11,15 +11,25 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { IconButton } from "@mui/material";
+import { Dispatch, SetStateAction } from "react";
 
-export const MoviesSeriesForm = () => {
+export const MoviesSeriesForm = ({
+  close,
+}: {
+  close: Dispatch<SetStateAction<boolean>>;
+}) => {
   return (
     <Card variant="outlined">
       <Formik
         validationSchema={moviesSeriesSchema}
         initialValues={{
           genre: "",
-          content: "",
+          content: "series",
           release: [2000, 2025],
           runtime: [90, 180],
           region: "",
@@ -37,29 +47,37 @@ export const MoviesSeriesForm = () => {
           return (
             <form>
               <Stack p={3} gap={3}>
-                <Typography variant="h5">Find a movie or series</Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="start"
+                >
+                  <Typography variant="h5">Find a movie or series</Typography>
+                  <IconButton size="small" onClick={() => close(false)}>
+                    <CloseRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
                 <Stack gap={2}>
-                  <FormControl
-                    size="small"
-                    fullWidth
-                    error={Boolean(errors.content && touched.content)}
-                  >
-                    <InputLabel id="content-select-label">Content</InputLabel>
-                    <Select
-                      label="Content"
-                      id="content-select"
-                      name="content"
+                  <FormControl>
+                    <Typography>Content</Typography>
+                    <RadioGroup
+                      row
+                      onChange={(e) => setFieldValue("content", e.target.value)}
                       value={values.content}
-                      onBlur={handleBlur}
-                      onChange={(e) => {
-                        setFieldValue("content", e.target.value);
-                        setFieldValue("genre", "");
-                      }}
-                      labelId="content-select-label"
+                      aria-labelledby="content-select-group"
+                      name="content-select"
                     >
-                      <MenuItem value="movies">Movies</MenuItem>
-                      <MenuItem value="series">Series</MenuItem>
-                    </Select>
+                      <FormControlLabel
+                        value="movies"
+                        control={<Radio />}
+                        label="Movies"
+                      />
+                      <FormControlLabel
+                        value="series"
+                        control={<Radio />}
+                        label="Series"
+                      />
+                    </RadioGroup>
                     {errors.content && touched.content && (
                       <FormHelperText>{errors.content}</FormHelperText>
                     )}

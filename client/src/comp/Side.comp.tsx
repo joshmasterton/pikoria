@@ -34,7 +34,6 @@ export const Side = () => {
     >
       <Box sx={{ minWidth: 246 }}>
         <Box height={62} />
-        <Divider />
         <List>
           <ListItemButton onClick={() => navigate("/")}>
             <HomeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
