@@ -1,8 +1,8 @@
 import CssBaseline from "@mui/material/CssBaseline";
-import { Signin } from "./pages/Auth/Signin.page";
+import { Signin } from "./pages/auth/Signin.page";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Signup } from "./pages/Auth/Signup.page";
-import { ForgotPassword } from "./pages/Auth/ForgotPassword.page";
+import { Signup } from "./pages/auth/Signup.page";
+import { ForgotPassword } from "./pages/auth/ForgotPassword.page";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.redux";
 import { AuthWrapper } from "./wrapper/AuthWrapper.comp";
