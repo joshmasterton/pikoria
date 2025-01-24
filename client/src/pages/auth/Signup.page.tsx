@@ -13,8 +13,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import { signinWithGoogle, signup } from "../../redux/authSlice.redux";
 import { Logo } from "../../comp/Logo.comp";
@@ -22,6 +23,7 @@ import { Authenticated } from "../../comp/Authenticated.comp";
 
 export const Signup = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { loading } = useAppSelector((state) => state.auth);
   const [showPasswords, setShowPasswords] = useState({
     password: false,
@@ -66,7 +68,12 @@ export const Signup = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Stack p={3} gap={2}>
-                  <Logo />
+                  <Stack direction="row" justifyContent="space-between">
+                    <Logo />
+                    <IconButton onClick={() => navigate("/")} size="small">
+                      <CloseRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>
                   <Typography variant="h5">Sign up</Typography>
                   <Stack gap={2}>
                     <TextField
@@ -93,12 +100,13 @@ export const Signup = () => {
                           endAdornment: (
                             <InputAdornment position="end">
                               <IconButton
+                                size="small"
                                 onClick={() => handleShowPassword("password")}
                               >
                                 {showPasswords.password ? (
-                                  <VisibilityOffIcon />
+                                  <VisibilityOffIcon fontSize="small" />
                                 ) : (
-                                  <VisibilityIcon />
+                                  <VisibilityIcon fontSize="small" />
                                 )}
                               </IconButton>
                             </InputAdornment>
@@ -126,14 +134,15 @@ export const Signup = () => {
                           endAdornment: (
                             <InputAdornment position="end">
                               <IconButton
+                                size="small"
                                 onClick={() =>
                                   handleShowPassword("confirmPassword")
                                 }
                               >
                                 {showPasswords.confirmPassword ? (
-                                  <VisibilityOffIcon />
+                                  <VisibilityOffIcon fontSize="small" />
                                 ) : (
-                                  <VisibilityIcon />
+                                  <VisibilityIcon fontSize="small" />
                                 )}
                               </IconButton>
                             </InputAdornment>

@@ -45,6 +45,11 @@ export const ThemeWrapper = ({ children }: { children: ReactElement }) => {
           },
         },
       },
+      MuiIconButton: {
+        styleOverrides: {
+          colorInherit: "red",
+        },
+      },
       MuiTooltip: {
         styleOverrides: {
           tooltip: {

@@ -26,6 +26,7 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
 
 export const Nav = () => {
   const [userSettingsAnchor, setUserSettingsAnchor] =
@@ -73,8 +74,21 @@ export const Nav = () => {
             gap={2}
           >
             <CustomTooltip title="Home">
-              <IconButton aria-label="Home" size="small">
+              <IconButton
+                onClick={() => navigate("/")}
+                aria-label="Home"
+                size="small"
+              >
                 <HomeRoundedIcon fontSize="small" />
+              </IconButton>
+            </CustomTooltip>
+            <CustomTooltip title="Categories">
+              <IconButton
+                onClick={() => navigate("/categories")}
+                aria-label="Categories"
+                size="small"
+              >
+                <AppsRoundedIcon fontSize="small" />
               </IconButton>
             </CustomTooltip>
             <Theme />
@@ -138,10 +152,18 @@ export const Nav = () => {
           onClose={() => setOpenDrawer(!openDrawer)}
         >
           <Box>
+            <Box p={2}>
+              <Logo />
+            </Box>
+            <Divider />
             <List>
-              <ListItemButton>
+              <ListItemButton onClick={() => navigate("/")}>
                 <HomeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
                 Home
+              </ListItemButton>
+              <ListItemButton onClick={() => navigate("/categories")}>
+                <AppsRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                Categoires
               </ListItemButton>
               {user ? (
                 <ListItemButton
@@ -157,12 +179,12 @@ export const Nav = () => {
                   ) : (
                     <LogoutRoundedIcon fontSize="small" sx={{ mr: 2 }} />
                   )}
-                  Logout
+                  Sign out
                 </ListItemButton>
               ) : (
                 <ListItemButton onClick={() => navigate("/auth/signin")}>
                   <LoginRoundedIcon fontSize="small" sx={{ mr: 2 }} />
-                  Login
+                  Sign in
                 </ListItemButton>
               )}
             </List>

@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import { forgotPasswordSchema } from "../../validations/auth.validation";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -10,6 +10,8 @@ import Link from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
 import GoogleIcon from "@mui/icons-material/Google";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import { resetPassword, signinWithGoogle } from "../../redux/authSlice.redux";
 import { Logo } from "../../comp/Logo.comp";
@@ -17,6 +19,7 @@ import { Authenticated } from "../../comp/Authenticated.comp";
 
 export const ForgotPassword = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { loading } = useAppSelector((state) => state.auth);
 
   return (
@@ -48,7 +51,12 @@ export const ForgotPassword = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Stack p={3} gap={2}>
-                  <Logo />
+                  <Stack direction="row" justifyContent="space-between">
+                    <Logo />
+                    <IconButton onClick={() => navigate("/")} size="small">
+                      <CloseRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>{" "}
                   <Typography variant="h5">Reset password</Typography>
                   <Stack gap={2}>
                     <TextField

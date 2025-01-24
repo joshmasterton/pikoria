@@ -13,8 +13,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import { signin, signinWithGoogle } from "../../redux/authSlice.redux";
 import { Logo } from "../../comp/Logo.comp";
@@ -22,6 +23,7 @@ import { Authenticated } from "../../comp/Authenticated.comp";
 
 export const Signin = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { loading } = useAppSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -56,7 +58,12 @@ export const Signin = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Stack p={3} gap={2}>
-                  <Logo />
+                  <Stack direction="row" justifyContent="space-between">
+                    <Logo />
+                    <IconButton onClick={() => navigate("/")} size="small">
+                      <CloseRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>
                   <Typography variant="h5">Sign in</Typography>
                   <Stack gap={2}>
                     <TextField
@@ -83,12 +90,13 @@ export const Signin = () => {
                           endAdornment: (
                             <InputAdornment position="end">
                               <IconButton
+                                size="small"
                                 onClick={() => setShowPassword(!showPassword)}
                               >
                                 {showPassword ? (
-                                  <VisibilityOffIcon />
+                                  <VisibilityOffIcon fontSize="small" />
                                 ) : (
-                                  <VisibilityIcon />
+                                  <VisibilityIcon fontSize="small" />
                                 )}
                               </IconButton>
                             </InputAdornment>
