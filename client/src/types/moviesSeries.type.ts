@@ -4,7 +4,6 @@ export type MoviesSeriesForm = {
   release: number[];
   runtime: number[];
   region: string;
-  page: number;
 };
 
 export type TMDBMovieSeriesType = {
@@ -46,11 +45,4 @@ export type MovieSeriesType = {
   video: boolean;
   vote_average: number;
   vote_count: number;
-};
-
-export type MoviesSeriesWithCount = {
-  currentPage: number;
-  data: MovieSeriesType[];
-  total: number;
-  totalPages: number;
 };

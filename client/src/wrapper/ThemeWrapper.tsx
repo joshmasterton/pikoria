@@ -27,7 +27,7 @@ export const ThemeWrapper = ({ children }: { children: ReactElement }) => {
     palette: {
       mode: "dark",
       primary: {
-        main: "#5E75FF",
+        main: "#4f34eb",
       },
       background: {
         default: "#0a090d",
@@ -62,7 +62,7 @@ export const ThemeWrapper = ({ children }: { children: ReactElement }) => {
     palette: {
       mode: "light",
       primary: {
-        main: "#5E75FF",
+        main: "#4f34eb",
       },
     },
   });

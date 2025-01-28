@@ -15,26 +15,61 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { IconButton } from "@mui/material";
-import { Dispatch, SetStateAction } from "react";
+import IconButton from "@mui/material/IconButton";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
+import {
+  getMoviesSeriesRecommendation,
+  setFormData,
+} from "../../redux/moviesSeriesSlice.redux";
 
 export const MoviesSeriesForm = ({
   close,
 }: {
   close: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const dispatch = useAppDispatch();
+  const topFormRef = useRef<HTMLFormElement>(null);
+  const { loading, page } = useAppSelector((state) => state.moviesSeries);
+
+  useEffect(() => {
+    topFormRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }, [page]);
+
   return (
     <Card variant="outlined">
       <Formik
         validationSchema={moviesSeriesSchema}
         initialValues={{
-          genre: "",
+          genre: 0,
           content: "series",
           release: [2000, 2025],
-          runtime: [90, 180],
-          region: "",
+          runtime: [0, 180],
+          region: "all",
         }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values) => {
+          await dispatch(
+            getMoviesSeriesRecommendation({
+              genre: values.genre,
+              content: values.content,
+              release: values.release,
+              runtime: values.runtime,
+              region: values.region,
+              page,
+            })
+          );
+          dispatch(
+            setFormData({
+              genre: values.genre,
+              content: values.content,
+              release: values.release,
+              runtime: values.runtime,
+              region: values.region,
+              page,
+            })
+          );
+          close(false);
+        }}
       >
         {({
           values,
@@ -42,10 +77,11 @@ export const MoviesSeriesForm = ({
           handleChange,
           setFieldValue,
           handleBlur,
+          handleSubmit,
           errors,
         }) => {
           return (
-            <form>
+            <form onSubmit={handleSubmit} ref={topFormRef}>
               <Stack p={3} gap={3}>
                 <Stack
                   direction="row"
@@ -62,7 +98,34 @@ export const MoviesSeriesForm = ({
                     <Typography>Content</Typography>
                     <RadioGroup
                       row
-                      onChange={(e) => setFieldValue("content", e.target.value)}
+                      onChange={(e) => {
+                        // Change content type
+                        const newContentValue = e.target.value;
+                        setFieldValue("content", newContentValue);
+
+                        // Switch content value if action or sci-fi selected for tmdb genre labelling
+                        if (
+                          newContentValue === "series" &&
+                          values.genre === 28
+                        ) {
+                          setFieldValue("genre", 10759);
+                        } else if (
+                          newContentValue === "movies" &&
+                          values.genre === 10759
+                        ) {
+                          setFieldValue("genre", 28);
+                        } else if (
+                          newContentValue === "series" &&
+                          values.genre === 878
+                        ) {
+                          setFieldValue("genre", 10765);
+                        } else if (
+                          newContentValue === "movies" &&
+                          values.genre === 10765
+                        ) {
+                          setFieldValue("genre", 878);
+                        }
+                      }}
                       value={values.content}
                       aria-labelledby="content-select-group"
                       name="content-select"
@@ -82,13 +145,14 @@ export const MoviesSeriesForm = ({
                       <FormHelperText>{errors.content}</FormHelperText>
                     )}
                   </FormControl>
-                  <FormControl
-                    size="small"
-                    fullWidth
-                    error={Boolean(errors.genre && touched.genre)}
-                  >
-                    <InputLabel id="genre-select-label">Genre</InputLabel>
-                    {values.content === "movies" ? (
+                  <Stack gap={1}>
+                    <Typography>Genre</Typography>
+                    <FormControl
+                      size="small"
+                      fullWidth
+                      error={Boolean(errors.genre && touched.genre)}
+                    >
+                      <InputLabel id="genre-select-label">Genre</InputLabel>
                       <Select
                         label="Genre"
                         id="genre-select"
@@ -98,36 +162,26 @@ export const MoviesSeriesForm = ({
                         onChange={(e) => setFieldValue("genre", e.target.value)}
                         labelId="genre-select-label"
                       >
-                        <MenuItem value="adventure">Adventure</MenuItem>
-                        <MenuItem value="action">Action</MenuItem>
-                        <MenuItem value="drama">Drama</MenuItem>
-                        <MenuItem value="comedy">Comedy</MenuItem>
-                      </Select>
-                    ) : (
-                      <Select
-                        label="Genre"
-                        id="genre-select"
-                        name="genre"
-                        value={values.genre}
-                        onBlur={handleBlur}
-                        onChange={(e) => setFieldValue("genre", e.target.value)}
-                        labelId="genre-select-label"
-                      >
-                        <MenuItem value="action&adventure">
-                          Action & Adventure
+                        <MenuItem value={0}>Any</MenuItem>
+                        <MenuItem
+                          value={values.content === "movies" ? 28 : 10759}
+                        >
+                          Action
                         </MenuItem>
-                        <MenuItem value="drama">Drama</MenuItem>
-                        <MenuItem value="sci-fi&fantasy">
-                          Sci-Fi & Fantasy
+                        <MenuItem value={18}>Drama</MenuItem>
+                        <MenuItem value={80}>Crime</MenuItem>
+                        <MenuItem value={35}>Comedy</MenuItem>
+                        <MenuItem
+                          value={values.content === "movies" ? 878 : 10765}
+                        >
+                          Sci-Fi
                         </MenuItem>
-                        <MenuItem value="crime">Crime</MenuItem>
-                        <MenuItem value="comedy">Comedy</MenuItem>
                       </Select>
-                    )}
-                    {errors.genre && touched.genre && (
-                      <FormHelperText>{errors.genre}</FormHelperText>
-                    )}
-                  </FormControl>
+                      {errors.genre && touched.genre && (
+                        <FormHelperText>{errors.genre}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Stack>
                   <Box>
                     <Typography>Release date</Typography>
                     <Box p={1}>
@@ -175,33 +229,38 @@ export const MoviesSeriesForm = ({
                       />
                     </Box>
                   </Box>
-                  <FormControl
-                    size="small"
-                    fullWidth
-                    error={Boolean(errors.region && touched.region)}
-                  >
-                    <InputLabel id="region-select-label">Region</InputLabel>
-                    <Select
-                      label="Region"
-                      id="region-select"
-                      name="region"
-                      value={values.region}
-                      onBlur={handleBlur}
-                      onChange={(e) => {
-                        setFieldValue("region", e.target.value);
-                      }}
-                      labelId="region-select-label"
+                  <Stack gap={1}>
+                    <Typography>Region</Typography>
+                    <FormControl
+                      size="small"
+                      fullWidth
+                      error={Boolean(errors.region && touched.region)}
                     >
-                      <MenuItem value="all">All</MenuItem>
-                      <MenuItem value="unitedStates">United states</MenuItem>
-                      <MenuItem value="japan">Japanese</MenuItem>
-                      <MenuItem value="spain">Spanish</MenuItem>
-                    </Select>
-                    {errors.region && touched.region && (
-                      <FormHelperText>{errors.region}</FormHelperText>
-                    )}
-                  </FormControl>
-                  <Button variant="contained">Let's go!</Button>
+                      <InputLabel id="region-select-label">Region</InputLabel>
+                      <Select
+                        label="Region"
+                        id="region-select"
+                        name="region"
+                        value={values.region}
+                        onBlur={handleBlur}
+                        onChange={(e) => {
+                          setFieldValue("region", e.target.value);
+                        }}
+                        labelId="region-select-label"
+                      >
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="US">United states</MenuItem>
+                        <MenuItem value="JP">Japanese</MenuItem>
+                        <MenuItem value="ES">Spanish</MenuItem>
+                      </Select>
+                      {errors.region && touched.region && (
+                        <FormHelperText>{errors.region}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Stack>
+                  <Button type="submit" loading={loading} variant="contained">
+                    Let's go!
+                  </Button>
                 </Stack>
               </Stack>
             </form>

@@ -2,18 +2,13 @@ import * as yup from "yup";
 
 // movies/series schema
 export const moviesSeriesSchema = yup.object().shape({
-  genre: yup.number().required("Content type is required"),
-  content: yup.string().required("Content type is required"),
-  rating: yup.number().required("Rating is required"),
-  release: yup
-    .array()
-    .of(yup.number())
-    .length(2)
-    .required("Release year is required"),
-  runtime: yup
-    .array()
-    .of(yup.number())
-    .length(2)
-    .required("Runtime is required"),
-  region: yup.string().required("Region preference is required"),
+  genre: yup.string().required("Genre is required"),
+  content: yup
+    .string()
+    .required("Content type is required")
+    .oneOf(["movies", "series"]),
+  page: yup.number().required("page is required"),
+  release: yup.array().of(yup.number()),
+  runtime: yup.array().of(yup.number()),
+  region: yup.string().required("Region is required"),
 });

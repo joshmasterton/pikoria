@@ -7,38 +7,14 @@ describe("POST /movies-series/recommend", () => {
     const moviesSeriesResponse = await supertest(app)
       .post("/movies-series/recommend")
       .send({
-        genre: [16],
+        genre: 16,
         content: "movies",
-        rating: 8,
-        release: [2024, 2025],
+        release: [2020, 2025],
         runtime: [90, 180],
         region: "US",
-      });
-    expect(moviesSeriesResponse.body).toEqual({
-      message: "Movies/series processed successfully",
-    });
-  });
-});
-
-describe("GET /movies-series/get", () => {
-  test("Should return movies-series successfully", async () => {
-    const moviesSeriesResponseRecommendation = await supertest(app)
-      .post("/movies-series/recommend")
-      .send({
-        genre: [16],
-        content: "movies",
-        rating: 8,
-        release: [2024, 2025],
-        runtime: [90, 180],
-        region: "US",
+        page: 1,
       });
 
-    const moviesSeriesResponse = await supertest(app).get("/movies-series/get");
-
-    expect(moviesSeriesResponseRecommendation.body).toEqual({
-      message: "Movies/series processed successfully",
-    });
-
-    expect(moviesSeriesResponse.body.data).toHaveLength(2);
+    expect(moviesSeriesResponse.body).toBeInstanceOf(Array);
   });
 });

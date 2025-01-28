@@ -3,7 +3,6 @@ import {
   MoviesSeriesForm,
   TMDBMovieSeriesType,
 } from "../types/moviesSeries.type";
-import { addMoviesSeries } from "../database/models/moviesseries.model";
 
 export const processMoviesSeriesRecommendation = async (
   recommendationData: MoviesSeriesForm
@@ -21,16 +20,16 @@ export const processMoviesSeriesRecommendation = async (
         ? {
             api_key: TMDB_API_KEY,
             include_video: true,
+            page: recommendationData.page,
             "vote_count.gte": 400,
             ...(recommendationData.genre !== 0 && {
               with_genres: recommendationData.genre,
             }),
-            "vote_average.gte": recommendationData.rating,
             "primary_release_date.gte": `${recommendationData.release[0]}-01-01`,
             "primary_release_date.lte": `${recommendationData.release[1]}-12-31`,
             "with_runtime.gte": `${recommendationData.runtime[0]}`,
             "with_runtime.lte": `${recommendationData.runtime[1]}`,
-            ...(recommendationData.region !== "All" && {
+            ...(recommendationData.region !== "all" && {
               with_origin_country: recommendationData.region,
               sort_by: "vote_average.desc",
             }),
@@ -38,16 +37,16 @@ export const processMoviesSeriesRecommendation = async (
         : {
             api_key: TMDB_API_KEY,
             include_video: true,
+            page: recommendationData.page,
             "vote_count.gte": 400,
             ...(recommendationData.genre !== 0 && {
               with_genres: recommendationData.genre,
             }),
-            "vote_average.gte": recommendationData.rating,
             "first_air_date.gte": `${recommendationData.release[0]}-01-01`,
             "first_air_date.lte": `${recommendationData.release[1]}-12-31`,
             "with_runtime.gte": `${recommendationData.runtime[0]}`,
             "with_runtime.lte": `${recommendationData.runtime[1]}`,
-            ...(recommendationData.region !== "All" && {
+            ...(recommendationData.region !== "all" && {
               with_origin_country: recommendationData.region,
             }),
             sort_by: "vote_average.desc",
@@ -59,9 +58,9 @@ export const processMoviesSeriesRecommendation = async (
 
     const TMDBMoviesSeries: TMDBMovieSeriesType[] = TMDBResponse.data.results;
 
-    if (TMDBMoviesSeries) {
-      await addMoviesSeries(TMDBMoviesSeries);
-    }
+    console.log(TMDBResponse.data);
+
+    return TMDBMoviesSeries;
   } catch (error) {
     if (error instanceof Error) {
       throw error;

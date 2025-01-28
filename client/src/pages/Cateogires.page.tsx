@@ -6,14 +6,17 @@ import Stack from "@mui/material/Stack";
 import CardActionArea from "@mui/material/CardActionArea";
 import Card from "@mui/material/Card";
 import Avatar from "@mui/material/Avatar";
-import movies from "../assets/movies.png";
-import games from "../assets/games.png";
+import movies from "../assets/movies.jpg";
+import games from "../assets/games.jpg";
 import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
 import { MoviesSeriesForm } from "../comp/forms/MoviesSeries.form";
+import { useAppSelector } from "../redux/store.redux";
+import { MoviesSeriesScroll } from "../comp/scrolls/MoviesSeriesScroll.comp";
 
 export const Categories = () => {
   const [moviesSeriesFormOpen, setMoviesSeriesFormOpen] = useState(false);
+  const { TMDBmoviesSeries } = useAppSelector((state) => state.moviesSeries);
 
   return (
     <>
@@ -21,9 +24,11 @@ export const Categories = () => {
       <Side />
       <Stack flexGrow={1} p={2} gap={2} mt={8} ml={{ xs: 0, sm: 31 }}>
         <CustomBreadCrumbs />
+        {TMDBmoviesSeries && <MoviesSeriesScroll />}
         <Dialog
           scroll="body"
           fullWidth
+          maxWidth="sm"
           open={moviesSeriesFormOpen}
           onClose={() => setMoviesSeriesFormOpen(false)}
         >
@@ -42,30 +47,18 @@ export const Categories = () => {
               height: "100%",
             }}
           >
-            <Typography>Movies</Typography>
+            <Typography color="white" sx={{ zIndex: 1 }}>
+              Movies / Series
+            </Typography>
             <Avatar
               variant="square"
               src={movies}
               sx={{
                 position: "absolute",
-                right: -50,
-                bottom: -100,
-                width: 300,
-                height: 300,
-                zIndex: 1,
-              }}
-            />
-            <Avatar
-              variant="square"
-              src={movies}
-              sx={{
-                position: "absolute",
-                right: -300,
-                bottom: -100,
-                width: 1000,
-                height: 500,
-                filter: "blur(2000px)",
-                WebkitFilter: "blur(2000px)",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
               }}
             />
           </CardActionArea>
@@ -82,30 +75,18 @@ export const Categories = () => {
               height: "100%",
             }}
           >
-            <Typography>Games</Typography>
+            <Typography color="white" sx={{ zIndex: 1 }}>
+              Games
+            </Typography>
             <Avatar
               variant="square"
               src={games}
               sx={{
                 position: "absolute",
-                right: -50,
-                bottom: -100,
-                width: 300,
-                height: 300,
-                zIndex: 1,
-              }}
-            />
-            <Avatar
-              variant="square"
-              src={games}
-              sx={{
-                position: "absolute",
-                right: -300,
-                bottom: -100,
-                width: 1000,
-                height: 500,
-                filter: "blur(2000px)",
-                WebkitFilter: "blur(2000px)",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
               }}
             />
           </CardActionArea>
