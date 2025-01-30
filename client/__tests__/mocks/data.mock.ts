@@ -17,6 +17,7 @@ export const mockTMDBMoviesSeries: TMDBMovieSeriesType[] = [
     name: "Goblin",
     vote_average: 8.636,
     vote_count: 2835,
+    liked: false,
   },
   {
     adult: false,
@@ -34,5 +35,6 @@ export const mockTMDBMoviesSeries: TMDBMovieSeriesType[] = [
     name: "Alien",
     vote_average: 8.636,
     vote_count: 2835,
+    liked: false,
   },
 ];
