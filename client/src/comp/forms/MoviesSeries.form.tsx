@@ -30,7 +30,9 @@ export const MoviesSeriesForm = ({
 }) => {
   const dispatch = useAppDispatch();
   const topFormRef = useRef<HTMLFormElement>(null);
-  const { loading, page } = useAppSelector((state) => state.moviesSeries);
+  const { loadingMoviesSeries, page } = useAppSelector(
+    (state) => state.moviesSeries
+  );
 
   useEffect(() => {
     topFormRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
@@ -258,7 +260,11 @@ export const MoviesSeriesForm = ({
                       )}
                     </FormControl>
                   </Stack>
-                  <Button type="submit" loading={loading} variant="contained">
+                  <Button
+                    type="submit"
+                    loading={loadingMoviesSeries}
+                    variant="contained"
+                  >
                     Let's go!
                   </Button>
                 </Stack>

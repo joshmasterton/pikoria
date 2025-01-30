@@ -12,3 +12,21 @@ export const moviesSeriesSchema = yup.object().shape({
   runtime: yup.array().of(yup.number()),
   region: yup.string().required("Region is required"),
 });
+
+// favourite movies/series schema
+export const favouriteMoviesSeriesScheme = yup.object().shape({
+  adult: yup.boolean(),
+  backdrop_path: yup.string(),
+  genre_ids: yup.array().of(yup.number()),
+  id: yup.number().required(),
+  origin_country: yup.array().of(yup.string()),
+  original_language: yup.string(),
+  original_name: yup.string(),
+  overview: yup.string(),
+  popularity: yup.number(),
+  poster_path: yup.string(),
+  first_air_date: yup.string(),
+  name: yup.string().required(),
+  vote_average: yup.number(),
+  vote_count: yup.number(),
+});

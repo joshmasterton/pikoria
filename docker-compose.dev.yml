@@ -21,16 +21,19 @@ services:
     volumes:
       - ./api/src:/app/src
     env_file:
-      - ./api/dev.env
+      - ./api/.env
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      - POSTGRES_DB=pikoria
     depends_on:
       - postgres
   postgres:
     image: postgres:latest
     container_name: postgres
     env_file:
-      - ./api/dev.env
+      - ./api/.env
+    environment:
+      - POSTGRES_DB=pikoria
     ports:
       - "5432:5432"

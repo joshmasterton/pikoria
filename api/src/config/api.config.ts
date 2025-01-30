@@ -1,4 +1,4 @@
-import { createMoviesSeriesTable } from "../database/migrations/moviesseries.migration";
+import { createFavouriteMoviesSeriesTable } from "../database/migrations/moviesseries.migration";
 import { createDatabaseIfNotExists } from "./database.config";
 
 export const startApi = async () => {
@@ -10,7 +10,7 @@ export const startApi = async () => {
 
   try {
     await createDatabaseIfNotExists();
-    await createMoviesSeriesTable();
+    await createFavouriteMoviesSeriesTable();
   } catch (error) {
     if (error instanceof Error) {
       throw error;

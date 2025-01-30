@@ -3,18 +3,26 @@ import {
   MoviesSeriesForm,
   TMDBMovieSeriesType,
 } from "../types/moviesSeries.type";
+import {
+  checkLikedStatus,
+  insertFavouriteMoviesSeries,
+} from "../database/models/moviesseries.model";
 
 export const processMoviesSeriesRecommendation = async (
-  recommendationData: MoviesSeriesForm
+  recommendationData: MoviesSeriesForm,
+  user_id?: string
 ) => {
   try {
+    // TMDB API key
     const { TMDB_API_KEY, TMDB_URL } = process.env;
 
+    // Movies or series
     const endpoint =
       recommendationData.content === "movies"
         ? "/discover/movie"
         : "/discover/tv";
 
+    // Get TMDB movies_series based off user forms
     const params =
       recommendationData.content === "movies"
         ? {
@@ -58,9 +66,33 @@ export const processMoviesSeriesRecommendation = async (
 
     const TMDBMoviesSeries: TMDBMovieSeriesType[] = TMDBResponse.data.results;
 
-    console.log(TMDBResponse.data);
+    const TMDBMoviesSeriesWithLike = await Promise.all(
+      TMDBMoviesSeries.map(async (movieSeries) => {
+        const liked = await checkLikedStatus(movieSeries.id, user_id);
 
-    return TMDBMoviesSeries;
+        return {
+          ...movieSeries,
+          liked: liked,
+        };
+      })
+    );
+
+    return TMDBMoviesSeriesWithLike;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+  }
+};
+
+// Process favourite movie_series request
+export const processFavouriteMoviesSeries = async (
+  user_id: string,
+  favouriteMovieSeries: TMDBMovieSeriesType
+) => {
+  try {
+    // Insert into favourite_movies_series table
+    return await insertFavouriteMoviesSeries(user_id, favouriteMovieSeries);
   } catch (error) {
     if (error instanceof Error) {
       throw error;

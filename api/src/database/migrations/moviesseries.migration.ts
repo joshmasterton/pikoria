@@ -1,13 +1,14 @@
 import { pool } from "../../config/pool.config";
 
-export const createMoviesSeriesTable = async () => {
+export const createFavouriteMoviesSeriesTable = async () => {
   const query = `
-		CREATE TABLE IF NOT EXISTS movies_series (
+		CREATE TABLE IF NOT EXISTS favourite_movies_series(
 			id SERIAL PRIMARY KEY,
-			movie_series_id INTEGER NOT NULL,
+			user_id VARCHAR(255),
 			adult BOOLEAN DEFAULT false,
 			backdrop_path VARCHAR(255) NOT NULL,
 			genre_ids INTEGER[],
+			movie_series_id INTEGER NOT NULL,
 			original_language VARCHAR(20),
 			original_title VARCHAR(255),
 			original_name VARCHAR(255),
@@ -20,9 +21,7 @@ export const createMoviesSeriesTable = async () => {
 			name VARCHAR(255),
 			video BOOLEAN DEFAULT false,
 			vote_average DECIMAL(3, 2),
-			vote_count INTEGER,
-			created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+			vote_count INTEGER
 		)
 	`;
 
@@ -30,22 +29,21 @@ export const createMoviesSeriesTable = async () => {
 
   try {
     await client.query(query);
-    console.log("movies_series table created successully");
   } catch (error) {
     if (error instanceof Error) {
       throw error;
     } else {
-      throw new Error("Error creating movies_series table");
+      throw new Error("Error creating favourite_movie_series table");
     }
   } finally {
     client.release();
   }
 };
 
-export const deleteMoviesSeriesTable = async () => {
+export const deleteFavouriteMoviesSeriesTable = async () => {
   const client = await pool.connect();
   try {
-    await client.query("DROP TABLE IF EXISTS movies_series");
+    await client.query("DROP TABLE IF EXISTS favourite_movies_series");
   } catch (error) {
     if (error instanceof Error) {
       throw error;

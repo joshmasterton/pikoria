@@ -7,21 +7,26 @@ import Box from "@mui/material/Box";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import {
+  clearMovieSeries,
   clearMoviesSeries,
   decrementPage,
   getMoviesSeriesRecommendation,
   incrementPage,
 } from "../../redux/moviesSeriesSlice.redux";
 import { MoviesSeriesCard } from "../card/MoviesSeriesCard.comp";
+import { TMDBMovieSeriesType } from "../../types/moviesSeries.type";
+import { MoviesSeriesBigCard } from "../card/MoviesSeriesBigCard.comp";
 
 export const MoviesSeriesScroll = () => {
   const dispatch = useAppDispatch();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [focusedMovieSeries, setFocusedMovieSeries] = useState<
+    TMDBMovieSeriesType | undefined
+  >(undefined);
   const [isAtStart, setIsAtStart] = useState(false);
   const [isAtEnd, setIsAtEnd] = useState(false);
-  const { TMDBmoviesSeries, moviesSeriesForm, loading, page } = useAppSelector(
-    (state) => state.moviesSeries
-  );
+  const { TMDBmoviesSeries, moviesSeriesForm, loadingMoviesSeries, page } =
+    useAppSelector((state) => state.moviesSeries);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -71,15 +76,33 @@ export const MoviesSeriesScroll = () => {
       scroll="body"
       fullWidth
       maxWidth="lg"
-      PaperProps={{
-        style: {
-          background: "transparent",
-          backdropFilter: "blur(0.25rem)",
-          WebkitBackdropFilter: "blur(0.25rem)",
-          boxShadow: "none",
+      slotProps={{
+        paper: {
+          style: {
+            background: "transparent",
+            backdropFilter: "blur(0.25rem)",
+            WebkitBackdropFilter: "blur(0.25rem)",
+            boxShadow: "none",
+          },
         },
       }}
     >
+      <Dialog
+        scroll="body"
+        fullWidth
+        maxWidth="md"
+        open={Boolean(focusedMovieSeries)}
+        onClose={() => {
+          setFocusedMovieSeries(undefined);
+          dispatch(clearMovieSeries());
+        }}
+      >
+        <MoviesSeriesBigCard
+          movieSeriesId={focusedMovieSeries?.id}
+          movieSeriesName={focusedMovieSeries?.name}
+          setFocusedMovieSeries={setFocusedMovieSeries}
+        />
+      </Dialog>
       <Stack
         ref={scrollContainerRef}
         direction="row"
@@ -142,13 +165,17 @@ export const MoviesSeriesScroll = () => {
                 xl: "25%",
               },
               width: "100%",
+              maxWidth: 500,
             }}
           >
-            <MoviesSeriesCard movieSeries={movieSeries} />
+            <MoviesSeriesCard
+              movieSeries={movieSeries}
+              setFocusedMovieSeries={setFocusedMovieSeries}
+            />
           </Box>
         ))}
         <IconButton
-          loading={loading}
+          loading={loadingMoviesSeries}
           onClick={async () => {
             if (isAtEnd) {
               if (moviesSeriesForm) {
@@ -176,7 +203,7 @@ export const MoviesSeriesScroll = () => {
             borderRadius: 0,
             color: "white",
             backdropFilter: "blur(0.25rem)",
-            WebkitBackdropFilter: "blur(1rem)",
+            WebkitBackdropFilter: "blur(0.25rem)",
             alignItems: "center",
             maskImage:
               "linear-gradient(to left, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%)",

@@ -6,11 +6,16 @@ import CardActionArea from "@mui/material/CardActionArea";
 import Stack from "@mui/material/Stack";
 import { TMDBMovieSeriesType } from "../../types/moviesSeries.type";
 import { alpha, useTheme } from "@mui/material/styles";
+import { Dispatch, SetStateAction } from "react";
 
 export const MoviesSeriesCard = ({
   movieSeries,
+  setFocusedMovieSeries,
 }: {
   movieSeries: TMDBMovieSeriesType;
+  setFocusedMovieSeries: Dispatch<
+    SetStateAction<TMDBMovieSeriesType | undefined>
+  >;
 }) => {
   const theme = useTheme();
 
@@ -21,7 +26,10 @@ export const MoviesSeriesCard = ({
         width: "100%",
       }}
     >
-      <CardActionArea>
+      <CardActionArea
+        aria-label={`${movieSeries.name || movieSeries.title} Action`}
+        onClick={() => setFocusedMovieSeries(movieSeries)}
+      >
         <CardMedia
           height={400}
           component="img"

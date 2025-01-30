@@ -1,15 +1,9 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-import path from "path";
 import cors from "cors";
-import { fileURLToPath } from "url";
 import { moviesSeriesRouter } from "./routes/moviesSeries.route";
 import { startApi } from "./config/api.config";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: `${__dirname}/../dev.env` });
+dotenv.config();
 
 const { PORT, NODE_ENV } = process.env;
 export const app = express();

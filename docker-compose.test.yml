@@ -25,16 +25,19 @@ services:
       - ./api/vitest.config.ts:/app/vitest.config.ts
       - ./api/vitest.setup.ts:/app/vitest.setup.ts
     env_file:
-      - ./api/test.env
+      - ./api/.env
     environment:
       - NODE_ENV=test
       - CHOKIDAR_USEPOLLING=true
+      - POSTGRES_DB=pikoria_test
     depends_on:
       - postgres
   postgres:
     image: postgres:latest
     container_name: postgres
     env_file:
-      - ./api/test.env
+      - ./api/.env
+    environment:
+      - POSTGRES_DB=pikoria_test
     ports:
       - "5432:5432"

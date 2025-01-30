@@ -37,7 +37,7 @@ export const Categories = () => {
         <Card variant="outlined" sx={{ width: "100%", height: 400 }}>
           <CardActionArea
             onClick={() => setMoviesSeriesFormOpen(true)}
-            aria-label="Movies"
+            aria-label="Movies/Series"
             sx={{
               display: "flex",
               alignItems: "start",
@@ -65,7 +65,7 @@ export const Categories = () => {
         </Card>
         <Card variant="outlined" sx={{ width: "100%", height: 400 }}>
           <CardActionArea
-            aria-label="Movies"
+            aria-label="Games"
             sx={{
               display: "flex",
               alignItems: "start",
