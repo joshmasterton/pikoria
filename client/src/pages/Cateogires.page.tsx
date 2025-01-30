@@ -55,10 +55,24 @@ export const Categories = () => {
               src={movies}
               sx={{
                 position: "absolute",
+                top: -20,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                filter: "blur(1rem)",
+              }}
+            />
+            <Avatar
+              variant="square"
+              src={movies}
+              sx={{
+                position: "absolute",
                 top: 0,
                 left: 0,
                 width: "100%",
                 height: "100%",
+                maskImage:
+                  "linear-gradient(to top, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%)",
               }}
             />
           </CardActionArea>
