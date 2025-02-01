@@ -21,7 +21,7 @@ export const Home = () => {
   );
 
   useEffect(() => {
-    dispatch(getFavouriteMoviesSeries());
+    dispatch(getFavouriteMoviesSeries({ page: 0 }));
   }, [dispatch, user]);
 
   return (
