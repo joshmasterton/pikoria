@@ -30,13 +30,12 @@ export const MoviesSeriesForm = ({
 }) => {
   const dispatch = useAppDispatch();
   const topFormRef = useRef<HTMLFormElement>(null);
-  const { loadingMoviesSeries, page } = useAppSelector(
-    (state) => state.moviesSeries
-  );
+  const { loadingMoviesSeriesRecommendations, recommendationPage } =
+    useAppSelector((state) => state.moviesSeries);
 
   useEffect(() => {
     topFormRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
-  }, [page]);
+  }, [recommendationPage]);
 
   return (
     <Card variant="outlined">
@@ -57,7 +56,7 @@ export const MoviesSeriesForm = ({
               release: values.release,
               runtime: values.runtime,
               region: values.region,
-              page,
+              page: recommendationPage,
             })
           );
           dispatch(
@@ -67,7 +66,7 @@ export const MoviesSeriesForm = ({
               release: values.release,
               runtime: values.runtime,
               region: values.region,
-              page,
+              page: recommendationPage,
             })
           );
           close(false);
@@ -262,7 +261,7 @@ export const MoviesSeriesForm = ({
                   </Stack>
                   <Button
                     type="submit"
-                    loading={loadingMoviesSeries}
+                    loading={loadingMoviesSeriesRecommendations}
                     variant="contained"
                   >
                     Let's go!

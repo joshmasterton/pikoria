@@ -21,3 +21,26 @@ export const validate = <T>(schema: yup.ObjectSchema<any>) => {
     }
   };
 };
+
+// Check body is validated
+export const validateQueryParams = <T>(schema: yup.ObjectSchema<any>) => {
+  return async (req: Request<{}, {}, T>, res: Response, next: NextFunction) => {
+    try {
+      await schema.validate(
+        { params: req.params, query: req.query },
+        { abortEarly: false }
+      );
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        res.status(400).json({ errors: error.errors });
+      } else if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res
+          .status(400)
+          .json({ error: "Error validating movies/series inputs" });
+      }
+    }
+  };
+};

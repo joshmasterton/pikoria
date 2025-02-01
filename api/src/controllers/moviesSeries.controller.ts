@@ -3,16 +3,13 @@ import {
   processFavouriteMoviesSeries,
   processMoviesSeriesRecommendation,
 } from "../services/moviesSeries.service";
-import {
-  MoviesSeriesForm,
-  TMDBMovieSeriesType,
-} from "../types/moviesSeries.type";
+import { MoviesSeriesForm, MoviesSeriesType } from "../types/moviesSeries.type";
 import { RequestWithUser } from "../types/request.type";
+import { AxiosError } from "axios";
 import {
   processMovieSeriesRetrieval,
   processMoviesSeriesRetrieval,
-} from "../database/models/moviesSeries.model";
-import { AxiosError } from "axios";
+} from "../database/models/moviesseries.model";
 
 // Submit users personal preferences to get a movie_series
 export const submitMoviesSeriesRecommendation = async (
@@ -23,12 +20,12 @@ export const submitMoviesSeriesRecommendation = async (
     const recommendationData = req.body;
     const { user } = req;
 
-    const recommendedData = await processMoviesSeriesRecommendation(
+    const recommendedMoviesSeries = await processMoviesSeriesRecommendation(
       recommendationData,
       user?.uid
     );
 
-    res.status(200).json(recommendedData);
+    res.status(200).json(recommendedMoviesSeries);
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
@@ -42,7 +39,7 @@ export const submitMoviesSeriesRecommendation = async (
 
 // Insert movies_series into favourites
 export const addToLikes = async (
-  req: RequestWithUser<{}, {}, TMDBMovieSeriesType>,
+  req: RequestWithUser<{}, {}, MoviesSeriesType>,
   res: Response
 ) => {
   try {

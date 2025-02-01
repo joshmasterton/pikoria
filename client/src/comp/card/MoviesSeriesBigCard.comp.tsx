@@ -5,61 +5,31 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Rating from "@mui/material/Rating";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { TMDBMovieSeriesType } from "../../types/moviesSeries.type";
 import { useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { Dispatch, SetStateAction, useEffect } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Checkbox from "@mui/material/Checkbox";
 import AddToQueueIcon from "@mui/icons-material/AddToQueue";
 import { CustomTooltip } from "../CustomTooltip.comp";
 import {
-  clearLoadingMovieSeries,
+  clearMovieSeries,
   getMovieSeries,
   likeMovieSeries,
-  setLoadingMovieSeries,
 } from "../../redux/moviesSeriesSlice.redux";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import CircularProgress from "@mui/material/CircularProgress";
-import { SkeletonMoviesSeriesBigCard } from "./SkeletonMoviesSeriesBig.card";
 
-export const MoviesSeriesBigCard = ({
-  movieSeriesId,
-  movieSeriesName,
-  setFocusedMovieSeries,
-}: {
-  movieSeriesId?: number;
-  movieSeriesName?: string;
-  setFocusedMovieSeries: Dispatch<
-    SetStateAction<TMDBMovieSeriesType | undefined>
-  >;
-}) => {
+export const MoviesSeriesBigCard = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const { movieSeries, loadingMovieSeries, loadingLike } = useAppSelector(
+  const { movieSeries, loadingLike } = useAppSelector(
     (state) => state.moviesSeries
   );
 
-  useEffect(() => {
-    if (movieSeriesId) {
-      dispatch(setLoadingMovieSeries());
-      dispatch(
-        getMovieSeries({
-          id: movieSeriesId,
-          content: movieSeriesName ? "series" : "movie",
-        })
-      ).then(() => {
-        dispatch(clearLoadingMovieSeries());
-      });
-    }
-  }, [dispatch, movieSeriesId, movieSeriesName]);
-
-  return loadingMovieSeries ? (
-    <SkeletonMoviesSeriesBigCard />
-  ) : (
+  return (
     <Card
       sx={{
         position: "relative",
@@ -140,6 +110,7 @@ export const MoviesSeriesBigCard = ({
                           }
                         }
                       }}
+                      disabled={loadingLike}
                       checked={movieSeries?.liked || false}
                       checkedIcon={
                         loadingLike ? (
@@ -166,7 +137,7 @@ export const MoviesSeriesBigCard = ({
                     backdropFilter: "blur(0.25rem)",
                     WebkitBackdropFilter: "blur(0.25rem)",
                   }}
-                  onClick={() => setFocusedMovieSeries(undefined)}
+                  onClick={() => dispatch(clearMovieSeries())}
                 >
                   <CloseRoundedIcon fontSize="small" />
                 </IconButton>

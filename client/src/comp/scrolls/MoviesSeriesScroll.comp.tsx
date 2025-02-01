@@ -6,27 +6,29 @@ import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import Box from "@mui/material/Box";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
-import {
-  clearMovieSeries,
-  clearMoviesSeries,
-  decrementPage,
-  getMoviesSeriesRecommendation,
-  incrementPage,
-} from "../../redux/moviesSeriesSlice.redux";
+import { clearMovieSeries } from "../../redux/moviesSeriesSlice.redux";
 import { MoviesSeriesCard } from "../card/MoviesSeriesCard.comp";
-import { TMDBMovieSeriesType } from "../../types/moviesSeries.type";
 import { MoviesSeriesBigCard } from "../card/MoviesSeriesBigCard.comp";
+import { MoviesSeriesRecommendationsType } from "../../types/moviesSeries.type";
 
-export const MoviesSeriesScroll = () => {
+export const MoviesSeriesScroll = ({
+  moviesSeries,
+  loading,
+  page,
+  getLess,
+  getMore,
+}: {
+  moviesSeries: MoviesSeriesRecommendationsType[] | undefined;
+  loading: boolean;
+  page: number;
+  getLess: () => Promise<void>;
+  getMore: () => Promise<void>;
+}) => {
   const dispatch = useAppDispatch();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [focusedMovieSeries, setFocusedMovieSeries] = useState<
-    TMDBMovieSeriesType | undefined
-  >(undefined);
   const [isAtStart, setIsAtStart] = useState(false);
   const [isAtEnd, setIsAtEnd] = useState(false);
-  const { TMDBmoviesSeries, moviesSeriesForm, loadingMoviesSeries, page } =
-    useAppSelector((state) => state.moviesSeries);
+  const { movieSeries } = useAppSelector((state) => state.moviesSeries);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -35,7 +37,7 @@ export const MoviesSeriesScroll = () => {
         behavior: "smooth",
       });
     }
-  }, [TMDBmoviesSeries]);
+  }, [moviesSeries]);
 
   const handleScrolling = () => {
     if (scrollContainerRef.current) {
@@ -70,38 +72,17 @@ export const MoviesSeriesScroll = () => {
   };
 
   return (
-    <Dialog
-      open={Boolean(TMDBmoviesSeries)}
-      onClose={() => dispatch(clearMoviesSeries())}
-      scroll="body"
-      fullWidth
-      maxWidth="lg"
-      slotProps={{
-        paper: {
-          style: {
-            background: "transparent",
-            backdropFilter: "blur(0.25rem)",
-            WebkitBackdropFilter: "blur(0.25rem)",
-            boxShadow: "none",
-          },
-        },
-      }}
-    >
+    <>
       <Dialog
         scroll="body"
         fullWidth
         maxWidth="md"
-        open={Boolean(focusedMovieSeries)}
+        open={Boolean(movieSeries)}
         onClose={() => {
-          setFocusedMovieSeries(undefined);
           dispatch(clearMovieSeries());
         }}
       >
-        <MoviesSeriesBigCard
-          movieSeriesId={focusedMovieSeries?.id}
-          movieSeriesName={focusedMovieSeries?.name}
-          setFocusedMovieSeries={setFocusedMovieSeries}
-        />
+        <MoviesSeriesBigCard />
       </Dialog>
       <Stack
         ref={scrollContainerRef}
@@ -117,22 +98,10 @@ export const MoviesSeriesScroll = () => {
         onScroll={handleScrolling}
       >
         <IconButton
+          loading={loading}
           onClick={async () => {
             if (isAtStart && page > 1) {
-              if (moviesSeriesForm) {
-                await dispatch(
-                  getMoviesSeriesRecommendation({
-                    genre: moviesSeriesForm?.genre,
-                    content: moviesSeriesForm?.content,
-                    release: moviesSeriesForm?.release,
-                    runtime: moviesSeriesForm?.runtime,
-                    region: moviesSeriesForm?.region,
-                    page: page - 1,
-                  })
-                );
-
-                dispatch(decrementPage());
-              }
+              await getLess();
             } else {
               scroll("left");
             }
@@ -154,7 +123,7 @@ export const MoviesSeriesScroll = () => {
         >
           <ChevronLeftRoundedIcon />
         </IconButton>
-        {TMDBmoviesSeries?.map((movieSeries) => (
+        {moviesSeries?.map((movieSeries) => (
           <Box
             key={movieSeries.id}
             sx={{
@@ -168,30 +137,14 @@ export const MoviesSeriesScroll = () => {
               maxWidth: 500,
             }}
           >
-            <MoviesSeriesCard
-              movieSeries={movieSeries}
-              setFocusedMovieSeries={setFocusedMovieSeries}
-            />
+            <MoviesSeriesCard movieSeries={movieSeries} />
           </Box>
         ))}
         <IconButton
-          loading={loadingMoviesSeries}
+          loading={loading}
           onClick={async () => {
             if (isAtEnd) {
-              if (moviesSeriesForm) {
-                await dispatch(
-                  getMoviesSeriesRecommendation({
-                    genre: moviesSeriesForm?.genre,
-                    content: moviesSeriesForm?.content,
-                    release: moviesSeriesForm?.release,
-                    runtime: moviesSeriesForm?.runtime,
-                    region: moviesSeriesForm?.region,
-                    page: page + 1,
-                  })
-                );
-
-                dispatch(incrementPage());
-              }
+              await getMore();
             } else {
               scroll("right");
             }
@@ -214,6 +167,6 @@ export const MoviesSeriesScroll = () => {
           <ChevronRightRoundedIcon sx={{ borderRadius: 0 }} />
         </IconButton>
       </Stack>
-    </Dialog>
+    </>
   );
 };

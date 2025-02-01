@@ -1,6 +1,6 @@
-import { TMDBMovieSeriesType } from "../../src/types/moviesSeries.type";
+import { MoviesSeriesRecommendationsType } from "../../src/types/moviesSeries.type";
 
-export const mockTMDBMoviesSeries: TMDBMovieSeriesType[] = [
+export const mockTMDBMoviesSeries: MoviesSeriesRecommendationsType[] = [
   {
     adult: false,
     backdrop_path: "/smSbK5cd8T9XHcxEUcems23BDEF.jpg",

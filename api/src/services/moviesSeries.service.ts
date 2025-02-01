@@ -1,7 +1,8 @@
 import axios from "axios";
 import {
   MoviesSeriesForm,
-  TMDBMovieSeriesType,
+  MoviesSeriesRecommendationsType,
+  MoviesSeriesType,
 } from "../types/moviesSeries.type";
 import {
   checkLikedStatus,
@@ -64,17 +65,19 @@ export const processMoviesSeriesRecommendation = async (
       params,
     });
 
-    const TMDBMoviesSeries: TMDBMovieSeriesType[] = TMDBResponse.data.results;
+    const TMDBMoviesSeriesWithLike:
+      | MoviesSeriesRecommendationsType[]
+      | undefined = await Promise.all(
+      TMDBResponse.data.results.map(
+        async (movieSeries: MoviesSeriesRecommendationsType) => {
+          const liked = await checkLikedStatus(movieSeries.id, user_id);
 
-    const TMDBMoviesSeriesWithLike = await Promise.all(
-      TMDBMoviesSeries.map(async (movieSeries) => {
-        const liked = await checkLikedStatus(movieSeries.id, user_id);
-
-        return {
-          ...movieSeries,
-          liked: liked,
-        };
-      })
+          return {
+            ...movieSeries,
+            liked: liked,
+          };
+        }
+      )
     );
 
     return TMDBMoviesSeriesWithLike;
@@ -88,7 +91,7 @@ export const processMoviesSeriesRecommendation = async (
 // Process favourite movie_series request
 export const processFavouriteMoviesSeries = async (
   user_id: string,
-  favouriteMovieSeries: TMDBMovieSeriesType
+  favouriteMovieSeries: MoviesSeriesType
 ) => {
   try {
     // Insert into favourite_movies_series table

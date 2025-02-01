@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  FavouriteMovieSeriesType,
   MoviesSeriesForm,
-  TMDBMovieSeriesExtendedLikedType,
-  TMDBMovieSeriesType,
+  MoviesSeriesRecommendationsType,
+  MoviesSeriesType,
 } from "../types/moviesSeries.type";
 import axios, { AxiosError } from "axios";
 import { API_URL } from "../config/api.config";
@@ -11,23 +10,25 @@ import { auth } from "../config/firebase.config";
 
 const initialState: {
   error: string | undefined;
-  loadingMoviesSeries: boolean;
   loadingLike: boolean;
   loadingMovieSeries: boolean;
   loadingFavourites: boolean;
-  page: number;
-  TMDBmoviesSeries: TMDBMovieSeriesType[] | undefined;
-  movieSeries: TMDBMovieSeriesExtendedLikedType | undefined;
-  favouriteMoviesSeries: FavouriteMovieSeriesType[] | undefined;
+  loadingMoviesSeriesRecommendations: boolean;
+  recommendationPage: number;
+  favouritesPage: number;
+  moviesSeriesRecommendations: MoviesSeriesRecommendationsType[] | undefined;
+  movieSeries: MoviesSeriesType | undefined;
+  favouriteMoviesSeries: MoviesSeriesType[] | undefined;
   moviesSeriesForm: MoviesSeriesForm | undefined;
 } = {
   error: undefined,
-  loadingMoviesSeries: false,
   loadingLike: false,
   loadingMovieSeries: false,
   loadingFavourites: false,
-  page: 1,
-  TMDBmoviesSeries: undefined,
+  loadingMoviesSeriesRecommendations: false,
+  recommendationPage: 1,
+  favouritesPage: 0,
+  moviesSeriesRecommendations: undefined,
   movieSeries: undefined,
   favouriteMoviesSeries: undefined,
   moviesSeriesForm: undefined,
@@ -35,7 +36,7 @@ const initialState: {
 
 // Get movie_series recommendation from TMDB
 export const getMoviesSeriesRecommendation = createAsyncThunk<
-  TMDBMovieSeriesType[] | undefined,
+  MoviesSeriesRecommendationsType[] | undefined,
   MoviesSeriesForm & { page: number }
 >("movies-series/recommend", async (formData, { rejectWithValue }) => {
   try {
@@ -52,7 +53,7 @@ export const getMoviesSeriesRecommendation = createAsyncThunk<
       }
     );
 
-    return response.data as TMDBMovieSeriesType[];
+    return response.data as MoviesSeriesRecommendationsType[];
   } catch (error) {
     if (error instanceof AxiosError) {
       rejectWithValue(error.response?.data);
@@ -64,8 +65,8 @@ export const getMoviesSeriesRecommendation = createAsyncThunk<
 
 // Like a movie_series
 export const likeMovieSeries = createAsyncThunk<
-  FavouriteMovieSeriesType | undefined,
-  TMDBMovieSeriesExtendedLikedType
+  MoviesSeriesType | undefined,
+  MoviesSeriesType
 >("movies-series/like", async (movieSeries, { rejectWithValue }) => {
   try {
     const user = auth.currentUser;
@@ -73,7 +74,7 @@ export const likeMovieSeries = createAsyncThunk<
 
     const response = await axios.post(
       `${API_URL}/movies-series/like`,
-      movieSeries,
+      { ...movieSeries, media_type: movieSeries.name ? "series" : "movie" },
       {
         headers: {
           Authorization: `Bearer ${idToken}`,
@@ -81,7 +82,7 @@ export const likeMovieSeries = createAsyncThunk<
       }
     );
 
-    return response.data as FavouriteMovieSeriesType | undefined;
+    return response.data as MoviesSeriesType | undefined;
   } catch (error) {
     if (error instanceof AxiosError) {
       rejectWithValue(error.response?.data);
@@ -92,33 +93,36 @@ export const likeMovieSeries = createAsyncThunk<
 });
 
 // Get favourite movies_series
-export const getFavouriteMoviesSeries = createAsyncThunk(
-  "/movies-series/favourites",
-  async (_, { rejectWithValue }) => {
-    try {
-      const user = auth.currentUser;
-      const idToken = await user?.getIdToken();
+export const getFavouriteMoviesSeries = createAsyncThunk<
+  MoviesSeriesType[] | undefined,
+  { page: number }
+>("/movies-series/favourites", async ({ page }, { rejectWithValue }) => {
+  try {
+    const user = auth.currentUser;
+    const idToken = await user?.getIdToken(true);
 
-      const response = await axios.get(`${API_URL}/movies-series/favourites`, {
+    const response = await axios.get(
+      `${API_URL}/movies-series/favourites?page=${page}`,
+      {
         headers: {
           Authorization: `Bearer ${idToken}`,
         },
-      });
-
-      return response.data as FavouriteMovieSeriesType[] | undefined;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        rejectWithValue(error.response?.data);
-      } else {
-        rejectWithValue("Error getting favourite movies/series");
       }
+    );
+
+    return response.data as MoviesSeriesType[] | undefined;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      rejectWithValue(error.response?.data);
+    } else {
+      rejectWithValue("Error getting favourite movies/series");
     }
   }
-);
+});
 
-// Get favourite movie_series
+// Get movie_series
 export const getMovieSeries = createAsyncThunk<
-  TMDBMovieSeriesExtendedLikedType | undefined,
+  MoviesSeriesType | undefined,
   { id: number; content: "movie" | "series" }
 >(
   "/movie-series/id/get?content",
@@ -126,8 +130,6 @@ export const getMovieSeries = createAsyncThunk<
     try {
       const user = auth.currentUser;
       const idToken = await user?.getIdToken();
-
-      console.log(content);
 
       const response = await axios.get(
         `${API_URL}/movies-series/${id}/get?content=${content}`,
@@ -138,7 +140,7 @@ export const getMovieSeries = createAsyncThunk<
         }
       );
 
-      return response.data as TMDBMovieSeriesExtendedLikedType | undefined;
+      return response.data as MoviesSeriesType | undefined;
     } catch (error) {
       if (error instanceof AxiosError) {
         rejectWithValue(error.response?.data);
@@ -153,24 +155,18 @@ const moviesSeriesSlice = createSlice({
   name: "moviesSeries",
   initialState,
   reducers: {
-    incrementPage: (state) => {
-      state.page += 1;
+    incrementRecommendationPage: (state) => {
+      state.recommendationPage += 1;
     },
-    decrementPage: (state) => {
-      if (state.page > 1) {
-        state.page -= 1;
+    decrementRecommendationPage: (state) => {
+      if (state.recommendationPage > 1) {
+        state.recommendationPage -= 1;
       }
     },
-    setLoadingMovieSeries: (state) => {
-      state.loadingMovieSeries = true;
-    },
-    clearLoadingMovieSeries: (state) => {
-      state.loadingMovieSeries = false;
-    },
     clearMoviesSeries: (state) => {
-      state.TMDBmoviesSeries = undefined;
+      state.moviesSeriesRecommendations = undefined;
       state.moviesSeriesForm = undefined;
-      state.page = 1;
+      state.recommendationPage = 1;
     },
     clearMovieSeries: (state) => {
       state.movieSeries = undefined;
@@ -182,14 +178,14 @@ const moviesSeriesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getMoviesSeriesRecommendation.pending, (state) => {
-        state.loadingMoviesSeries = true;
+        state.loadingMoviesSeriesRecommendations = true;
       })
       .addCase(getMoviesSeriesRecommendation.fulfilled, (state, action) => {
-        state.loadingMoviesSeries = false;
-        state.TMDBmoviesSeries = action.payload;
+        state.loadingMoviesSeriesRecommendations = false;
+        state.moviesSeriesRecommendations = action.payload;
       })
       .addCase(getMoviesSeriesRecommendation.rejected, (state, action) => {
-        state.loadingMoviesSeries = false;
+        state.loadingMoviesSeriesRecommendations = false;
         state.error = action.payload as string;
       })
       .addCase(likeMovieSeries.pending, (state) => {
@@ -214,13 +210,16 @@ const moviesSeriesSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(getMovieSeries.pending, (state) => {
+        state.loadingMovieSeries = true;
         state.loadingLike = true;
       })
       .addCase(getMovieSeries.fulfilled, (state, action) => {
+        state.loadingMovieSeries = false;
         state.loadingLike = false;
         state.movieSeries = action.payload;
       })
       .addCase(getMovieSeries.rejected, (state, action) => {
+        state.loadingMovieSeries = false;
         state.loadingLike = false;
         state.error = action.payload as string;
       });
@@ -231,9 +230,7 @@ export const {
   setFormData,
   clearMovieSeries,
   clearMoviesSeries,
-  setLoadingMovieSeries,
-  clearLoadingMovieSeries,
-  incrementPage,
-  decrementPage,
+  incrementRecommendationPage,
+  decrementRecommendationPage,
 } = moviesSeriesSlice.actions;
 export default moviesSeriesSlice.reducer;
