@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 import {
   processMovieSeriesRetrieval,
   processMoviesSeriesRetrieval,
-} from "../database/models/moviesseries.model";
+} from "../database/models/moviesSeries.model";
 
 // Submit users personal preferences to get a movie_series
 export const submitMoviesSeriesRecommendation = async (
@@ -50,12 +50,15 @@ export const addToLikes = async (
       throw new Error("No user present");
     }
 
-    const result = await processFavouriteMoviesSeries(
-      user?.uid,
-      favouriteMovieSeries
+    await processFavouriteMoviesSeries(user?.uid, favouriteMovieSeries);
+
+    const movieSeries = await processMovieSeriesRetrieval(
+      favouriteMovieSeries.id,
+      favouriteMovieSeries.name ? "series" : "movie",
+      user?.uid
     );
 
-    res.status(200).json(result);
+    res.status(200).json(movieSeries);
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });

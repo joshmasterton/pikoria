@@ -88,7 +88,8 @@ export const Categories = () => {
           }}
         >
           <MoviesSeriesScroll
-            moviesSeries={moviesSeriesRecommendations}
+            moviesSeriesRecommendations={moviesSeriesRecommendations}
+            favouriteMoviesSeries={undefined}
             loading={loadingMoviesSeriesRecommendations}
             page={recommendationPage}
             getLess={getLessMoviesSeries}
@@ -113,14 +114,17 @@ export const Categories = () => {
               alignItems: "start",
               justifyContent: "start",
               position: "relative",
-              p: 1,
               height: "100%",
             }}
           >
             <Stack
-              p={1}
+              width="100%"
+              height="100%"
               sx={{
                 zIndex: 1,
+                p: 2,
+                maskImage:
+                  "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 60%)",
                 backdropFilter: "blur(0.5rem)",
                 WebkitBackdropFilter: "blur(0.5rem)",
               }}
@@ -148,14 +152,17 @@ export const Categories = () => {
               alignItems: "start",
               justifyContent: "start",
               position: "relative",
-              p: 1,
               height: "100%",
             }}
           >
             <Stack
-              p={1}
+              width="100%"
+              height="100%"
               sx={{
                 zIndex: 1,
+                p: 2,
+                maskImage:
+                  "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 60%)",
                 backdropFilter: "blur(0.5rem)",
                 WebkitBackdropFilter: "blur(0.5rem)",
               }}

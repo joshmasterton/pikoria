@@ -7,7 +7,7 @@ import {
 import {
   checkLikedStatus,
   insertFavouriteMoviesSeries,
-} from "../database/models/moviesseries.model";
+} from "../database/models/moviesSeries.model";
 
 export const processMoviesSeriesRecommendation = async (
   recommendationData: MoviesSeriesForm,

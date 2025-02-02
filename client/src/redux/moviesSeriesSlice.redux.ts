@@ -163,6 +163,14 @@ const moviesSeriesSlice = createSlice({
         state.recommendationPage -= 1;
       }
     },
+    incrementFavouritesPage: (state) => {
+      state.favouritesPage += 1;
+    },
+    decrementFavouritesPage: (state) => {
+      if (state.favouritesPage > 0) {
+        state.favouritesPage -= 1;
+      }
+    },
     clearMoviesSeries: (state) => {
       state.moviesSeriesRecommendations = undefined;
       state.moviesSeriesForm = undefined;
@@ -191,8 +199,9 @@ const moviesSeriesSlice = createSlice({
       .addCase(likeMovieSeries.pending, (state) => {
         state.loadingLike = true;
       })
-      .addCase(likeMovieSeries.fulfilled, (state) => {
+      .addCase(likeMovieSeries.fulfilled, (state, action) => {
         state.loadingLike = false;
+        state.movieSeries = action.payload;
       })
       .addCase(likeMovieSeries.rejected, (state, action) => {
         state.loadingLike = false;
@@ -211,16 +220,13 @@ const moviesSeriesSlice = createSlice({
       })
       .addCase(getMovieSeries.pending, (state) => {
         state.loadingMovieSeries = true;
-        state.loadingLike = true;
       })
       .addCase(getMovieSeries.fulfilled, (state, action) => {
         state.loadingMovieSeries = false;
-        state.loadingLike = false;
         state.movieSeries = action.payload;
       })
       .addCase(getMovieSeries.rejected, (state, action) => {
         state.loadingMovieSeries = false;
-        state.loadingLike = false;
         state.error = action.payload as string;
       });
   },
@@ -232,5 +238,7 @@ export const {
   clearMoviesSeries,
   incrementRecommendationPage,
   decrementRecommendationPage,
+  incrementFavouritesPage,
+  decrementFavouritesPage,
 } = moviesSeriesSlice.actions;
 export default moviesSeriesSlice.reducer;

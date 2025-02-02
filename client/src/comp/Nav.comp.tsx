@@ -75,7 +75,7 @@ export const Nav = () => {
           >
             <CustomTooltip title="Home">
               <IconButton
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/home")}
                 aria-label="Home"
                 size="small"
               >
@@ -157,7 +157,7 @@ export const Nav = () => {
             </Box>
             <Divider />
             <List>
-              <ListItemButton onClick={() => navigate("/")}>
+              <ListItemButton onClick={() => navigate("/home")}>
                 <HomeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
                 Home
               </ListItemButton>

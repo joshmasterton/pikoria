@@ -9,13 +9,9 @@ import {
   MoviesSeriesRecommendationsType,
   MoviesSeriesType,
 } from "../../types/moviesSeries.type";
-import { useAppDispatch } from "../../redux/store.redux";
-import {
-  clearMovieSeries,
-  getMovieSeries,
-} from "../../redux/moviesSeriesSlice.redux";
-import Dialog from "@mui/material/Dialog";
-import { MoviesSeriesBigCard } from "../card/MoviesSeriesBigCard.comp";
+import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
+import { getMovieSeries } from "../../redux/moviesSeriesSlice.redux";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const MoviesSeriesCard = ({
   movieSeries,
@@ -24,15 +20,32 @@ export const MoviesSeriesCard = ({
 }) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const { loadingMovieSeries } = useAppSelector((state) => state.moviesSeries);
 
   return (
     <Card
       sx={{
-        minWidth: { xs: "100%", sm: "50%", md: "33.33%", xl: "25%" },
+        position: "relative",
         width: "100%",
       }}
     >
+      {loadingMovieSeries && (
+        <Stack
+          width="100%"
+          height="100%"
+          alignItems="center"
+          justifyContent="center"
+          position="absolute"
+          bgcolor={alpha(theme.palette.background.default, 0.5)}
+          sx={{
+            zIndex: 5,
+          }}
+        >
+          <CircularProgress color="inherit" />
+        </Stack>
+      )}
       <CardActionArea
+        disabled={loadingMovieSeries}
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
         onClick={async () =>
           await dispatch(
@@ -100,26 +113,32 @@ export const MoviesSeriesCardAdvanced = ({
 }) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const { loadingMovieSeries } = useAppSelector((state) => state.moviesSeries);
 
   return (
     <Card
       sx={{
-        minWidth: { xs: "100%", sm: "50%", md: "33.33%", xl: "25%" },
+        position: "relative",
         width: "100%",
       }}
     >
-      <Dialog
-        scroll="body"
-        fullWidth
-        maxWidth="md"
-        open={Boolean(movieSeries)}
-        onClose={() => {
-          dispatch(clearMovieSeries());
-        }}
-      >
-        <MoviesSeriesBigCard />
-      </Dialog>
+      {loadingMovieSeries && (
+        <Stack
+          width="100%"
+          height="100%"
+          alignItems="center"
+          justifyContent="center"
+          position="absolute"
+          bgcolor={alpha(theme.palette.background.default, 0.5)}
+          sx={{
+            zIndex: 5,
+          }}
+        >
+          <CircularProgress color="inherit" />
+        </Stack>
+      )}
       <CardActionArea
+        disabled={loadingMovieSeries}
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
         onClick={async () =>
           await dispatch(

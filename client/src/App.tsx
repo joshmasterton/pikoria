@@ -12,7 +12,7 @@ import { Categories } from "./pages/Cateogires.page";
 
 export const routes = [
   {
-    path: "/",
+    path: "/home",
     element: <Home />,
   },
   {

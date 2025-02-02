@@ -8,7 +8,7 @@ export const Authenticated = ({ children }: { children: ReactElement }) => {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/home");
     }
   }, [navigate, user]);
 

@@ -15,7 +15,6 @@ import AddToQueueIcon from "@mui/icons-material/AddToQueue";
 import { CustomTooltip } from "../CustomTooltip.comp";
 import {
   clearMovieSeries,
-  getMovieSeries,
   likeMovieSeries,
 } from "../../redux/moviesSeriesSlice.redux";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
@@ -34,6 +33,7 @@ export const MoviesSeriesBigCard = () => {
       sx={{
         position: "relative",
         display: "flex",
+        minHeight: 400,
         flexDirection: { xs: "column", sm: "row" },
       }}
     >
@@ -49,6 +49,7 @@ export const MoviesSeriesBigCard = () => {
                 component="img"
                 src={`https://image.tmdb.org/t/p/w500/${movieSeries?.poster_path}`}
               />
+
               <Stack overflow="hidden" flexGrow={1}>
                 <Typography variant="h6">
                   {movieSeries?.name || movieSeries?.title}
@@ -100,14 +101,6 @@ export const MoviesSeriesBigCard = () => {
                       onClick={async () => {
                         if (movieSeries) {
                           await dispatch(likeMovieSeries(movieSeries));
-                          if (movieSeries) {
-                            await dispatch(
-                              getMovieSeries({
-                                id: movieSeries?.id,
-                                content: movieSeries?.name ? "series" : "movie",
-                              })
-                            );
-                          }
                         }
                       }}
                       disabled={loadingLike}
@@ -123,14 +116,7 @@ export const MoviesSeriesBigCard = () => {
                   </CustomTooltip>
                 </Stack>
               </Stack>
-              <Stack
-                sx={{
-                  position: "absolute",
-                  right: 15,
-                  top: 15,
-                  zIndex: 1,
-                }}
-              >
+              <Stack alignItems="end">
                 <IconButton
                   size="small"
                   sx={{

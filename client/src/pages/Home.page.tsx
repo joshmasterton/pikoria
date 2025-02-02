@@ -2,27 +2,49 @@ import { Nav } from "../comp/Nav.comp";
 import { Side } from "../comp/Side.comp";
 import { CustomBreadCrumbs } from "../comp/CustomBreadCrumbs.comp";
 import Stack from "@mui/material/Stack";
-import Dialog from "@mui/material/Dialog";
 import { useAppDispatch, useAppSelector } from "../redux/store.redux";
-import { MoviesSeriesBigCard } from "../comp/card/MoviesSeriesBigCard.comp";
 import {
-  clearMovieSeries,
+  decrementFavouritesPage,
   getFavouriteMoviesSeries,
+  incrementFavouritesPage,
 } from "../redux/moviesSeriesSlice.redux";
-import { MoviesSeriesCardAdvanced } from "../comp/card/MoviesSeriesCard.comp";
 import { useEffect } from "react";
+import { MoviesSeriesScroll } from "../comp/scrolls/MoviesSeriesScroll.comp";
 import Typography from "@mui/material/Typography";
 
 export const Home = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
-  const { movieSeries, favouriteMoviesSeries } = useAppSelector(
-    (state) => state.moviesSeries
-  );
+  const {
+    favouritesPage,
+    favouriteMoviesSeries,
+    loadingFavourites,
+    loadingLike,
+  } = useAppSelector((state) => state.moviesSeries);
 
   useEffect(() => {
     dispatch(getFavouriteMoviesSeries({ page: 0 }));
-  }, [dispatch, user]);
+  }, [dispatch, user, loadingLike]);
+
+  const getLessFavouriteMoviesSeries = async () => {
+    await dispatch(
+      getFavouriteMoviesSeries({
+        page: favouritesPage - 1,
+      })
+    );
+
+    dispatch(decrementFavouritesPage());
+  };
+
+  const getMoreFavouriteMoviesSeries = async () => {
+    await dispatch(
+      getFavouriteMoviesSeries({
+        page: favouritesPage + 1,
+      })
+    );
+
+    dispatch(incrementFavouritesPage());
+  };
 
   return (
     <>
@@ -30,28 +52,19 @@ export const Home = () => {
       <Side />
       <Stack p={2} gap={2} flexGrow={1} mt={8} ml={{ xs: 0, sm: 31 }}>
         <CustomBreadCrumbs />
-        <Stack>
-          <Typography>Favourites</Typography>
-          <Stack direction="row" sx={{ overflowX: "scroll" }}>
-            {favouriteMoviesSeries?.map((movieSeries) => (
-              <MoviesSeriesCardAdvanced
-                key={movieSeries.id}
-                movieSeries={movieSeries}
-              />
-            ))}
+        {favouriteMoviesSeries && (
+          <Stack position="relative" gap={1}>
+            <Typography>Favourite Movies / Series</Typography>
+            <MoviesSeriesScroll
+              favouriteMoviesSeries={favouriteMoviesSeries}
+              moviesSeriesRecommendations={undefined}
+              loading={loadingFavourites}
+              page={favouritesPage}
+              getLess={getLessFavouriteMoviesSeries}
+              getMore={getMoreFavouriteMoviesSeries}
+            />
           </Stack>
-        </Stack>
-        <Dialog
-          scroll="body"
-          fullWidth
-          maxWidth="md"
-          open={Boolean(movieSeries)}
-          onClose={() => {
-            dispatch(clearMovieSeries());
-          }}
-        >
-          <MoviesSeriesBigCard />
-        </Dialog>
+        )}
       </Stack>
     </>
   );

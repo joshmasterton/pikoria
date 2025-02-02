@@ -32,7 +32,7 @@ export const verifyToken = async (
 
 export const verifyTokenOptional = async (
   req: RequestWithUser,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   // Check idToken exists
@@ -47,12 +47,8 @@ export const verifyTokenOptional = async (
       req.user = decodedToken;
 
       next();
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(401).json({ error: error.message });
-      } else {
-        res.status(401).json({ error: "Error authenticating user" });
-      }
+    } catch {
+      next();
     }
   }
 };

@@ -7,18 +7,26 @@ import Box from "@mui/material/Box";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import { clearMovieSeries } from "../../redux/moviesSeriesSlice.redux";
-import { MoviesSeriesCard } from "../card/MoviesSeriesCard.comp";
+import {
+  MoviesSeriesCard,
+  MoviesSeriesCardAdvanced,
+} from "../card/MoviesSeriesCard.comp";
 import { MoviesSeriesBigCard } from "../card/MoviesSeriesBigCard.comp";
-import { MoviesSeriesRecommendationsType } from "../../types/moviesSeries.type";
+import {
+  MoviesSeriesRecommendationsType,
+  MoviesSeriesType,
+} from "../../types/moviesSeries.type";
 
 export const MoviesSeriesScroll = ({
-  moviesSeries,
+  moviesSeriesRecommendations,
+  favouriteMoviesSeries,
   loading,
   page,
   getLess,
   getMore,
 }: {
-  moviesSeries: MoviesSeriesRecommendationsType[] | undefined;
+  moviesSeriesRecommendations: MoviesSeriesRecommendationsType[] | undefined;
+  favouriteMoviesSeries: MoviesSeriesType[] | undefined;
   loading: boolean;
   page: number;
   getLess: () => Promise<void>;
@@ -37,7 +45,7 @@ export const MoviesSeriesScroll = ({
         behavior: "smooth",
       });
     }
-  }, [moviesSeries]);
+  }, [moviesSeriesRecommendations, favouriteMoviesSeries]);
 
   const handleScrolling = () => {
     if (scrollContainerRef.current) {
@@ -110,7 +118,7 @@ export const MoviesSeriesScroll = ({
             position: "absolute",
             color: "white",
             left: 0,
-            height: 370,
+            height: 400,
             borderRadius: 0,
             backdropFilter: "blur(0.25rem)",
             WebkitBackdropFilter: "blur(0.25rem)",
@@ -123,23 +131,30 @@ export const MoviesSeriesScroll = ({
         >
           <ChevronLeftRoundedIcon />
         </IconButton>
-        {moviesSeries?.map((movieSeries) => (
-          <Box
-            key={movieSeries.id}
-            sx={{
-              minWidth: {
-                xs: "100%",
-                sm: "50%",
-                md: "33.33%",
-                xl: "25%",
-              },
-              width: "100%",
-              maxWidth: 500,
-            }}
-          >
-            <MoviesSeriesCard movieSeries={movieSeries} />
-          </Box>
-        ))}
+        {moviesSeriesRecommendations &&
+          moviesSeriesRecommendations?.map((movieSeries) => (
+            <Box
+              key={movieSeries.id}
+              sx={{
+                minWidth: { xs: "100%", sm: 400 },
+                width: "100%",
+              }}
+            >
+              <MoviesSeriesCard movieSeries={movieSeries} />
+            </Box>
+          ))}
+        {favouriteMoviesSeries &&
+          favouriteMoviesSeries?.map((movieSeries) => (
+            <Box
+              key={movieSeries.id}
+              sx={{
+                minWidth: { xs: "100%", sm: 400 },
+                width: "100%",
+              }}
+            >
+              <MoviesSeriesCardAdvanced movieSeries={movieSeries} />
+            </Box>
+          ))}
         <IconButton
           loading={loading}
           onClick={async () => {
@@ -152,7 +167,7 @@ export const MoviesSeriesScroll = ({
           sx={{
             position: "absolute",
             right: 0,
-            height: 370,
+            height: 400,
             borderRadius: 0,
             color: "white",
             backdropFilter: "blur(0.25rem)",
