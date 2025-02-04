@@ -60,7 +60,7 @@ export const Signin = () => {
                 <Stack p={3} gap={2}>
                   <Stack direction="row" justifyContent="space-between">
                     <Logo />
-                    <IconButton onClick={() => navigate("/")} size="small">
+                    <IconButton onClick={() => navigate("/home")} size="small">
                       <CloseRoundedIcon fontSize="small" />
                     </IconButton>
                   </Stack>

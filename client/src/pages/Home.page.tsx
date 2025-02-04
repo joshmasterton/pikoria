@@ -4,12 +4,10 @@ import { CustomBreadCrumbs } from "../comp/CustomBreadCrumbs.comp";
 import Stack from "@mui/material/Stack";
 import { useAppDispatch, useAppSelector } from "../redux/store.redux";
 import {
-  decrementFavouritesPage,
+  clearFavourites,
   getFavouriteMoviesSeries,
-  incrementFavouritesPage,
 } from "../redux/moviesSeriesSlice.redux";
 import { useEffect } from "react";
-import { MoviesSeriesScroll } from "../comp/scrolls/MoviesSeriesScroll.comp";
 import Typography from "@mui/material/Typography";
 
 export const Home = () => {
@@ -32,8 +30,6 @@ export const Home = () => {
         page: favouritesPage - 1,
       })
     );
-
-    dispatch(decrementFavouritesPage());
   };
 
   const getMoreFavouriteMoviesSeries = async () => {
@@ -42,9 +38,13 @@ export const Home = () => {
         page: favouritesPage + 1,
       })
     );
-
-    dispatch(incrementFavouritesPage());
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearFavourites());
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -55,14 +55,6 @@ export const Home = () => {
         {favouriteMoviesSeries && (
           <Stack position="relative" gap={1}>
             <Typography>Favourite Movies / Series</Typography>
-            <MoviesSeriesScroll
-              favouriteMoviesSeries={favouriteMoviesSeries}
-              moviesSeriesRecommendations={undefined}
-              loading={loadingFavourites}
-              page={favouritesPage}
-              getLess={getLessFavouriteMoviesSeries}
-              getMore={getMoreFavouriteMoviesSeries}
-            />
           </Stack>
         )}
       </Stack>

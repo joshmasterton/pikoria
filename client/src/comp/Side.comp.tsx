@@ -17,11 +17,13 @@ import { useAppDispatch, useAppSelector } from "../redux/store.redux";
 import { changeTheme } from "../redux/themeSlice.redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice.redux";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
 
 export const Side = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
+  const trigger = useScrollTrigger();
   const { user, loading } = useAppSelector((state) => state.auth);
   const { localTheme } = useAppSelector((state) => state.theme);
   const isLargeScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -33,8 +35,15 @@ export const Side = () => {
       sx={{ display: { xs: "none", sm: "block" } }}
     >
       <Box sx={{ minWidth: 246 }}>
-        <Box height={62} />
-        <List>
+        <List
+          sx={{
+            pt: trigger ? 1 : 9,
+            transition: (theme) =>
+              theme.transitions.create("padding", {
+                duration: theme.transitions.duration.short,
+              }),
+          }}
+        >
           <ListItemButton onClick={() => navigate("/home")}>
             <HomeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
             Home

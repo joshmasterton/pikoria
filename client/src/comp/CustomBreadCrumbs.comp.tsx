@@ -4,31 +4,33 @@ import { NavLink, useLocation } from "react-router-dom";
 
 export const CustomBreadCrumbs = () => {
   const location = useLocation();
-  const pathwaySegments = location.pathname
-    .split("/")
-    .filter((segment) => segment);
+  const pathwaySegments = location.pathname.split("/").filter(Boolean);
+
+  const breadcrumbsMap: Record<string, string> = {
+    categories: "Categories",
+    home: "Home",
+    "movies-series": "Movies & Series",
+    auth: "Authentication",
+    signin: "Sign In",
+    signup: "Sign Up",
+    forgotPassword: "Forgot Password",
+  };
 
   return (
     <Breadcrumbs>
       <Link color="textPrimary" underline="hover" component={NavLink} to="/">
         Pikoria
       </Link>
-      {pathwaySegments.map((pathSegment, index) => {
-        const pathToSegment = `/${pathwaySegments
-          .slice(0, index + 1)
-          .join("/")}`;
-        const displayName =
-          pathSegment.charAt(0).toUpperCase() + pathSegment.slice(1);
-
+      {pathwaySegments.map((segment) => {
         return (
           <Link
+            key={segment}
             component={NavLink}
-            to={pathToSegment}
+            to={`/${segment}`}
             underline="hover"
-            key={pathSegment}
             color="textPrimary"
           >
-            {displayName}
+            {breadcrumbsMap[segment]}
           </Link>
         );
       })}

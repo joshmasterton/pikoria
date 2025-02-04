@@ -9,6 +9,8 @@ import { AuthWrapper } from "./wrapper/AuthWrapper.comp";
 import { ThemeWrapper } from "./wrapper/ThemeWrapper";
 import { Home } from "./pages/Home.page";
 import { Categories } from "./pages/Cateogires.page";
+import { MoviesSeriesPage } from "./pages/movies_series/MoviesSeries.page";
+import { MovieSeriesPage } from "./pages/movies_series/MovieSeries.page";
 
 export const routes = [
   {
@@ -18,6 +20,14 @@ export const routes = [
   {
     path: "/categories",
     element: <Categories />,
+  },
+  {
+    path: "/categories/movies-series",
+    element: <MoviesSeriesPage />,
+  },
+  {
+    path: "/movie-series/:content/:id/",
+    element: <MovieSeriesPage />,
   },
   {
     path: "/auth/signin",

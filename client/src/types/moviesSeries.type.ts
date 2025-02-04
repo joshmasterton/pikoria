@@ -8,10 +8,10 @@ export type MoviesSeriesForm = {
 
 export type MoviesSeriesRecommendationsType = {
   id: number;
-  title?: string; // For movies
-  name?: string; // For TV series
-  original_title?: string; // For movies
-  original_name?: string; // For TV series
+  title?: string;
+  name?: string;
+  original_title?: string;
+  original_name?: string;
   original_language: string;
   overview: string;
   popularity: number;
@@ -20,12 +20,18 @@ export type MoviesSeriesRecommendationsType = {
   backdrop_path: string;
   poster_path: string;
   genre_ids: number[];
-  release_date?: string; // Only for movies
-  first_air_date?: string; // Only for TV series
+  release_date?: string;
+  first_air_date?: string;
   origin_country?: string[];
-  video?: boolean; // Only for movies
+  video?: boolean;
   adult: boolean;
   liked: boolean;
+};
+
+export type MoviesSeriesRecommendationsTypeAll = {
+  data: MoviesSeriesRecommendationsType[];
+  total_pages: number;
+  total_results: number;
 };
 
 export type MoviesSeriesType = {

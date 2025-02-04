@@ -80,7 +80,11 @@ export const processMoviesSeriesRecommendation = async (
       )
     );
 
-    return TMDBMoviesSeriesWithLike;
+    return {
+      data: TMDBMoviesSeriesWithLike,
+      total_pages: (TMDBResponse.data.total_pages as number) ?? 0,
+      total_results: (TMDBResponse.data.total_results as number) ?? 0,
+    };
   } catch (error) {
     if (error instanceof Error) {
       throw error;

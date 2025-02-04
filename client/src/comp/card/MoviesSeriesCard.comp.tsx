@@ -9,9 +9,7 @@ import {
   MoviesSeriesRecommendationsType,
   MoviesSeriesType,
 } from "../../types/moviesSeries.type";
-import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
-import { getMovieSeries } from "../../redux/moviesSeriesSlice.redux";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
 export const MoviesSeriesCard = ({
   movieSeries,
@@ -19,8 +17,7 @@ export const MoviesSeriesCard = ({
   movieSeries: MoviesSeriesRecommendationsType;
 }) => {
   const theme = useTheme();
-  const dispatch = useAppDispatch();
-  const { loadingMovieSeries } = useAppSelector((state) => state.moviesSeries);
+  const navigate = useNavigate();
 
   return (
     <Card
@@ -29,30 +26,13 @@ export const MoviesSeriesCard = ({
         width: "100%",
       }}
     >
-      {loadingMovieSeries && (
-        <Stack
-          width="100%"
-          height="100%"
-          alignItems="center"
-          justifyContent="center"
-          position="absolute"
-          bgcolor={alpha(theme.palette.background.default, 0.5)}
-          sx={{
-            zIndex: 5,
-          }}
-        >
-          <CircularProgress color="inherit" />
-        </Stack>
-      )}
       <CardActionArea
-        disabled={loadingMovieSeries}
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
-        onClick={async () =>
-          await dispatch(
-            getMovieSeries({
-              id: movieSeries.id,
-              content: movieSeries.name ? "series" : "movie",
-            })
+        onClick={() =>
+          navigate(
+            `/movie-series/${movieSeries.name ? "series" : "movie"}/${
+              movieSeries.id
+            }`
           )
         }
       >
@@ -112,8 +92,7 @@ export const MoviesSeriesCardAdvanced = ({
   movieSeries: MoviesSeriesType;
 }) => {
   const theme = useTheme();
-  const dispatch = useAppDispatch();
-  const { loadingMovieSeries } = useAppSelector((state) => state.moviesSeries);
+  const navigate = useNavigate();
 
   return (
     <Card
@@ -122,30 +101,13 @@ export const MoviesSeriesCardAdvanced = ({
         width: "100%",
       }}
     >
-      {loadingMovieSeries && (
-        <Stack
-          width="100%"
-          height="100%"
-          alignItems="center"
-          justifyContent="center"
-          position="absolute"
-          bgcolor={alpha(theme.palette.background.default, 0.5)}
-          sx={{
-            zIndex: 5,
-          }}
-        >
-          <CircularProgress color="inherit" />
-        </Stack>
-      )}
       <CardActionArea
-        disabled={loadingMovieSeries}
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
-        onClick={async () =>
-          await dispatch(
-            getMovieSeries({
-              id: movieSeries.movie_series_id || movieSeries.id,
-              content: movieSeries.name ? "series" : "movie",
-            })
+        onClick={() =>
+          navigate(
+            `/movie-series/${movieSeries.id}/${
+              movieSeries.name ? "series" : "movie"
+            }`
           )
         }
       >

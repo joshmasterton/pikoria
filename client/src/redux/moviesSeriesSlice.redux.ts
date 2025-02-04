@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   MoviesSeriesForm,
-  MoviesSeriesRecommendationsType,
+  MoviesSeriesRecommendationsTypeAll,
   MoviesSeriesType,
 } from "../types/moviesSeries.type";
 import axios, { AxiosError } from "axios";
@@ -9,25 +9,23 @@ import { API_URL } from "../config/api.config";
 import { auth } from "../config/firebase.config";
 
 const initialState: {
+  page: number;
   error: string | undefined;
   loadingLike: boolean;
   loadingMovieSeries: boolean;
   loadingFavourites: boolean;
   loadingMoviesSeriesRecommendations: boolean;
-  recommendationPage: number;
-  favouritesPage: number;
-  moviesSeriesRecommendations: MoviesSeriesRecommendationsType[] | undefined;
+  moviesSeriesRecommendations: MoviesSeriesRecommendationsTypeAll | undefined;
   movieSeries: MoviesSeriesType | undefined;
   favouriteMoviesSeries: MoviesSeriesType[] | undefined;
   moviesSeriesForm: MoviesSeriesForm | undefined;
 } = {
+  page: 1,
   error: undefined,
   loadingLike: false,
   loadingMovieSeries: false,
   loadingFavourites: false,
   loadingMoviesSeriesRecommendations: false,
-  recommendationPage: 1,
-  favouritesPage: 0,
   moviesSeriesRecommendations: undefined,
   movieSeries: undefined,
   favouriteMoviesSeries: undefined,
@@ -36,7 +34,7 @@ const initialState: {
 
 // Get movie_series recommendation from TMDB
 export const getMoviesSeriesRecommendation = createAsyncThunk<
-  MoviesSeriesRecommendationsType[] | undefined,
+  MoviesSeriesRecommendationsTypeAll | undefined,
   MoviesSeriesForm & { page: number }
 >("movies-series/recommend", async (formData, { rejectWithValue }) => {
   try {
@@ -53,7 +51,7 @@ export const getMoviesSeriesRecommendation = createAsyncThunk<
       }
     );
 
-    return response.data as MoviesSeriesRecommendationsType[];
+    return response.data as MoviesSeriesRecommendationsTypeAll;
   } catch (error) {
     if (error instanceof AxiosError) {
       rejectWithValue(error.response?.data);
@@ -155,29 +153,18 @@ const moviesSeriesSlice = createSlice({
   name: "moviesSeries",
   initialState,
   reducers: {
-    incrementRecommendationPage: (state) => {
-      state.recommendationPage += 1;
+    setPage: (state, action) => {
+      state.page = action.payload;
     },
-    decrementRecommendationPage: (state) => {
-      if (state.recommendationPage > 1) {
-        state.recommendationPage -= 1;
-      }
-    },
-    incrementFavouritesPage: (state) => {
-      state.favouritesPage += 1;
-    },
-    decrementFavouritesPage: (state) => {
-      if (state.favouritesPage > 0) {
-        state.favouritesPage -= 1;
-      }
-    },
-    clearMoviesSeries: (state) => {
+    clearMoviesSeriesRecommendations: (state) => {
       state.moviesSeriesRecommendations = undefined;
       state.moviesSeriesForm = undefined;
-      state.recommendationPage = 1;
     },
     clearMovieSeries: (state) => {
       state.movieSeries = undefined;
+    },
+    clearFavourites: (state) => {
+      state.favouriteMoviesSeries = undefined;
     },
     setFormData: (state, action) => {
       state.moviesSeriesForm = action.payload;
@@ -233,12 +220,10 @@ const moviesSeriesSlice = createSlice({
 });
 
 export const {
+  setPage,
   setFormData,
   clearMovieSeries,
-  clearMoviesSeries,
-  incrementRecommendationPage,
-  decrementRecommendationPage,
-  incrementFavouritesPage,
-  decrementFavouritesPage,
+  clearMoviesSeriesRecommendations,
+  clearFavourites,
 } = moviesSeriesSlice.actions;
 export default moviesSeriesSlice.reducer;

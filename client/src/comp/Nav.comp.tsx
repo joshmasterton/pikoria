@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice.redux";
 import { useTheme } from "@mui/material/styles";
@@ -27,6 +27,17 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
+import Slide from "@mui/material/Slide";
+
+const HideOnScroll = ({ children }: { children: ReactElement }) => {
+  const trigger = useScrollTrigger();
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+};
 
 export const Nav = () => {
   const [userSettingsAnchor, setUserSettingsAnchor] =
@@ -42,166 +53,177 @@ export const Nav = () => {
 
   return (
     <Box flexGrow={1}>
-      <AppBar
-        elevation={0}
-        sx={{
-          borderBottom: 1,
-          borderColor: theme.palette.divider,
-          p: 2,
-          bgcolor: theme.palette.background.default,
-          zIndex: theme.zIndex.drawer + 1,
-        }}
-      >
-        <Stack alignItems="center" direction="row" gap={2}>
-          <Logo />
-          <Box
-            display={{ xs: "flex", sm: "none" }}
-            justifyContent="end"
-            flexGrow={1}
-          >
-            <IconButton
-              aria-label="Menu"
-              size="small"
-              onClick={() => setOpenDrawer(!openDrawer)}
-            >
-              <MenuRoundedIcon fontSize="small" />
-            </IconButton>
-          </Box>
-          <Box
-            display={{ xs: "none", sm: "flex" }}
-            justifyContent="end"
-            flexGrow={1}
-            gap={2}
-          >
-            <CustomTooltip title="Home">
-              <IconButton
-                onClick={() => navigate("/home")}
-                aria-label="Home"
-                size="small"
-              >
-                <HomeRoundedIcon fontSize="small" />
-              </IconButton>
-            </CustomTooltip>
-            <CustomTooltip title="Categories">
-              <IconButton
-                onClick={() => navigate("/categories")}
-                aria-label="Categories"
-                size="small"
-              >
-                <AppsRoundedIcon fontSize="small" />
-              </IconButton>
-            </CustomTooltip>
-            <Theme />
-            <CustomTooltip title={user?.displayName ?? "Sign in"}>
-              <IconButton
-                aria-label="User settings"
-                size="small"
-                onClick={(event) => setUserSettingsAnchor(event.currentTarget)}
-                sx={{ p: 0 }}
-              >
-                {loading ? (
-                  <CircularProgress size={30} />
-                ) : (
-                  <Avatar
-                    sx={{ height: 30, width: 30 }}
-                    alt={user?.displayName ?? ""}
-                    src={user?.photoURL ?? undefined}
-                  />
-                )}
-              </IconButton>
-            </CustomTooltip>
-            <Menu
-              elevation={0}
-              open={openUserSettings}
-              onClose={() => setUserSettingsAnchor(null)}
-              anchorEl={userSettingsAnchor}
-            >
-              {user ? (
-                <Button
-                  color="inherit"
-                  sx={{ px: 2 }}
-                  loading={loading}
-                  startIcon={<LogoutRoundedIcon />}
-                  onClick={async () => {
-                    await dispatch(logout());
-                    setUserSettingsAnchor(null);
-                  }}
-                >
-                  Sign out
-                </Button>
-              ) : (
-                <Button
-                  color="inherit"
-                  sx={{ px: 2 }}
-                  startIcon={<LoginRoundedIcon />}
-                  onClick={() => navigate("/auth/signin")}
-                >
-                  Sign in
-                </Button>
-              )}
-            </Menu>
-          </Box>
-        </Stack>
-        <Drawer
+      <HideOnScroll>
+        <AppBar
           elevation={0}
-          anchor="top"
-          open={openDrawer && isLargeScreen}
           sx={{
+            height: 64,
+            borderBottom: 1,
+            borderColor: theme.palette.divider,
+            p: 2,
+            bgcolor: theme.palette.background.default,
             zIndex: theme.zIndex.drawer + 1,
           }}
-          onClose={() => setOpenDrawer(!openDrawer)}
         >
-          <Box>
-            <Box p={2}>
-              <Logo />
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            direction="row"
+            height="100%"
+            gap={2}
+          >
+            <Logo />
+            <Box
+              display={{ xs: "flex", sm: "none" }}
+              justifyContent="end"
+              flexGrow={1}
+            >
+              <IconButton
+                aria-label="Menu"
+                size="small"
+                onClick={() => setOpenDrawer(!openDrawer)}
+              >
+                <MenuRoundedIcon fontSize="small" />
+              </IconButton>
             </Box>
-            <Divider />
-            <List>
-              <ListItemButton onClick={() => navigate("/home")}>
-                <HomeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
-                Home
-              </ListItemButton>
-              <ListItemButton onClick={() => navigate("/categories")}>
-                <AppsRoundedIcon fontSize="small" sx={{ mr: 2 }} />
-                Categoires
-              </ListItemButton>
-              {user ? (
-                <ListItemButton
-                  disabled={loading}
-                  onClick={async () => await dispatch(logout())}
+            <Box
+              display={{ xs: "none", sm: "flex" }}
+              justifyContent="end"
+              flexGrow={1}
+              gap={2}
+            >
+              <CustomTooltip title="Home">
+                <IconButton
+                  onClick={() => navigate("/home")}
+                  aria-label="Home"
+                  size="small"
+                >
+                  <HomeRoundedIcon fontSize="small" />
+                </IconButton>
+              </CustomTooltip>
+              <CustomTooltip title="Categories">
+                <IconButton
+                  onClick={() => navigate("/categories")}
+                  aria-label="Categories"
+                  size="small"
+                >
+                  <AppsRoundedIcon fontSize="small" />
+                </IconButton>
+              </CustomTooltip>
+              <Theme />
+              <CustomTooltip title={user?.displayName ?? "Sign in"}>
+                <IconButton
+                  aria-label="User settings"
+                  size="small"
+                  onClick={(event) =>
+                    setUserSettingsAnchor(event.currentTarget)
+                  }
+                  sx={{ p: 0 }}
                 >
                   {loading ? (
-                    <CircularProgress
-                      color="inherit"
-                      size={20}
-                      sx={{ mr: 4.5 }}
-                    />
+                    <CircularProgress size={30} />
                   ) : (
-                    <LogoutRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                    <Avatar
+                      sx={{ height: 30, width: 30 }}
+                      alt={user?.displayName ?? ""}
+                      src={user?.photoURL ?? undefined}
+                    />
                   )}
-                  Sign out
-                </ListItemButton>
-              ) : (
-                <ListItemButton onClick={() => navigate("/auth/signin")}>
-                  <LoginRoundedIcon fontSize="small" sx={{ mr: 2 }} />
-                  Sign in
-                </ListItemButton>
-              )}
-            </List>
-            <Divider />
-            <List>
-              <ListItemButton onClick={() => dispatch(changeTheme())}>
-                {localTheme === "dark" ? (
-                  <DarkModeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                </IconButton>
+              </CustomTooltip>
+              <Menu
+                elevation={0}
+                open={openUserSettings}
+                onClose={() => setUserSettingsAnchor(null)}
+                anchorEl={userSettingsAnchor}
+              >
+                {user ? (
+                  <Button
+                    color="inherit"
+                    sx={{ px: 2 }}
+                    loading={loading}
+                    startIcon={<LogoutRoundedIcon />}
+                    onClick={async () => {
+                      await dispatch(logout());
+                      setUserSettingsAnchor(null);
+                    }}
+                  >
+                    Sign out
+                  </Button>
                 ) : (
-                  <LightModeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                  <Button
+                    color="inherit"
+                    sx={{ px: 2 }}
+                    startIcon={<LoginRoundedIcon />}
+                    onClick={() => navigate("/auth/signin")}
+                  >
+                    Sign in
+                  </Button>
                 )}
-                Theme
-              </ListItemButton>
-            </List>
-          </Box>
-        </Drawer>
-      </AppBar>
+              </Menu>
+            </Box>
+          </Stack>
+          <Drawer
+            elevation={0}
+            anchor="top"
+            open={openDrawer && isLargeScreen}
+            sx={{
+              zIndex: theme.zIndex.drawer + 1,
+            }}
+            onClose={() => setOpenDrawer(!openDrawer)}
+          >
+            <Box>
+              <Stack p={2} height={63} justifyContent="center">
+                <Logo />
+              </Stack>
+              <Divider />
+              <List>
+                <ListItemButton onClick={() => navigate("/home")}>
+                  <HomeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                  Home
+                </ListItemButton>
+                <ListItemButton onClick={() => navigate("/categories")}>
+                  <AppsRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                  Categoires
+                </ListItemButton>
+                {user ? (
+                  <ListItemButton
+                    disabled={loading}
+                    onClick={async () => await dispatch(logout())}
+                  >
+                    {loading ? (
+                      <CircularProgress
+                        color="inherit"
+                        size={20}
+                        sx={{ mr: 4.5 }}
+                      />
+                    ) : (
+                      <LogoutRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                    )}
+                    Sign out
+                  </ListItemButton>
+                ) : (
+                  <ListItemButton onClick={() => navigate("/auth/signin")}>
+                    <LoginRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                    Sign in
+                  </ListItemButton>
+                )}
+              </List>
+              <Divider />
+              <List>
+                <ListItemButton onClick={() => dispatch(changeTheme())}>
+                  {localTheme === "dark" ? (
+                    <DarkModeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                  ) : (
+                    <LightModeRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                  )}
+                  Theme
+                </ListItemButton>
+              </List>
+            </Box>
+          </Drawer>
+        </AppBar>
+      </HideOnScroll>
     </Box>
   );
 };
