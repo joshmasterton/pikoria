@@ -9,31 +9,16 @@ describe("POST /movies-series/recommend", () => {
       .post("/movies-series/recommend")
       .send({
         genre: 16,
-        content: "movies",
+        content: "series",
         release: [2020, 2025],
-        runtime: [90, 180],
-        region: "US",
+        runtime: [0, 300],
+        region: "all",
         page: 1,
       });
 
-    expect(moviesSeriesResponse.body).toBeInstanceOf(Array);
-    expect(moviesSeriesResponse.body).toHaveLength(20);
-  });
-
-  test("Should return empty if on movies/series to retrun", async () => {
-    const moviesSeriesResponse = await supertest(app)
-      .post("/movies-series/recommend")
-      .send({
-        genre: 16,
-        content: "movies",
-        release: [2020, 2025],
-        runtime: [90, 180],
-        region: "US",
-        page: 100,
-      });
-
-    expect(moviesSeriesResponse.body).toBeInstanceOf(Array);
-    expect(moviesSeriesResponse.body).toHaveLength(0);
+    expect(moviesSeriesResponse.body.results).toBeInstanceOf(Array);
+    expect(typeof moviesSeriesResponse.body.total_pages).toBe("number");
+    expect(typeof moviesSeriesResponse.body.total_results).toBe("number");
   });
 });
 
@@ -42,67 +27,36 @@ describe("POST /movies-series/like", () => {
     const likeMovieSeries = await supertest(app)
       .post("/movies-series/like")
       .send({
-        adult: false,
-        backdrop_path: "/smSbK5cd8T9XHcxEUcems23BDEF.jpg",
-        genre_ids: [18, 10765, 35],
         id: 67915,
-        origin_country: ["KR"],
-        original_language: "ko",
-        original_name: "쓸쓸하고 찬란하神-도깨비",
-        overview:
-          "In his quest for a bride to break his immortal curse, a 939-year-old guardian of souls meets a grim reaper and a sprightly student with a tragic past.",
-        popularity: 187.255,
-        poster_path: "/t7aUi8jbsIUSCNqA1akAbKjBWjU.jpg",
-        first_air_date: "2016-12-02",
-        name: "Goblin",
-        vote_average: 8.636,
-        vote_count: 2835,
+        content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
+
+    expect(likeMovieSeries.body.adult).toBeDefined();
+    expect(likeMovieSeries.body.id).toBeDefined();
+    expect(likeMovieSeries.body.liked).toBeTruthy();
   });
 
   test("Should remove a movie if its already in favourites", async () => {
-    const likeMoviesSeries = await supertest(app)
+    await supertest(app)
       .post("/movies-series/like")
       .send({
-        adult: false,
-        backdrop_path: "/smSbK5cd8T9XHcxEUcems23BDEF.jpg",
-        genre_ids: [18, 10765, 35],
         id: 67915,
-        origin_country: ["KR"],
-        original_language: "ko",
-        original_name: "쓸쓸하고 찬란하神-도깨비",
-        overview:
-          "In his quest for a bride to break his immortal curse, a 939-year-old guardian of souls meets a grim reaper and a sprightly student with a tragic past.",
-        popularity: 187.255,
-        poster_path: "/t7aUi8jbsIUSCNqA1akAbKjBWjU.jpg",
-        first_air_date: "2016-12-02",
-        name: "Goblin",
-        vote_average: 8.636,
-        vote_count: 2835,
+        content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
 
-    const removeLikeMovieSeries = await supertest(app)
+    const likeMovieSeries = await supertest(app)
       .post("/movies-series/like")
       .send({
-        adult: false,
-        backdrop_path: "/smSbK5cd8T9XHcxEUcems23BDEF.jpg",
-        genre_ids: [18, 10765, 35],
         id: 67915,
-        origin_country: ["KR"],
-        original_language: "ko",
-        original_name: "쓸쓸하고 찬란하神-도깨비",
-        overview:
-          "In his quest for a bride to break his immortal curse, a 939-year-old guardian of souls meets a grim reaper and a sprightly student with a tragic past.",
-        popularity: 187.255,
-        poster_path: "/t7aUi8jbsIUSCNqA1akAbKjBWjU.jpg",
-        first_air_date: "2016-12-02",
-        name: "Goblin",
-        vote_average: 8.636,
-        vote_count: 2835,
+        content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
+
+    expect(likeMovieSeries.body.adult).toBeDefined();
+    expect(likeMovieSeries.body.id).toBeDefined();
+    expect(likeMovieSeries.body.liked).toBeFalsy();
   });
 });
 
@@ -111,30 +65,27 @@ describe("GET /movies-series/favourites", () => {
     await supertest(app)
       .post("/movies-series/like")
       .send({
-        adult: false,
-        backdrop_path: "/smSbK5cd8T9XHcxEUcems23BDEF.jpg",
-        genre_ids: [18, 10765, 35],
         id: 67915,
-        origin_country: ["KR"],
-        original_language: "ko",
-        original_name: "쓸쓸하고 찬란하神-도깨비",
-        overview:
-          "In his quest for a bride to break his immortal curse, a 939-year-old guardian of souls meets a grim reaper and a sprightly student with a tragic past.",
-        popularity: 187.255,
-        poster_path: "/t7aUi8jbsIUSCNqA1akAbKjBWjU.jpg",
-        first_air_date: "2016-12-02",
-        name: "Goblin",
-        vote_average: 8.636,
-        vote_count: 2835,
+        content: "series",
+      })
+      .set("Authorization", `Bearer ${fakeToken}`);
+
+    await supertest(app)
+      .post("/movies-series/like")
+      .send({
+        id: 1241982,
+        content: "movie",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
 
     const favouriteMoviesSeries = await supertest(app)
-      .get("/movies-series/favourites")
+      .get("/movies-series/favouriteMoviesSeries")
+      .query({ page: 0 })
       .set("Authorization", `Bearer ${fakeToken}`);
 
-    expect(favouriteMoviesSeries.body).toBeInstanceOf(Array);
-    expect(favouriteMoviesSeries.body).toHaveLength(1);
+    expect(favouriteMoviesSeries.body.results).toBeInstanceOf(Array);
+    expect(typeof favouriteMoviesSeries.body.total_pages).toBe("number");
+    expect(typeof favouriteMoviesSeries.body.total_results).toBe("number");
   });
 });
 
@@ -144,7 +95,6 @@ describe("GET /movies-series/:id/get?content", () => {
       `/movies-series/${67915}/get?content=series`
     );
 
-    // expect(getMovieSeries.body.created_by).toBeDefined();
-    // console.log(getMovieSeries.body.created_by);
+    expect(getMovieSeries.body.created_by).toBeDefined();
   });
 });

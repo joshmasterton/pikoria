@@ -5,7 +5,7 @@ import { MoviesSeriesForm } from "../../comp/forms/MoviesSeries.form";
 import {
   getMoviesSeriesRecommendation,
   setFormData,
-  setPage,
+  setRecommendationsPage,
 } from "../../redux/moviesSeriesSlice.redux";
 import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import { MoviesSeriesCard } from "../../comp/card/MoviesSeriesCard.comp";
@@ -16,10 +16,11 @@ import Stack from "@mui/material/Stack";
 
 export const MoviesSeriesPage = () => {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
   const {
     loadingMoviesSeriesRecommendations,
     moviesSeriesRecommendations,
-    page,
+    recommendationsPage,
     moviesSeriesForm,
   } = useAppSelector((state) => state.moviesSeries);
 
@@ -32,7 +33,7 @@ export const MoviesSeriesPage = () => {
           release: [2000, 2025],
           runtime: [0, 180],
           region: "all",
-          page: page,
+          page: recommendationsPage,
         })
       ).then(() => {
         dispatch(
@@ -42,19 +43,30 @@ export const MoviesSeriesPage = () => {
             release: [2000, 2025],
             runtime: [0, 180],
             region: "all",
-            page: page,
+            page: recommendationsPage,
           })
         );
       });
+    } else {
+      dispatch(
+        getMoviesSeriesRecommendation({
+          genre: moviesSeriesForm.genre,
+          content: moviesSeriesForm.content,
+          release: [2000, 2025],
+          runtime: [0, 180],
+          region: moviesSeriesForm.region,
+          page: recommendationsPage,
+        })
+      );
     }
-  }, [dispatch, moviesSeriesForm, page]);
+  }, [dispatch, moviesSeriesForm, user, recommendationsPage]);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  }, [moviesSeriesRecommendations]);
+  }, [recommendationsPage]);
 
   return (
     <>
@@ -64,23 +76,23 @@ export const MoviesSeriesPage = () => {
         <CustomBreadCrumbs />
         <MoviesSeriesForm />
         <Grid container spacing={2} position="relative">
-          {moviesSeriesRecommendations?.data?.map((movieSeries) => (
+          {moviesSeriesRecommendations?.results?.map((movieSeries) => (
             <Grid size={{ xs: 12, sm: 12, md: 6, lg: 4 }} key={movieSeries.id}>
               <MoviesSeriesCard movieSeries={movieSeries} />
             </Grid>
           ))}
           <Stack minWidth="100%" flex={1} gap={2} alignItems="center">
             <Pagination
-              key={page}
+              key={recommendationsPage}
               shape="rounded"
-              page={page}
+              page={recommendationsPage}
               disabled={loadingMoviesSeriesRecommendations}
               color="primary"
               variant="outlined"
               count={moviesSeriesRecommendations?.total_pages}
               onChange={async (_e, value) => {
                 if (moviesSeriesForm) {
-                  dispatch(setPage(value));
+                  dispatch(setRecommendationsPage(value));
                   await dispatch(
                     getMoviesSeriesRecommendation({
                       genre: moviesSeriesForm?.genre,

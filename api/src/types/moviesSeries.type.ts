@@ -7,26 +7,37 @@ export type MoviesSeriesForm = {
   page: number;
 };
 
-export type MoviesSeriesRecommendationsType = {
+export type LikeMovieSeriesForm = {
   id: number;
-  title?: string; // For movies
-  name?: string; // For TV series
-  original_title?: string; // For movies
-  original_name?: string; // For TV series
+  content: "movie" | "series";
+};
+
+export type MoviesSeriesRecommendationsType = {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
   original_language: string;
+  original_title?: string;
+  title?: string;
+  original_name?: string;
+  name?: string;
   overview: string;
   popularity: number;
+  poster_path: string;
+  release_date?: string;
+  first_air_date?: string;
+  video?: boolean;
   vote_average: number;
   vote_count: number;
-  backdrop_path: string;
-  poster_path: string;
-  genre_ids: number[];
-  release_date?: string; // Only for movies
-  first_air_date?: string; // Only for TV series
-  origin_country?: string[];
-  video?: boolean; // Only for movies
-  adult: boolean;
   liked: boolean;
+  origin_country?: string[];
+};
+
+export type MoviesSeriesRecommendationsWithPagesType = {
+  results: MoviesSeriesRecommendationsType[];
+  total_pages: number;
+  total_results: number;
 };
 
 export type MoviesSeriesType = {
@@ -35,8 +46,6 @@ export type MoviesSeriesType = {
   genres: { id: number; name: string }[];
   homepage?: string;
   id: number;
-  movie_series_id: number;
-  media_type: "movie" | "series";
   origin_country: string[];
   original_language: string;
   overview: string;

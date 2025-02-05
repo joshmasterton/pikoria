@@ -2,9 +2,9 @@ import axios from "axios";
 import { pool } from "../../config/pool.config";
 import { MoviesSeriesType } from "../../types/moviesSeries.type";
 
-export const insertFavouriteMoviesSeries = async (
+export const insertFavouriteMovieSeries = async (
   user_id: string,
-  favouriteMovieSeries: MoviesSeriesType
+  movieSeriesToLike: MoviesSeriesType
 ) => {
   const client = await pool.connect();
 
@@ -12,13 +12,13 @@ export const insertFavouriteMoviesSeries = async (
     // Does favourite movie_series already exist in database for the user
     const checkQuery = `
 			SELECT 1 FROM favourite_movies_series
-			WHERE user_id = $1 AND movie_series_id = $2 AND media_type = $3
+			WHERE user_id = $1 AND id = $2 AND media_type = $3
 		`;
 
     const checkValues = [
       user_id,
-      favouriteMovieSeries.id,
-      favouriteMovieSeries.media_type,
+      movieSeriesToLike.id,
+      movieSeriesToLike.name ? "series" : "movie",
     ];
     const checkResult = await client.query(checkQuery, checkValues);
 
@@ -26,25 +26,25 @@ export const insertFavouriteMoviesSeries = async (
       // If already exists delete from database for user
       const deleteQuery = `
 				DELETE FROM favourite_movies_series
-				WHERE user_id = $1 AND movie_series_id = $2 AND media_type = $3
+				WHERE user_id = $1 AND id = $2 AND media_type = $3
 			`;
       const deleteValues = [
         user_id,
-        favouriteMovieSeries.id,
-        favouriteMovieSeries.media_type,
+        movieSeriesToLike.id,
+        movieSeriesToLike.name ? "series" : "movie",
       ];
       await client.query(deleteQuery, deleteValues);
 
       return {
         message: `Removed ${
-          favouriteMovieSeries.title || favouriteMovieSeries.name
+          movieSeriesToLike.title || movieSeriesToLike.name
         } from favourites`,
       };
     } else {
       // Add into database to store for user
       const insertQuery = `
         INSERT INTO favourite_movies_series (
-          user_id, movie_series_id, media_type, adult, backdrop_path, genre_ids,
+          user_id, id, media_type, adult, backdrop_path, genre_ids,
           original_language, original_title, original_name, overview, popularity,
           poster_path, release_date, first_air_date, title, name, video,
           vote_average, vote_count
@@ -56,31 +56,31 @@ export const insertFavouriteMoviesSeries = async (
 
       const insertValues = [
         user_id,
-        favouriteMovieSeries.id,
-        favouriteMovieSeries.media_type,
-        favouriteMovieSeries.adult,
-        favouriteMovieSeries.backdrop_path,
-        favouriteMovieSeries.genres.map((g) => g.id), // Store only genre IDs
-        favouriteMovieSeries.original_language,
-        favouriteMovieSeries.original_title,
-        favouriteMovieSeries.original_name,
-        favouriteMovieSeries.overview,
-        favouriteMovieSeries.popularity,
-        favouriteMovieSeries.poster_path,
-        favouriteMovieSeries.release_date,
-        favouriteMovieSeries.first_air_date,
-        favouriteMovieSeries.title,
-        favouriteMovieSeries.name,
-        favouriteMovieSeries.video,
-        favouriteMovieSeries.vote_average,
-        favouriteMovieSeries.vote_count,
+        movieSeriesToLike.id,
+        movieSeriesToLike.name ? "series" : "movie",
+        movieSeriesToLike.adult,
+        movieSeriesToLike.backdrop_path,
+        movieSeriesToLike.genres.map((g) => g.id), // Store only genre IDs
+        movieSeriesToLike.original_language,
+        movieSeriesToLike.original_title,
+        movieSeriesToLike.original_name,
+        movieSeriesToLike.overview,
+        movieSeriesToLike.popularity,
+        movieSeriesToLike.poster_path,
+        movieSeriesToLike.release_date,
+        movieSeriesToLike.first_air_date,
+        movieSeriesToLike.title,
+        movieSeriesToLike.name,
+        movieSeriesToLike.video,
+        movieSeriesToLike.vote_average,
+        movieSeriesToLike.vote_count,
       ];
 
       await client.query(insertQuery, insertValues);
 
       return {
         message: `Added ${
-          favouriteMovieSeries.title || favouriteMovieSeries.name
+          movieSeriesToLike.title || movieSeriesToLike.name
         } to favourites`,
       };
     }
@@ -96,12 +96,24 @@ export const insertFavouriteMoviesSeries = async (
 };
 
 // Get favourite movies_series
-export const processMoviesSeriesRetrieval = async (user_id: string) => {
+export const getFavouriteMoviesSeries = async (
+  user_id: string,
+  page: number
+) => {
   const client = await pool.connect();
   try {
+    const totalQuery = `
+			SELECT COUNT(*) AS total FROM favourite_movies_series
+			WHERE user_id = $1
+		`;
+    const totalResponse = await client.query(totalQuery, [user_id]);
+    const total_results = parseInt(totalResponse.rows[0].total, 10);
+    const total_pages = Math.ceil(total_results / 20);
+
     const query = `
 			SELECT * FROM favourite_movies_series
 			WHERE user_id = $1
+			LIMIT 20 OFFSET ${page * 20}
 		`;
 
     const response = await client.query(query, [user_id]);
@@ -120,7 +132,11 @@ export const processMoviesSeriesRetrieval = async (user_id: string) => {
         })
       );
 
-      return favouriteMoviesSeriesLiked;
+      return {
+        results: favouriteMoviesSeriesLiked,
+        total_results,
+        total_pages,
+      };
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -134,8 +150,8 @@ export const processMoviesSeriesRetrieval = async (user_id: string) => {
 };
 
 // Get movie_series
-export const processMovieSeriesRetrieval = async (
-  movie_series_id: number,
+export const getMovieSeries = async (
+  id: number,
   content: "movie" | "series",
   user_id?: string
 ) => {
@@ -152,7 +168,7 @@ export const processMovieSeriesRetrieval = async (
 
   try {
     const TMDBResponse = await axios.get(
-      `${TMDB_URL}${endpoint}/${movie_series_id}?api_key=${TMDB_API_KEY}`
+      `${TMDB_URL}${endpoint}/${id}?api_key=${TMDB_API_KEY}`
     );
 
     const TMDBMovieSeries: MoviesSeriesType = TMDBResponse.data;
@@ -179,19 +195,18 @@ export const processMovieSeriesRetrieval = async (
 };
 
 // Does favourite movie_series already exist in database for the user
-export const checkLikedStatus = async (
-  movies_series_id: number,
-  user_id?: string
-) => {
+export const checkLikedStatus = async (id: number, user_id?: string) => {
   const client = await pool.connect();
+
+  console.log(id, user_id);
 
   try {
     const checkQuery = `
 			SELECT 1 FROM favourite_movies_series
-			WHERE user_id = $1 AND movie_series_id = $2
+			WHERE user_id = $1 AND id = $2
 		`;
 
-    const checkValues = [user_id, movies_series_id];
+    const checkValues = [user_id, id];
 
     const checkLiked = await client.query(checkQuery, checkValues);
 

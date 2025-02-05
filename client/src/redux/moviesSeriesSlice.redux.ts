@@ -3,13 +3,15 @@ import {
   MoviesSeriesForm,
   MoviesSeriesRecommendationsTypeAll,
   MoviesSeriesType,
+  MoviesSeriesTypeAll,
 } from "../types/moviesSeries.type";
 import axios, { AxiosError } from "axios";
 import { API_URL } from "../config/api.config";
 import { auth } from "../config/firebase.config";
 
 const initialState: {
-  page: number;
+  favouritesPage: number;
+  recommendationsPage: number;
   error: string | undefined;
   loadingLike: boolean;
   loadingMovieSeries: boolean;
@@ -17,10 +19,11 @@ const initialState: {
   loadingMoviesSeriesRecommendations: boolean;
   moviesSeriesRecommendations: MoviesSeriesRecommendationsTypeAll | undefined;
   movieSeries: MoviesSeriesType | undefined;
-  favouriteMoviesSeries: MoviesSeriesType[] | undefined;
+  favouriteMoviesSeries: MoviesSeriesTypeAll | undefined;
   moviesSeriesForm: MoviesSeriesForm | undefined;
 } = {
-  page: 1,
+  favouritesPage: 0,
+  recommendationsPage: 1,
   error: undefined,
   loadingLike: false,
   loadingMovieSeries: false,
@@ -64,15 +67,15 @@ export const getMoviesSeriesRecommendation = createAsyncThunk<
 // Like a movie_series
 export const likeMovieSeries = createAsyncThunk<
   MoviesSeriesType | undefined,
-  MoviesSeriesType
->("movies-series/like", async (movieSeries, { rejectWithValue }) => {
+  { id: number; content: "movie" | "series" }
+>("movies-series/like", async ({ id, content }, { rejectWithValue }) => {
   try {
     const user = auth.currentUser;
     const idToken = await user?.getIdToken();
 
     const response = await axios.post(
       `${API_URL}/movies-series/like`,
-      { ...movieSeries, media_type: movieSeries.name ? "series" : "movie" },
+      { id, content },
       {
         headers: {
           Authorization: `Bearer ${idToken}`,
@@ -92,7 +95,7 @@ export const likeMovieSeries = createAsyncThunk<
 
 // Get favourite movies_series
 export const getFavouriteMoviesSeries = createAsyncThunk<
-  MoviesSeriesType[] | undefined,
+  MoviesSeriesTypeAll | undefined,
   { page: number }
 >("/movies-series/favourites", async ({ page }, { rejectWithValue }) => {
   try {
@@ -100,7 +103,7 @@ export const getFavouriteMoviesSeries = createAsyncThunk<
     const idToken = await user?.getIdToken(true);
 
     const response = await axios.get(
-      `${API_URL}/movies-series/favourites?page=${page}`,
+      `${API_URL}/movies-series/favouriteMoviesSeries?page=${page}`,
       {
         headers: {
           Authorization: `Bearer ${idToken}`,
@@ -108,7 +111,7 @@ export const getFavouriteMoviesSeries = createAsyncThunk<
       }
     );
 
-    return response.data as MoviesSeriesType[] | undefined;
+    return response.data as MoviesSeriesTypeAll | undefined;
   } catch (error) {
     if (error instanceof AxiosError) {
       rejectWithValue(error.response?.data);
@@ -153,8 +156,11 @@ const moviesSeriesSlice = createSlice({
   name: "moviesSeries",
   initialState,
   reducers: {
-    setPage: (state, action) => {
-      state.page = action.payload;
+    setFavouritesPage: (state, action) => {
+      state.favouritesPage = action.payload;
+    },
+    setRecommendationsPage: (state, action) => {
+      state.recommendationsPage = action.payload;
     },
     clearMoviesSeriesRecommendations: (state) => {
       state.moviesSeriesRecommendations = undefined;
@@ -188,7 +194,34 @@ const moviesSeriesSlice = createSlice({
       })
       .addCase(likeMovieSeries.fulfilled, (state, action) => {
         state.loadingLike = false;
-        state.movieSeries = action.payload;
+        const likedMovieSeries = action.payload;
+        state.movieSeries = likedMovieSeries;
+
+        if (!likedMovieSeries) {
+          return;
+        }
+
+        if (state.movieSeries) {
+          state.movieSeries = likedMovieSeries;
+        }
+
+        if (state.favouriteMoviesSeries?.results) {
+          state.favouriteMoviesSeries.results =
+            state.favouriteMoviesSeries.results.map((movieSeries) => {
+              return movieSeries.id === likedMovieSeries.id
+                ? { ...movieSeries, liked: likedMovieSeries.liked }
+                : movieSeries;
+            });
+        }
+
+        if (state.moviesSeriesRecommendations?.results) {
+          state.moviesSeriesRecommendations.results =
+            state.moviesSeriesRecommendations.results.map((movieSeries) => {
+              return movieSeries.id === likedMovieSeries.id
+                ? { ...movieSeries, liked: likedMovieSeries.liked }
+                : movieSeries;
+            });
+        }
       })
       .addCase(likeMovieSeries.rejected, (state, action) => {
         state.loadingLike = false;
@@ -220,7 +253,8 @@ const moviesSeriesSlice = createSlice({
 });
 
 export const {
-  setPage,
+  setFavouritesPage,
+  setRecommendationsPage,
   setFormData,
   clearMovieSeries,
   clearMoviesSeriesRecommendations,

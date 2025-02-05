@@ -1,17 +1,17 @@
 import { Response } from "express";
 import {
-  processFavouriteMoviesSeries,
+  processLikeMovieSeries,
   processMoviesSeriesRecommendation,
 } from "../services/moviesSeries.service";
-import { MoviesSeriesForm, MoviesSeriesType } from "../types/moviesSeries.type";
+import { MoviesSeriesForm } from "../types/moviesSeries.type";
 import { RequestWithUser } from "../types/request.type";
 import { AxiosError } from "axios";
 import {
-  processMovieSeriesRetrieval,
-  processMoviesSeriesRetrieval,
+  getFavouriteMoviesSeries,
+  getMovieSeries,
 } from "../database/models/moviesSeries.model";
 
-// Submit users personal preferences to get a movie_series
+// Get movies_series recommendations
 export const submitMoviesSeriesRecommendation = async (
   req: RequestWithUser<{}, {}, MoviesSeriesForm>,
   res: Response
@@ -38,25 +38,27 @@ export const submitMoviesSeriesRecommendation = async (
 };
 
 // Insert movies_series into favourites
-export const addToLikes = async (
-  req: RequestWithUser<{}, {}, MoviesSeriesType>,
+export const sumbitLikeMovieSeries = async (
+  req: RequestWithUser<{}, {}, { id: number; content: "movie" | "series" }>,
   res: Response
 ) => {
   try {
     const { user } = req;
-    const favouriteMovieSeries = req.body;
+    const { id, content } = req.body;
 
     if (!user) {
       throw new Error("No user present");
     }
 
-    await processFavouriteMoviesSeries(user?.uid, favouriteMovieSeries);
+    const movieSeriesToLike = await getMovieSeries(id, content, user?.uid);
 
-    const movieSeries = await processMovieSeriesRetrieval(
-      favouriteMovieSeries.id,
-      favouriteMovieSeries.name ? "series" : "movie",
-      user?.uid
-    );
+    if (!movieSeriesToLike) {
+      throw new Error("No movie/series found");
+    }
+
+    await processLikeMovieSeries(user?.uid, movieSeriesToLike);
+
+    const movieSeries = await getMovieSeries(id, content, user?.uid);
 
     res.status(200).json(movieSeries);
   } catch (error) {
@@ -67,7 +69,7 @@ export const addToLikes = async (
   }
 };
 
-export const getMovieSeries = async (
+export const submitGetMovieSeries = async (
   req: RequestWithUser<{ id: number }, {}, {}, { content: "movie" | "series" }>,
   res: Response
 ) => {
@@ -76,11 +78,7 @@ export const getMovieSeries = async (
     const { id } = req.params;
     const { content } = req.query;
 
-    const movieSeries = await processMovieSeriesRetrieval(
-      id,
-      content,
-      user?.uid
-    );
+    const movieSeries = await getMovieSeries(id, content, user?.uid);
 
     res.status(200).json(movieSeries);
   } catch (error) {
@@ -94,15 +92,22 @@ export const getMovieSeries = async (
 };
 
 // Get favourite movies_series
-export const getFavourites = async (req: RequestWithUser, res: Response) => {
+export const submitGetFavouriteMoviesSeries = async (
+  req: RequestWithUser<{}, {}, {}, { page: number }>,
+  res: Response
+) => {
   try {
     const { user } = req;
+    const { page } = req.query;
 
     if (!user) {
       throw new Error("No user present");
     }
 
-    const favouriteMoviesSeries = await processMoviesSeriesRetrieval(user?.uid);
+    const favouriteMoviesSeries = await getFavouriteMoviesSeries(
+      user?.uid,
+      page
+    );
 
     res.status(200).json(favouriteMoviesSeries);
   } catch (error) {

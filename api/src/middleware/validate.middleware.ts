@@ -14,17 +14,41 @@ export const validate = <T>(schema: yup.ObjectSchema<any>) => {
       } else if (error instanceof Error) {
         res.status(400).json({ error: error.message });
       } else {
-        res
-          .status(400)
-          .json({ error: "Error validating movies/series inputs" });
+        res.status(400).json({ error: "Error validating inputs" });
       }
     }
   };
 };
 
-// Check body is validated
+// Check query and params is validated
+export const validateQuery = <T>(schema: yup.ObjectSchema<any>) => {
+  return async (
+    req: Request<{}, {}, {}, T>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      await schema.validate(req.query, { abortEarly: false });
+      next();
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        res.status(400).json({ errors: error.errors });
+      } else if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: "Error validating inputs" });
+      }
+    }
+  };
+};
+
+// Check query and params is validated
 export const validateQueryParams = <T>(schema: yup.ObjectSchema<any>) => {
-  return async (req: Request<{}, {}, T>, res: Response, next: NextFunction) => {
+  return async (
+    req: Request<{}, {}, {}, T>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       await schema.validate(
         { params: req.params, query: req.query },
@@ -37,9 +61,7 @@ export const validateQueryParams = <T>(schema: yup.ObjectSchema<any>) => {
       } else if (error instanceof Error) {
         res.status(400).json({ error: error.message });
       } else {
-        res
-          .status(400)
-          .json({ error: "Error validating movies/series inputs" });
+        res.status(400).json({ error: "Error validating inputs" });
       }
     }
   };

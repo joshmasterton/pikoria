@@ -27,8 +27,11 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
-import useScrollTrigger from "@mui/material/useScrollTrigger";
 import Slide from "@mui/material/Slide";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
+import Fab from "@mui/material/Fab";
+import Fade from "@mui/material/Fade";
+import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 
 const HideOnScroll = ({ children }: { children: ReactElement }) => {
   const trigger = useScrollTrigger();
@@ -36,6 +39,21 @@ const HideOnScroll = ({ children }: { children: ReactElement }) => {
     <Slide appear={false} direction="down" in={!trigger}>
       {children}
     </Slide>
+  );
+};
+
+const ScrollTop = ({ children }: { children: ReactElement }) => {
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  return (
+    <Fade in={trigger}>
+      <Box sx={{ position: "fixed", bottom: 15, right: 15, zIndex: 4 }}>
+        {children}
+      </Box>
+    </Fade>
   );
 };
 
@@ -53,6 +71,17 @@ export const Nav = () => {
 
   return (
     <Box flexGrow={1}>
+      <ScrollTop>
+        <Fab
+          size="small"
+          color="primary"
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          <ExpandLessRoundedIcon />
+        </Fab>
+      </ScrollTop>
       <HideOnScroll>
         <AppBar
           elevation={0}

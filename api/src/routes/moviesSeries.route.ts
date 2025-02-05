@@ -1,22 +1,27 @@
 import { Router } from "express";
 import {
   validate,
+  validateQuery,
   validateQueryParams,
 } from "../middleware/validate.middleware";
 import {
-  addToLikes,
-  getFavourites,
-  getMovieSeries,
+  submitGetFavouriteMoviesSeries,
+  submitGetMovieSeries,
   submitMoviesSeriesRecommendation,
+  sumbitLikeMovieSeries,
 } from "../controllers/moviesSeries.controller";
 import {
   verifyToken,
   verifyTokenOptional,
 } from "../middleware/verifyToken.middleware";
-import { MoviesSeriesForm, MoviesSeriesType } from "../types/moviesSeries.type";
 import {
-  favouriteMoviesSeriesSchema,
+  LikeMovieSeriesForm,
+  MoviesSeriesForm,
+} from "../types/moviesSeries.type";
+import {
+  getFavouriteMoviesSeriesSchema,
   getMovieSeriesSchema,
+  likeMovieSeriesSchema,
   moviesSeriesSchema,
 } from "../validation/moviesSeries.validation";
 
@@ -32,8 +37,8 @@ moviesSeriesRouter.post(
 moviesSeriesRouter.post(
   "/like",
   verifyToken,
-  validate<MoviesSeriesType>(favouriteMoviesSeriesSchema),
-  addToLikes
+  validate<LikeMovieSeriesForm>(likeMovieSeriesSchema),
+  sumbitLikeMovieSeries
 );
 
 moviesSeriesRouter.get(
@@ -42,7 +47,12 @@ moviesSeriesRouter.get(
   validateQueryParams<{ id: number; content: "movie" | "series" }>(
     getMovieSeriesSchema
   ),
-  getMovieSeries
+  submitGetMovieSeries
 );
 
-moviesSeriesRouter.get("/favourites", verifyToken, getFavourites);
+moviesSeriesRouter.get(
+  "/favouriteMoviesSeries",
+  verifyToken,
+  validateQuery<{ page: number }>(getFavouriteMoviesSeriesSchema),
+  submitGetFavouriteMoviesSeries
+);

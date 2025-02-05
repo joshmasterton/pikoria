@@ -11,15 +11,22 @@ import { useAppDispatch, useAppSelector } from "../../redux/store.redux";
 import {
   getMoviesSeriesRecommendation,
   setFormData,
-  setPage,
+  setRecommendationsPage,
 } from "../../redux/moviesSeriesSlice.redux";
 
 export const MoviesSeriesForm = () => {
   const dispatch = useAppDispatch();
-  const { moviesSeriesForm } = useAppSelector((state) => state.moviesSeries);
+  const { moviesSeriesForm, loadingMoviesSeriesRecommendations } =
+    useAppSelector((state) => state.moviesSeries);
 
   return (
-    <Card elevation={0} sx={{ overflow: "visible", background: "transparent" }}>
+    <Card
+      elevation={0}
+      sx={{
+        overflow: "visible",
+        background: "transparent",
+      }}
+    >
       <Formik
         validationSchema={moviesSeriesSchema}
         initialValues={{
@@ -50,7 +57,7 @@ export const MoviesSeriesForm = () => {
               page: 1,
             })
           );
-          dispatch(setPage(1));
+          dispatch(setRecommendationsPage(1));
         }}
       >
         {({
@@ -63,9 +70,15 @@ export const MoviesSeriesForm = () => {
         }) => {
           return (
             <form onSubmit={handleSubmit}>
-              <Stack gap={2} direction="row" flexWrap="wrap">
+              <Stack
+                gap={2}
+                direction="row"
+                flexWrap="wrap"
+                justifyContent="start"
+              >
                 <FormControl
                   size="small"
+                  disabled={loadingMoviesSeriesRecommendations}
                   error={Boolean(errors.content && touched.content)}
                 >
                   <InputLabel id="content-select-label">Content</InputLabel>
@@ -112,6 +125,7 @@ export const MoviesSeriesForm = () => {
                   )}
                 </FormControl>
                 <FormControl
+                  disabled={loadingMoviesSeriesRecommendations}
                   size="small"
                   error={Boolean(errors.genre && touched.genre)}
                 >
@@ -144,6 +158,7 @@ export const MoviesSeriesForm = () => {
                   )}
                 </FormControl>
                 <FormControl
+                  disabled={loadingMoviesSeriesRecommendations}
                   size="small"
                   error={Boolean(errors.region && touched.region)}
                 >

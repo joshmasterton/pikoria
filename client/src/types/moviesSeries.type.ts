@@ -29,7 +29,13 @@ export type MoviesSeriesRecommendationsType = {
 };
 
 export type MoviesSeriesRecommendationsTypeAll = {
-  data: MoviesSeriesRecommendationsType[];
+  results: MoviesSeriesRecommendationsType[];
+  total_pages: number;
+  total_results: number;
+};
+
+export type MoviesSeriesTypeAll = {
+  results: MoviesSeriesType[];
   total_pages: number;
   total_results: number;
 };
@@ -40,7 +46,6 @@ export type MoviesSeriesType = {
   genres: { id: number; name: string }[];
   homepage?: string;
   id: number;
-  movie_series_id: number;
   media_type: "movie" | "series";
   origin_country: string[];
   original_language: string;

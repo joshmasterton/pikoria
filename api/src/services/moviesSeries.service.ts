@@ -6,7 +6,7 @@ import {
 } from "../types/moviesSeries.type";
 import {
   checkLikedStatus,
-  insertFavouriteMoviesSeries,
+  insertFavouriteMovieSeries,
 } from "../database/models/moviesSeries.model";
 
 export const processMoviesSeriesRecommendation = async (
@@ -81,7 +81,7 @@ export const processMoviesSeriesRecommendation = async (
     );
 
     return {
-      data: TMDBMoviesSeriesWithLike,
+      results: TMDBMoviesSeriesWithLike,
       total_pages: (TMDBResponse.data.total_pages as number) ?? 0,
       total_results: (TMDBResponse.data.total_results as number) ?? 0,
     };
@@ -92,14 +92,14 @@ export const processMoviesSeriesRecommendation = async (
   }
 };
 
-// Process favourite movie_series request
-export const processFavouriteMoviesSeries = async (
+// Like and insert movie series into favourites table
+export const processLikeMovieSeries = async (
   user_id: string,
   favouriteMovieSeries: MoviesSeriesType
 ) => {
   try {
     // Insert into favourite_movies_series table
-    return await insertFavouriteMoviesSeries(user_id, favouriteMovieSeries);
+    return await insertFavouriteMovieSeries(user_id, favouriteMovieSeries);
   } catch (error) {
     if (error instanceof Error) {
       throw error;

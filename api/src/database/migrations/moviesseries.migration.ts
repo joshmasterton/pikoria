@@ -3,9 +3,9 @@ import { pool } from "../../config/pool.config";
 export const createFavouriteMoviesSeriesTable = async () => {
   const query = `
 		CREATE TABLE IF NOT EXISTS favourite_movies_series(
-			id SERIAL PRIMARY KEY,
+			database_id SERIAL PRIMARY KEY,
 			user_id VARCHAR(255),
-			movie_series_id INTEGER NOT NULL,
+			id INTEGER NOT NULL,
 			media_type VARCHAR(10) NOT NULL CHECK (media_type IN ('movie', 'series')),
 			adult BOOLEAN DEFAULT false,
 			backdrop_path VARCHAR(255) NOT NULL,

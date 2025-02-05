@@ -10,12 +10,18 @@ import {
   MoviesSeriesType,
 } from "../../types/moviesSeries.type";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/store.redux";
+import { likeMovieSeries } from "../../redux/moviesSeriesSlice.redux";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Checkbox from "@mui/material/Checkbox";
+import { FavoriteBorderRounded } from "@mui/icons-material";
 
 export const MoviesSeriesCard = ({
   movieSeries,
 }: {
   movieSeries: MoviesSeriesRecommendationsType;
 }) => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -26,6 +32,21 @@ export const MoviesSeriesCard = ({
         width: "100%",
       }}
     >
+      <Checkbox
+        color="error"
+        sx={{ position: "absolute", zIndex: 3, bottom: 10, right: 10 }}
+        onClick={async () =>
+          await dispatch(
+            likeMovieSeries({
+              id: movieSeries.id,
+              content: movieSeries.name ? "series" : "movie",
+            })
+          )
+        }
+        checked={movieSeries.liked}
+        icon={<FavoriteBorderRounded />}
+        checkedIcon={<FavoriteIcon />}
+      />
       <CardActionArea
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
         onClick={() =>
@@ -92,6 +113,7 @@ export const MoviesSeriesCardAdvanced = ({
   movieSeries: MoviesSeriesType;
 }) => {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   return (
@@ -101,12 +123,27 @@ export const MoviesSeriesCardAdvanced = ({
         width: "100%",
       }}
     >
+      <Checkbox
+        color="error"
+        sx={{ position: "absolute", zIndex: 3, bottom: 10, right: 10 }}
+        onClick={async () =>
+          await dispatch(
+            likeMovieSeries({
+              id: movieSeries.id,
+              content: movieSeries.name ? "series" : "movie",
+            })
+          )
+        }
+        checked={movieSeries.liked}
+        icon={<FavoriteBorderRounded />}
+        checkedIcon={<FavoriteIcon />}
+      />
       <CardActionArea
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
         onClick={() =>
           navigate(
-            `/movie-series/${movieSeries.id}/${
-              movieSeries.name ? "series" : "movie"
+            `/movie-series/${movieSeries.name ? "series" : "movie"}/${
+              movieSeries.id
             }`
           )
         }
