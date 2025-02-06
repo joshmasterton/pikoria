@@ -68,6 +68,33 @@ export const MoviesSeriesPage = () => {
     });
   }, [recommendationsPage]);
 
+  useEffect(() => {
+    const saveScrollPosition = () => {
+      sessionStorage.setItem(
+        "pikoria_movies_series_scroll_position",
+        window.scrollY.toString()
+      );
+    };
+
+    const savedScrollPosition = sessionStorage.getItem(
+      "pikoria_movies_series_scroll_position"
+    );
+
+    if (savedScrollPosition) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: parseInt(savedScrollPosition, 10),
+        });
+      }, 100);
+    }
+
+    window.addEventListener("scroll", saveScrollPosition);
+
+    return () => {
+      window.removeEventListener("scroll", saveScrollPosition);
+    };
+  }, []);
+
   return (
     <>
       <Nav />
@@ -75,9 +102,18 @@ export const MoviesSeriesPage = () => {
       <Stack flexGrow={1} p={2} gap={2} mt={8} ml={{ xs: 0, sm: 31 }}>
         <CustomBreadCrumbs />
         <MoviesSeriesForm />
-        <Grid container spacing={2} position="relative">
+        <Grid
+          aria-label="movies-series"
+          container
+          spacing={2}
+          position="relative"
+        >
           {moviesSeriesRecommendations?.results?.map((movieSeries) => (
-            <Grid size={{ xs: 12, sm: 12, md: 6, lg: 4 }} key={movieSeries.id}>
+            <Grid
+              aria-label={movieSeries.name || movieSeries.title}
+              size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
+              key={movieSeries.id}
+            >
               <MoviesSeriesCard movieSeries={movieSeries} />
             </Grid>
           ))}

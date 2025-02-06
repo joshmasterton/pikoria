@@ -11,6 +11,7 @@ services:
     depends_on:
       - postgres
     volumes:
+      - ./client/vitest.setup.ts:/app/vitest.setup.ts
       - ./client/__tests__:/app/__tests__
       - ./client/src:/app/src
   api:

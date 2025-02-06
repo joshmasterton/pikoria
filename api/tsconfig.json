@@ -4,11 +4,11 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    "noEmit": false,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -16,6 +16,10 @@
     "noUncheckedSideEffectImports": true,
     "outDir": "./dist",
     "rootDir": "./src"
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

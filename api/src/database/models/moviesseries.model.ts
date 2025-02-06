@@ -198,8 +198,6 @@ export const getMovieSeries = async (
 export const checkLikedStatus = async (id: number, user_id?: string) => {
   const client = await pool.connect();
 
-  console.log(id, user_id);
-
   try {
     const checkQuery = `
 			SELECT 1 FROM favourite_movies_series

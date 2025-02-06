@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice.redux";
 import { useTheme } from "@mui/material/styles";
 import { CustomTooltip } from "./CustomTooltip.comp";
@@ -31,6 +31,7 @@ import Slide from "@mui/material/Slide";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import Fab from "@mui/material/Fab";
 import Fade from "@mui/material/Fade";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 
 const HideOnScroll = ({ children }: { children: ReactElement }) => {
@@ -57,13 +58,14 @@ const ScrollTop = ({ children }: { children: ReactElement }) => {
   );
 };
 
-export const Nav = () => {
+export const Nav = ({ isReturn = false }: { isReturn?: boolean }) => {
   const [userSettingsAnchor, setUserSettingsAnchor] =
     useState<HTMLElement | null>(null);
   const [openDrawer, setOpenDrawer] = useState(false);
   const { user, loading } = useAppSelector((state) => state.auth);
   const { localTheme } = useAppSelector((state) => state.theme);
   const navigate = useNavigate();
+  const location = useLocation();
   const openUserSettings = Boolean(userSettingsAnchor);
   const dispatch = useAppDispatch();
   const theme = useTheme();
@@ -101,7 +103,16 @@ export const Nav = () => {
             height="100%"
             gap={2}
           >
-            <Logo />
+            {isReturn ? (
+              <IconButton
+                size="small"
+                onClick={() => navigate(location.state.from || "/home")}
+              >
+                <ChevronLeftRoundedIcon />
+              </IconButton>
+            ) : (
+              <Logo />
+            )}
             <Box
               display={{ xs: "flex", sm: "none" }}
               justifyContent="end"

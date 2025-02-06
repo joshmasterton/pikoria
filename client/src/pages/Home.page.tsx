@@ -40,6 +40,35 @@ export const Home = () => {
     });
   }, [favouritesPage]);
 
+  useEffect(() => {
+    const saveScrollPosition = () => {
+      sessionStorage.setItem(
+        "pikoria_favourite_movies_series_scroll_position",
+        window.scrollY.toString()
+      );
+    };
+
+    window.addEventListener("scroll", saveScrollPosition);
+
+    return () => {
+      window.removeEventListener("scroll", saveScrollPosition);
+    };
+  }, []);
+
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem(
+      "pikoria_favourite_movies_series_scroll_position"
+    );
+
+    if (savedScrollPosition) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: parseInt(savedScrollPosition, 10),
+        });
+      }, 100);
+    }
+  }, [favouriteMoviesSeries]);
+
   return (
     <>
       <Nav />

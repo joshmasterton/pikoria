@@ -1,0 +1,80 @@
+import { processLikeMovieSeries, processMoviesSeriesRecommendation, } from "../services/moviesSeries.service.js";
+import { AxiosError } from "axios";
+import { getFavouriteMoviesSeries, getMovieSeries, } from "../database/models/moviesSeries.model.js";
+// Get movies_series recommendations
+export const submitMoviesSeriesRecommendation = async (req, res) => {
+    try {
+        const recommendationData = req.body;
+        const { user } = req;
+        const recommendedMoviesSeries = await processMoviesSeriesRecommendation(recommendationData, user?.uid);
+        res.status(200).json(recommendedMoviesSeries);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
+        else {
+            res
+                .status(400)
+                .json({ error: "Error submitting movies_series recommendation" });
+        }
+    }
+};
+// Insert movies_series into favourites
+export const sumbitLikeMovieSeries = async (req, res) => {
+    try {
+        const { user } = req;
+        const { id, content } = req.body;
+        if (!user) {
+            throw new Error("No user present");
+        }
+        const movieSeriesToLike = await getMovieSeries(id, content, user?.uid);
+        if (!movieSeriesToLike) {
+            throw new Error("No movie/series found");
+        }
+        await processLikeMovieSeries(user?.uid, movieSeriesToLike);
+        const movieSeries = await getMovieSeries(id, content, user?.uid);
+        res.status(200).json(movieSeries);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ error: error.message });
+        }
+        res.status(400).json({ error: "Error adding movie_series to liked list" });
+    }
+};
+export const submitGetMovieSeries = async (req, res) => {
+    try {
+        const { user } = req;
+        const { id } = req.params;
+        const { content } = req.query;
+        const movieSeries = await getMovieSeries(id, content, user?.uid);
+        res.status(200).json(movieSeries);
+    }
+    catch (error) {
+        if (error instanceof AxiosError) {
+            console.log(error.code);
+        }
+        else {
+            console.log(error);
+        }
+        res.status(400).json({ error: "Error getting movie_series" });
+    }
+};
+// Get favourite movies_series
+export const submitGetFavouriteMoviesSeries = async (req, res) => {
+    try {
+        const { user } = req;
+        const { page } = req.query;
+        if (!user) {
+            throw new Error("No user present");
+        }
+        const favouriteMoviesSeries = await getFavouriteMoviesSeries(user?.uid, page);
+        res.status(200).json(favouriteMoviesSeries);
+    }
+    catch (error) {
+        res
+            .status(400)
+            .json({ error: "Error getting movies_series from favourites" });
+    }
+};

@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch ./src/app.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsc && tsc-alias",
+    "prod": "node ./dist/app.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +19,9 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "firebase-admin": "^13.0.2",
+    "helmet": "^8.0.0",
     "pg": "^8.13.1",
+    "tsc-alias": "^1.8.10",
     "yup": "^1.6.1"
   },
   "devDependencies": {

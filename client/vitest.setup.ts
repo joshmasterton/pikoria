@@ -6,11 +6,10 @@ import { server } from "./__tests__/mocks/msw.mock";
 beforeAll(() => {
   server.listen();
 
-  // Mock scroll into view
+  // Mock scrolls
   Element.prototype.scrollIntoView = vitest.fn();
-
-  // Mock scroll to
   Element.prototype.scrollTo = vitest.fn();
+  window.scrollTo = vitest.fn();
 });
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());

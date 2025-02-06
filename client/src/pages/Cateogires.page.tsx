@@ -9,9 +9,18 @@ import movies from "../assets/movies.jpg";
 import games from "../assets/games.jpg";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import { alpha } from "@mui/material/styles";
+import { useEffect } from "react";
 
 export const Categories = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  });
 
   return (
     <>
@@ -31,16 +40,25 @@ export const Categories = () => {
               height: "100%",
             }}
           >
+            <Box
+              width="100%"
+              height="100%"
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                background: alpha("#000000", 0.75),
+                maskImage:
+                  "linear-gradient(320deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 100%)",
+              }}
+            />
             <Stack
               width="100%"
               height="100%"
               sx={{
                 zIndex: 1,
                 p: 2,
-                maskImage:
-                  "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 60%)",
-                backdropFilter: "blur(0.5rem)",
-                WebkitBackdropFilter: "blur(0.5rem)",
               }}
             >
               <Typography color="white">Movies / Series</Typography>
@@ -69,16 +87,25 @@ export const Categories = () => {
               height: "100%",
             }}
           >
+            <Box
+              width="100%"
+              height="100%"
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                background: alpha("#000000", 0.75),
+                maskImage:
+                  "linear-gradient(320deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 100%)",
+              }}
+            />
             <Stack
               width="100%"
               height="100%"
               sx={{
                 zIndex: 1,
                 p: 2,
-                maskImage:
-                  "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 60%)",
-                backdropFilter: "blur(0.5rem)",
-                WebkitBackdropFilter: "blur(0.5rem)",
               }}
             >
               <Typography color="white">Games</Typography>

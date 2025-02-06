@@ -4,17 +4,18 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
 import Stack from "@mui/material/Stack";
-import { alpha, useTheme } from "@mui/material/styles";
+import { alpha } from "@mui/material/styles";
 import {
   MoviesSeriesRecommendationsType,
   MoviesSeriesType,
 } from "../../types/moviesSeries.type";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/store.redux";
 import { likeMovieSeries } from "../../redux/moviesSeriesSlice.redux";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Checkbox from "@mui/material/Checkbox";
-import { FavoriteBorderRounded } from "@mui/icons-material";
+import FavoriteBorderRounded from "@mui/icons-material/FavoriteBorderRounded";
+import Box from "@mui/material/Box";
 
 export const MoviesSeriesCard = ({
   movieSeries,
@@ -22,11 +23,12 @@ export const MoviesSeriesCard = ({
   movieSeries: MoviesSeriesRecommendationsType;
 }) => {
   const dispatch = useAppDispatch();
-  const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Card
+      variant="outlined"
       sx={{
         position: "relative",
         width: "100%",
@@ -44,7 +46,7 @@ export const MoviesSeriesCard = ({
           )
         }
         checked={movieSeries.liked}
-        icon={<FavoriteBorderRounded />}
+        icon={<FavoriteBorderRounded sx={{ color: "white" }} />}
         checkedIcon={<FavoriteIcon />}
       />
       <CardActionArea
@@ -53,7 +55,8 @@ export const MoviesSeriesCard = ({
           navigate(
             `/movie-series/${movieSeries.name ? "series" : "movie"}/${
               movieSeries.id
-            }`
+            }`,
+            { state: { from: location.pathname } }
           )
         }
       >
@@ -63,38 +66,49 @@ export const MoviesSeriesCard = ({
           src={`https://image.tmdb.org/t/p/w500/${movieSeries.poster_path}`}
         />
         <Card
+          variant="outlined"
           sx={{
             p: 1.5,
             position: "absolute",
             top: 10,
-            backdropFilter: "blur(2rem)",
-            WebkitBackdropFilter: "blur(2rem)",
             right: 10,
             zIndex: 2,
           }}
         >
           {Math.floor(movieSeries.vote_average * 10) / 10}
         </Card>
+        <Box
+          width="100%"
+          height={70}
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            zIndex: 2,
+            backdropFilter: "blur(0.25em)",
+            WebkitBackdropFilter: "blur(0.25rem)",
+            maskImage:
+              "linear-gradient(to top, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
+          }}
+        />
         <CardContent
           sx={{
-            height: 200,
+            height: 300,
             width: "100%",
             position: "absolute",
             bottom: 0,
             left: 0,
-            borderRadius: 1,
             zIndex: 2,
-            backdropFilter: "blur(2rem)",
-            WebkitBackdropFilter: "blur(2rem)",
+            background: alpha("#000000", 0.7),
             maskImage:
-              "linear-gradient(to top, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%)",
-            background: alpha(theme.palette.background.default, 0.05),
+              "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 50%)",
           }}
         >
           <Stack gap={2} justifyContent="end" height="100%">
             <Typography
               color="white"
               textOverflow="ellipsis"
+              maxWidth="85%"
               overflow="hidden"
               sx={{ whiteSpace: "nowrap" }}
             >
@@ -112,7 +126,7 @@ export const MoviesSeriesCardAdvanced = ({
 }: {
   movieSeries: MoviesSeriesType;
 }) => {
-  const theme = useTheme();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -144,7 +158,8 @@ export const MoviesSeriesCardAdvanced = ({
           navigate(
             `/movie-series/${movieSeries.name ? "series" : "movie"}/${
               movieSeries.id
-            }`
+            }`,
+            { state: { from: location.pathname } }
           )
         }
       >
@@ -154,36 +169,47 @@ export const MoviesSeriesCardAdvanced = ({
           src={`https://image.tmdb.org/t/p/w500/${movieSeries.poster_path}`}
         />
         <Card
+          variant="outlined"
           sx={{
             p: 1.5,
             position: "absolute",
             top: 10,
-            backdropFilter: "blur(2rem)",
-            WebkitBackdropFilter: "blur(2rem)",
             right: 10,
             zIndex: 2,
           }}
         >
           {Math.floor(movieSeries.vote_average * 10) / 10}
         </Card>
+        <Box
+          width="100%"
+          height={70}
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            zIndex: 2,
+            backdropFilter: "blur(0.25em)",
+            WebkitBackdropFilter: "blur(0.25rem)",
+            maskImage:
+              "linear-gradient(to top, rgba(0, 0, 0, 1)50%, rgba(0, 0, 0, 0) 100%)",
+          }}
+        />
         <CardContent
           sx={{
-            height: 200,
+            height: 300,
             width: "100%",
             position: "absolute",
             bottom: 0,
             left: 0,
-            borderRadius: 1,
             zIndex: 2,
-            backdropFilter: "blur(2rem)",
-            WebkitBackdropFilter: "blur(2rem)",
+            background: alpha("#000000", 0.7),
             maskImage:
-              "linear-gradient(to top, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%)",
-            background: alpha(theme.palette.background.default, 0.05),
+              "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 50%)",
           }}
         >
           <Stack gap={2} justifyContent="end" height="100%">
             <Typography
+              maxWidth="85%"
               color="white"
               textOverflow="ellipsis"
               overflow="hidden"
