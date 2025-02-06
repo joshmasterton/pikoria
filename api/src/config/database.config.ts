@@ -23,6 +23,12 @@ export const createDatabaseIfNotExists = async () => {
   }
   try {
   } catch (error) {
+    if (error instanceof Error && "code" in error) {
+      const pgError = error as { code: string };
+      if (pgError.code === "42P04") {
+        return console.log(`Database ${databaseName} already exists`);
+      }
+    }
     if (error instanceof Error) {
       throw error;
     } else {
