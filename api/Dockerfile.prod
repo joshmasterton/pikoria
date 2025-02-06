@@ -2,10 +2,10 @@ FROM node:22
 
 WORKDIR /app
 
-COPY package*.json /app
+COPY api/package*.json /app
 
 RUN npm install
 
-COPY . /app
+COPY api/. /app
 
 CMD ["npm", "run", "prod"]
