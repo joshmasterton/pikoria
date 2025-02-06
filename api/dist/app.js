@@ -4,12 +4,12 @@ import cors from "cors";
 import { moviesSeriesRouter } from "./routes/moviesSeries.route.js";
 import { startApi } from "./config/api.config.js";
 dotenv.config();
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV, CLIENT_URL } = process.env;
 export const app = express();
 if (NODE_ENV !== "test") {
     startApi();
 }
-app.use(cors());
+app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.get("/", (_req, res) => {
