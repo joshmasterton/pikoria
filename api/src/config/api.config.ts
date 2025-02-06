@@ -2,9 +2,9 @@ import { createFavouriteMoviesSeriesTable } from "../database/migrations/moviess
 import { createDatabaseIfNotExists } from "./database.config";
 
 export const startApi = async () => {
-  const { POSTGRES_DB } = process.env;
+  const { POSTGRES_ADMIN_URL } = process.env;
 
-  if (!POSTGRES_DB) {
+  if (!POSTGRES_ADMIN_URL) {
     throw new Error("Environmental variables not found");
   }
 

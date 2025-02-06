@@ -1,8 +1,8 @@
 import { createFavouriteMoviesSeriesTable } from "../database/migrations/moviesseries.migration.js";
 import { createDatabaseIfNotExists } from "./database.config.js";
 export const startApi = async () => {
-    const { POSTGRES_DB } = process.env;
-    if (!POSTGRES_DB) {
+    const { POSTGRES_ADMIN_URL } = process.env;
+    if (!POSTGRES_ADMIN_URL) {
         throw new Error("Environmental variables not found");
     }
     try {
