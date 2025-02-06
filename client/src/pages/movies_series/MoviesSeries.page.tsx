@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import LinearProgress from "@mui/material/LinearProgress";
 
 export const MoviesSeriesPage = () => {
   const dispatch = useAppDispatch();
@@ -108,41 +109,52 @@ export const MoviesSeriesPage = () => {
           spacing={2}
           position="relative"
         >
-          {moviesSeriesRecommendations?.results?.map((movieSeries) => (
-            <Grid
-              aria-label={movieSeries.name || movieSeries.title}
-              size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
-              key={movieSeries.id}
-            >
-              <MoviesSeriesCard movieSeries={movieSeries} />
-            </Grid>
-          ))}
-          <Stack minWidth="100%" flex={1} gap={2} alignItems="center">
-            <Pagination
-              key={recommendationsPage}
-              shape="rounded"
-              page={recommendationsPage}
-              disabled={loadingMoviesSeriesRecommendations}
-              color="primary"
-              variant="outlined"
-              count={moviesSeriesRecommendations?.total_pages}
-              onChange={async (_e, value) => {
-                if (moviesSeriesForm) {
-                  dispatch(setRecommendationsPage(value));
-                  await dispatch(
-                    getMoviesSeriesRecommendation({
-                      genre: moviesSeriesForm?.genre,
-                      content: moviesSeriesForm?.content,
-                      release: [2000, 2025],
-                      runtime: [0, 180],
-                      region: moviesSeriesForm?.region,
-                      page: value,
-                    })
-                  );
-                }
-              }}
-            />
-          </Stack>
+          {loadingMoviesSeriesRecommendations ? (
+            <Stack width="100%" height="100%">
+              <LinearProgress color="primary" />
+            </Stack>
+          ) : (
+            moviesSeriesRecommendations &&
+            moviesSeriesRecommendations?.results.length > 0 && (
+              <>
+                {moviesSeriesRecommendations?.results?.map((movieSeries) => (
+                  <Grid
+                    aria-label={movieSeries.name || movieSeries.title}
+                    size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
+                    key={movieSeries.id}
+                  >
+                    <MoviesSeriesCard movieSeries={movieSeries} />
+                  </Grid>
+                ))}
+                <Stack minWidth="100%" flex={1} gap={2} alignItems="center">
+                  <Pagination
+                    key={recommendationsPage}
+                    shape="rounded"
+                    page={recommendationsPage}
+                    disabled={loadingMoviesSeriesRecommendations}
+                    color="primary"
+                    variant="outlined"
+                    count={moviesSeriesRecommendations?.total_pages}
+                    onChange={async (_e, value) => {
+                      if (moviesSeriesForm) {
+                        dispatch(setRecommendationsPage(value));
+                        await dispatch(
+                          getMoviesSeriesRecommendation({
+                            genre: moviesSeriesForm?.genre,
+                            content: moviesSeriesForm?.content,
+                            release: [2000, 2025],
+                            runtime: [0, 180],
+                            region: moviesSeriesForm?.region,
+                            page: value,
+                          })
+                        );
+                      }
+                    }}
+                  />
+                </Stack>
+              </>
+            )
+          )}
         </Grid>
       </Stack>
     </>

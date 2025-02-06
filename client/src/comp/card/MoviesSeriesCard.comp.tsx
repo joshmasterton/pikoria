@@ -16,6 +16,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteBorderRounded from "@mui/icons-material/FavoriteBorderRounded";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useState } from "react";
 
 export const MoviesSeriesCard = ({
   movieSeries,
@@ -25,6 +27,7 @@ export const MoviesSeriesCard = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [loadingLike, setLoadingLike] = useState(false);
 
   return (
     <Card
@@ -37,17 +40,32 @@ export const MoviesSeriesCard = ({
       <Checkbox
         color="error"
         sx={{ position: "absolute", zIndex: 3, bottom: 10, right: 10 }}
-        onClick={async () =>
+        onClick={async () => {
+          setLoadingLike(true);
           await dispatch(
             likeMovieSeries({
               id: movieSeries.id,
               content: movieSeries.name ? "series" : "movie",
             })
+          );
+          setLoadingLike(false);
+        }}
+        disabled={loadingLike}
+        checked={movieSeries.liked}
+        icon={
+          loadingLike ? (
+            <CircularProgress size={23} color="error" />
+          ) : (
+            <FavoriteBorderRounded sx={{ color: "white" }} />
           )
         }
-        checked={movieSeries.liked}
-        icon={<FavoriteBorderRounded sx={{ color: "white" }} />}
-        checkedIcon={<FavoriteIcon />}
+        checkedIcon={
+          loadingLike ? (
+            <CircularProgress size={23} color="error" />
+          ) : (
+            <FavoriteIcon />
+          )
+        }
       />
       <CardActionArea
         aria-label={`${movieSeries.name || movieSeries.title} Action`}
@@ -129,6 +147,7 @@ export const MoviesSeriesCardAdvanced = ({
   const location = useLocation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [loadingLike, setLoadingLike] = useState(false);
 
   return (
     <Card
@@ -140,17 +159,31 @@ export const MoviesSeriesCardAdvanced = ({
       <Checkbox
         color="error"
         sx={{ position: "absolute", zIndex: 3, bottom: 10, right: 10 }}
-        onClick={async () =>
+        onClick={async () => {
+          setLoadingLike(true);
           await dispatch(
             likeMovieSeries({
               id: movieSeries.id,
               content: movieSeries.name ? "series" : "movie",
             })
+          );
+          setLoadingLike(false);
+        }}
+        checked={movieSeries.liked}
+        icon={
+          loadingLike ? (
+            <CircularProgress size={23} color="error" />
+          ) : (
+            <FavoriteBorderRounded sx={{ color: "white" }} />
           )
         }
-        checked={movieSeries.liked}
-        icon={<FavoriteBorderRounded />}
-        checkedIcon={<FavoriteIcon />}
+        checkedIcon={
+          loadingLike ? (
+            <CircularProgress size={23} color="error" />
+          ) : (
+            <FavoriteIcon />
+          )
+        }
       />
       <CardActionArea
         aria-label={`${movieSeries.name || movieSeries.title} Action`}

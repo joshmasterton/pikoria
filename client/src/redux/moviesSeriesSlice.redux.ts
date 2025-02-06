@@ -194,8 +194,8 @@ const moviesSeriesSlice = createSlice({
       })
       .addCase(likeMovieSeries.fulfilled, (state, action) => {
         state.loadingLike = false;
+
         const likedMovieSeries = action.payload;
-        state.movieSeries = likedMovieSeries;
 
         if (!likedMovieSeries) {
           return;
