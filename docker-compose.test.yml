@@ -30,7 +30,6 @@ services:
     environment:
       - NODE_ENV=test
       - CHOKIDAR_USEPOLLING=true
-      - POSTGRES_DB=pikoria_test
     depends_on:
       - postgres
   postgres:
@@ -38,7 +37,5 @@ services:
     container_name: postgres
     env_file:
       - ./api/.env
-    environment:
-      - POSTGRES_DB=pikoria_test
     ports:
       - "5432:5432"
