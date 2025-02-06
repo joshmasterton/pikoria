@@ -1,12 +1,12 @@
 import { createFavouriteMoviesSeriesTable } from "../database/migrations/moviesseries.migration.js";
-import { createDatabaseIfNotExists } from "./database.config.js";
+// import { createDatabaseIfNotExists } from "./database.config.js";
 export const startApi = async () => {
     const { POSTGRES_ADMIN_URL } = process.env;
     if (!POSTGRES_ADMIN_URL) {
         throw new Error("Environmental variables not found");
     }
     try {
-        await createDatabaseIfNotExists();
+        // await createDatabaseIfNotExists();
         await createFavouriteMoviesSeriesTable();
     }
     catch (error) {

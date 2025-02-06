@@ -1,5 +1,5 @@
 import { createFavouriteMoviesSeriesTable } from "../database/migrations/moviesseries.migration";
-import { createDatabaseIfNotExists } from "./database.config";
+// import { createDatabaseIfNotExists } from "./database.config";
 
 export const startApi = async () => {
   const { POSTGRES_ADMIN_URL } = process.env;
@@ -9,7 +9,7 @@ export const startApi = async () => {
   }
 
   try {
-    await createDatabaseIfNotExists();
+    // await createDatabaseIfNotExists();
     await createFavouriteMoviesSeriesTable();
   } catch (error) {
     if (error instanceof Error) {
