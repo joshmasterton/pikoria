@@ -1,2 +1,1 @@
-export const API_URL = "https://pikoria-production.up.railway.app";
-// export const API_URL = "http://localhost";
+export const API_URL = import.meta.env.VITE_API_URL;

@@ -11,8 +11,13 @@ import { Home } from "./pages/Home.page";
 import { Categories } from "./pages/Cateogires.page";
 import { MoviesSeriesPage } from "./pages/movies_series/MoviesSeries.page";
 import { MovieSeriesPage } from "./pages/movies_series/MovieSeries.page";
+import { Landing } from "./pages/Landing.page";
 
 export const routes = [
+  {
+    path: "/*",
+    element: <Landing />,
+  },
   {
     path: "/home",
     element: <Home />,

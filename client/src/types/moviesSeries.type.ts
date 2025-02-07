@@ -4,6 +4,7 @@ export type MoviesSeriesForm = {
   release: number[];
   runtime: number[];
   region: string;
+  search?: string;
 };
 
 export type MoviesSeriesRecommendationsType = {

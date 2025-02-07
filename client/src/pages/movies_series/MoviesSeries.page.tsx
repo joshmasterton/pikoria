@@ -57,6 +57,7 @@ export const MoviesSeriesPage = () => {
           runtime: [0, 180],
           region: moviesSeriesForm.region,
           page: recommendationsPage,
+          search: moviesSeriesForm.search,
         })
       );
     }

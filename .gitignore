@@ -3,4 +3,5 @@ dev.env
 test.env
 *.env
 .env
+.env.*
 service-account.json

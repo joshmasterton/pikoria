@@ -22,9 +22,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTheme } from "@mui/material/styles";
 
 export const MovieSeriesPage = () => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const { id, content } = useParams();
   const { user } = useAppSelector((state) => state.auth);
   const { movieSeries, loadingMovieSeries, loadingLike } = useAppSelector(
@@ -190,20 +192,39 @@ export const MovieSeriesPage = () => {
                 </Stack>
               </Stack>
               <Divider sx={{ display: { xs: "block", md: "none" }, pt: 2 }} />
-              <Stack p={0} pt={{ xs: 0, md: 2 }}>
+              <Stack p={0} pt={{ xs: 0, md: 2 }} pb={2}>
                 <Tabs
-                  sx={{ px: 2, pt: 1 }}
+                  sx={{
+                    px: 2,
+                    pt: 1,
+                  }}
                   value={movieSeriesDetailsTab}
                   onChange={(_e, newValue) =>
                     setMovieSeriesDetailsTab(newValue)
                   }
                   aria-label="movie-series-details"
                 >
-                  <Tab value={1} label="Overview" />
-                  <Tab value={2} label="Details" />
+                  <Tab
+                    value={1}
+                    label="Overview"
+                    sx={{
+                      borderBottom: 1,
+                      borderColor: theme.palette.divider,
+                    }}
+                  />
+                  <Tab
+                    value={2}
+                    label="Details"
+                    sx={{
+                      borderBottom: 1,
+                      borderColor: theme.palette.divider,
+                    }}
+                  />
                 </Tabs>
                 {movieSeriesDetailsTab === 1 && (
-                  <Typography p={2}>{movieSeries?.overview}</Typography>
+                  <Typography p={2} pb={0}>
+                    {movieSeries?.overview}
+                  </Typography>
                 )}
               </Stack>
             </>

@@ -132,6 +132,8 @@ export const getMovieSeries = createAsyncThunk<
       const user = auth.currentUser;
       const idToken = await user?.getIdToken();
 
+      console.log(API_URL);
+
       const response = await axios.get(
         `${API_URL}/movies-series/${id}/get?content=${content}`,
         {

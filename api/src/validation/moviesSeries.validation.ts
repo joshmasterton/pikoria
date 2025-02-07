@@ -11,6 +11,7 @@ export const moviesSeriesSchema = yup.object().shape({
   release: yup.array().of(yup.number()),
   runtime: yup.array().of(yup.number()),
   region: yup.string().required("Region is required"),
+  search: yup.string().optional(),
 });
 
 // Get movie_series schema
