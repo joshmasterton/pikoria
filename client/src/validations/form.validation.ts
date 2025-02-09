@@ -14,3 +14,7 @@ export const moviesSeriesSchema = yup.object().shape({
   region: yup.string().required("Region is required"),
   search: yup.string().optional(),
 });
+
+export const favouriteMoviesSeriesSchema = yup.object().shape({
+  search: yup.string().optional(),
+});

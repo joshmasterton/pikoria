@@ -69,6 +69,7 @@ export const sumbitLikeMovieSeries = async (
   }
 };
 
+// Get a movie or series
 export const submitGetMovieSeries = async (
   req: RequestWithUser<{ id: number }, {}, {}, { content: "movie" | "series" }>,
   res: Response
@@ -93,12 +94,12 @@ export const submitGetMovieSeries = async (
 
 // Get favourite movies_series
 export const submitGetFavouriteMoviesSeries = async (
-  req: RequestWithUser<{}, {}, {}, { page: number }>,
+  req: RequestWithUser<{}, {}, {}, { page: number; search?: string }>,
   res: Response
 ) => {
   try {
     const { user } = req;
-    const { page } = req.query;
+    const { page, search } = req.query;
 
     if (!user) {
       throw new Error("No user present");
@@ -106,7 +107,8 @@ export const submitGetFavouriteMoviesSeries = async (
 
     const favouriteMoviesSeries = await getFavouriteMoviesSeries(
       user?.uid,
-      page
+      page,
+      search
     );
 
     res.status(200).json(favouriteMoviesSeries);

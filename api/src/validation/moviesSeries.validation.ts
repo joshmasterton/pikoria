@@ -26,6 +26,7 @@ export const getMovieSeriesSchema = yup.object().shape({
 
 export const getFavouriteMoviesSeriesSchema = yup.object().shape({
   page: yup.number().required(),
+  string: yup.string().optional(),
 });
 
 // Like movie_series schema

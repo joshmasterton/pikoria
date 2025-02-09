@@ -1,6 +1,6 @@
 import { adminPoll } from "./pool.config";
 
-const { POSTGRES_URL } = process.env;
+const { POSTGRES_URL, NODE_ENV } = process.env;
 
 export const createDatabaseIfNotExists = async () => {
   const client = await adminPoll.connect();
@@ -9,11 +9,15 @@ export const createDatabaseIfNotExists = async () => {
     throw new Error("DATABASE_URL could not be found");
   }
 
-  const databaseName = new URL(POSTGRES_URL).pathname.split("/")[1];
+  let databaseName = new URL(POSTGRES_URL).pathname.split("/")[1];
+
+  if (NODE_ENV === "test") {
+    databaseName = "pikoria_test";
+  }
 
   const response = await client.query(
     `SELECT 1 FROM pg_database WHERE datname = $1`,
-    [POSTGRES_URL]
+    [databaseName]
   );
 
   if (response.rowCount === 0) {

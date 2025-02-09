@@ -20,6 +20,24 @@ describe("POST /movies-series/recommend", () => {
     expect(typeof moviesSeriesResponse.body.total_pages).toBe("number");
     expect(typeof moviesSeriesResponse.body.total_results).toBe("number");
   });
+
+  test("Should return movies-series recommendation on success with search term", async () => {
+    const moviesSeriesResponse = await supertest(app)
+      .post("/movies-series/recommend")
+      .send({
+        genre: 16,
+        content: "series",
+        release: [2020, 2025],
+        runtime: [0, 300],
+        region: "all",
+        page: 1,
+        search: "attack on",
+      });
+
+    expect(moviesSeriesResponse.body.results).toBeInstanceOf(Array);
+    expect(typeof moviesSeriesResponse.body.total_pages).toBe("number");
+    expect(typeof moviesSeriesResponse.body.total_results).toBe("number");
+  });
 });
 
 describe("POST /movies-series/like", () => {

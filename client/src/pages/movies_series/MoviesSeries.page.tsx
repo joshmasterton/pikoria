@@ -70,6 +70,7 @@ export const MoviesSeriesPage = () => {
     });
   }, [recommendationsPage]);
 
+  // Scroll to last scroll position
   useEffect(() => {
     const saveScrollPosition = () => {
       sessionStorage.setItem(
@@ -78,24 +79,28 @@ export const MoviesSeriesPage = () => {
       );
     };
 
-    const savedScrollPosition = sessionStorage.getItem(
-      "pikoria_movies_series_scroll_position"
-    );
-
-    if (savedScrollPosition) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: parseInt(savedScrollPosition, 10),
-        });
-      }, 100);
-    }
-
     window.addEventListener("scroll", saveScrollPosition);
 
     return () => {
       window.removeEventListener("scroll", saveScrollPosition);
     };
   }, []);
+
+  useEffect(() => {
+    if (!loadingMoviesSeriesRecommendations && moviesSeriesRecommendations) {
+      const savedScrollPosition = sessionStorage.getItem(
+        "pikoria_movies_series_scroll_position"
+      );
+
+      if (savedScrollPosition) {
+        setTimeout(() => {
+          window.scrollTo({
+            top: parseInt(savedScrollPosition, 10),
+          });
+        }, 100);
+      }
+    }
+  }, [loadingMoviesSeriesRecommendations, moviesSeriesRecommendations]);
 
   return (
     <>
@@ -114,47 +119,47 @@ export const MoviesSeriesPage = () => {
             <Stack width="100%" height="100%">
               <LinearProgress color="primary" />
             </Stack>
+          ) : moviesSeriesRecommendations &&
+            moviesSeriesRecommendations?.results.length > 0 ? (
+            <>
+              {moviesSeriesRecommendations?.results?.map((movieSeries) => (
+                <Grid
+                  aria-label={movieSeries.name || movieSeries.title}
+                  size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
+                  key={movieSeries.id}
+                >
+                  <MoviesSeriesCard movieSeries={movieSeries} />
+                </Grid>
+              ))}
+              <Stack minWidth="100%" flex={1} gap={2} alignItems="center">
+                <Pagination
+                  key={recommendationsPage}
+                  shape="rounded"
+                  page={recommendationsPage}
+                  disabled={loadingMoviesSeriesRecommendations}
+                  color="primary"
+                  variant="outlined"
+                  count={moviesSeriesRecommendations?.total_pages}
+                  onChange={async (_e, value) => {
+                    if (moviesSeriesForm) {
+                      dispatch(setRecommendationsPage(value));
+                      await dispatch(
+                        getMoviesSeriesRecommendation({
+                          genre: moviesSeriesForm?.genre,
+                          content: moviesSeriesForm?.content,
+                          release: [2000, 2025],
+                          runtime: [0, 180],
+                          region: moviesSeriesForm?.region,
+                          page: value,
+                        })
+                      );
+                    }
+                  }}
+                />
+              </Stack>
+            </>
           ) : (
-            moviesSeriesRecommendations &&
-            moviesSeriesRecommendations?.results.length > 0 && (
-              <>
-                {moviesSeriesRecommendations?.results?.map((movieSeries) => (
-                  <Grid
-                    aria-label={movieSeries.name || movieSeries.title}
-                    size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
-                    key={movieSeries.id}
-                  >
-                    <MoviesSeriesCard movieSeries={movieSeries} />
-                  </Grid>
-                ))}
-                <Stack minWidth="100%" flex={1} gap={2} alignItems="center">
-                  <Pagination
-                    key={recommendationsPage}
-                    shape="rounded"
-                    page={recommendationsPage}
-                    disabled={loadingMoviesSeriesRecommendations}
-                    color="primary"
-                    variant="outlined"
-                    count={moviesSeriesRecommendations?.total_pages}
-                    onChange={async (_e, value) => {
-                      if (moviesSeriesForm) {
-                        dispatch(setRecommendationsPage(value));
-                        await dispatch(
-                          getMoviesSeriesRecommendation({
-                            genre: moviesSeriesForm?.genre,
-                            content: moviesSeriesForm?.content,
-                            release: [2000, 2025],
-                            runtime: [0, 180],
-                            region: moviesSeriesForm?.region,
-                            page: value,
-                          })
-                        );
-                      }
-                    }}
-                  />
-                </Stack>
-              </>
-            )
+            <Stack>No movies / series found</Stack>
           )}
         </Grid>
       </Stack>

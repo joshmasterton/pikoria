@@ -28,7 +28,7 @@ export const Categories = () => {
       <Side />
       <Stack flexGrow={1} p={2} gap={2} mt={8} ml={{ xs: 0, sm: 31 }}>
         <CustomBreadCrumbs />
-        <Card variant="outlined" sx={{ width: "100%", height: 400 }}>
+        <Card sx={{ width: "100%", height: 400 }}>
           <CardActionArea
             onClick={() => navigate("/categories/movies-series")}
             aria-label="Movies/Series"
@@ -76,7 +76,7 @@ export const Categories = () => {
             />
           </CardActionArea>
         </Card>
-        <Card variant="outlined" sx={{ width: "100%", height: 400 }}>
+        <Card sx={{ width: "100%", height: 400 }}>
           <CardActionArea
             aria-label="Games"
             sx={{

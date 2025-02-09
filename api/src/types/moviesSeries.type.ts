@@ -5,6 +5,7 @@ export type MoviesSeriesForm = {
   runtime: number[];
   region: string;
   page: number;
+  search?: string;
 };
 
 export type LikeMovieSeriesForm = {

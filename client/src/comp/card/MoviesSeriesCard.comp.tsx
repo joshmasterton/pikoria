@@ -31,7 +31,6 @@ export const MoviesSeriesCard = ({
 
   return (
     <Card
-      variant="outlined"
       sx={{
         position: "relative",
         width: "100%",
@@ -154,6 +153,7 @@ export const MoviesSeriesCardAdvanced = ({
       sx={{
         position: "relative",
         width: "100%",
+        borderRadius: 1,
       }}
     >
       <Checkbox
@@ -220,6 +220,7 @@ export const MoviesSeriesCardAdvanced = ({
             position: "absolute",
             bottom: 0,
             left: 0,
+            borderRadius: 1,
             zIndex: 2,
             backdropFilter: "blur(0.25em)",
             WebkitBackdropFilter: "blur(0.25rem)",

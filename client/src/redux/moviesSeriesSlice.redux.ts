@@ -21,6 +21,7 @@ const initialState: {
   movieSeries: MoviesSeriesType | undefined;
   favouriteMoviesSeries: MoviesSeriesTypeAll | undefined;
   moviesSeriesForm: MoviesSeriesForm | undefined;
+  favouriteMoviesSeriesForm: { search?: string } | undefined;
 } = {
   favouritesPage: 0,
   recommendationsPage: 1,
@@ -33,6 +34,7 @@ const initialState: {
   movieSeries: undefined,
   favouriteMoviesSeries: undefined,
   moviesSeriesForm: undefined,
+  favouriteMoviesSeriesForm: undefined,
 };
 
 // Get movie_series recommendation from TMDB
@@ -96,30 +98,35 @@ export const likeMovieSeries = createAsyncThunk<
 // Get favourite movies_series
 export const getFavouriteMoviesSeries = createAsyncThunk<
   MoviesSeriesTypeAll | undefined,
-  { page: number }
->("/movies-series/favourites", async ({ page }, { rejectWithValue }) => {
-  try {
-    const user = auth.currentUser;
-    const idToken = await user?.getIdToken(true);
+  { page: number; search?: string }
+>(
+  "/movies-series/favourites",
+  async ({ page, search }, { rejectWithValue }) => {
+    try {
+      const user = auth.currentUser;
+      const idToken = await user?.getIdToken(true);
 
-    const response = await axios.get(
-      `${API_URL}/movies-series/favouriteMoviesSeries?page=${page}`,
-      {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+      const response = await axios.get(
+        `${API_URL}/movies-series/favouriteMoviesSeries?page=${page}${
+          search ? `&search=${search}` : ""
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
+
+      return response.data as MoviesSeriesTypeAll | undefined;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        rejectWithValue(error.response?.data);
+      } else {
+        rejectWithValue("Error getting favourite movies/series");
       }
-    );
-
-    return response.data as MoviesSeriesTypeAll | undefined;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      rejectWithValue(error.response?.data);
-    } else {
-      rejectWithValue("Error getting favourite movies/series");
     }
   }
-});
+);
 
 // Get movie_series
 export const getMovieSeries = createAsyncThunk<
@@ -131,8 +138,6 @@ export const getMovieSeries = createAsyncThunk<
     try {
       const user = auth.currentUser;
       const idToken = await user?.getIdToken();
-
-      console.log(API_URL);
 
       const response = await axios.get(
         `${API_URL}/movies-series/${id}/get?content=${content}`,
@@ -176,6 +181,9 @@ const moviesSeriesSlice = createSlice({
     },
     setFormData: (state, action) => {
       state.moviesSeriesForm = action.payload;
+    },
+    setFavouritesFromData: (state, action) => {
+      state.favouriteMoviesSeriesForm = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -257,6 +265,7 @@ const moviesSeriesSlice = createSlice({
 export const {
   setFavouritesPage,
   setRecommendationsPage,
+  setFavouritesFromData,
   setFormData,
   clearMovieSeries,
   clearMoviesSeriesRecommendations,

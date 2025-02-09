@@ -19,14 +19,25 @@ export const processMoviesSeriesRecommendation = async (
 
     // Movies or series
     const endpoint =
-      recommendationData.content === "movies"
+      recommendationData.search && recommendationData.search.trim() !== ""
+        ? recommendationData.content === "movies"
+          ? "/search/movie"
+          : "/search/tv"
+        : recommendationData.content === "movies"
         ? "/discover/movie"
         : "/discover/tv";
 
     // Get TMDB movies_series based off user forms
     const params =
-      recommendationData.content === "movies"
+      recommendationData.search && recommendationData.search.trim() !== ""
         ? {
+            api_key: TMDB_API_KEY,
+            query: recommendationData.search,
+            page: recommendationData.page,
+          }
+        : recommendationData.content === "movies"
+        ? {
+            include_adult: true,
             api_key: TMDB_API_KEY,
             include_video: true,
             page: recommendationData.page,
@@ -44,6 +55,7 @@ export const processMoviesSeriesRecommendation = async (
             }),
           }
         : {
+            include_adult: true,
             api_key: TMDB_API_KEY,
             include_video: true,
             page: recommendationData.page,
@@ -65,6 +77,10 @@ export const processMoviesSeriesRecommendation = async (
       params,
     });
 
+    if (!TMDBResponse.data.results) {
+      return;
+    }
+
     const TMDBMoviesSeriesWithLike:
       | MoviesSeriesRecommendationsType[]
       | undefined = await Promise.all(
@@ -80,8 +96,12 @@ export const processMoviesSeriesRecommendation = async (
       )
     );
 
+    const TMDBMoviesSeriesWithLikeWithPoster = TMDBMoviesSeriesWithLike.filter(
+      (movieSeries) => movieSeries.poster_path !== null
+    );
+
     return {
-      results: TMDBMoviesSeriesWithLike,
+      results: TMDBMoviesSeriesWithLikeWithPoster,
       total_pages: (TMDBResponse.data.total_pages as number) ?? 0,
       total_results: (TMDBResponse.data.total_results as number) ?? 0,
     };

@@ -22,6 +22,46 @@ export const MoviesSeriesForm = () => {
   const { moviesSeriesForm, loadingMoviesSeriesRecommendations } =
     useAppSelector((state) => state.moviesSeries);
 
+  // Genre options for movies and series
+  const movieGenres = [
+    { value: 28, label: "Action" },
+    { value: 12, label: "Adventure" },
+    { value: 16, label: "Animation" },
+    { value: 35, label: "Comedy" },
+    { value: 80, label: "Crime" },
+    { value: 99, label: "Documentary" },
+    { value: 18, label: "Drama" },
+    { value: 10751, label: "Family" },
+    { value: 14, label: "Fantasy" },
+    { value: 36, label: "History" },
+    { value: 27, label: "Horror" },
+    { value: 10402, label: "Music" },
+    { value: 9648, label: "Mystery" },
+    { value: 10749, label: "Romance" },
+    { value: 878, label: "Sci-Fi" },
+    { value: 10770, label: "TV Movie" },
+    { value: 53, label: "Thriller" },
+    { value: 10752, label: "War" },
+    { value: 37, label: "Western" },
+  ];
+
+  const seriesGenres = [
+    { value: 10759, label: "Action & Adventure" },
+    { value: 16, label: "Animation" },
+    { value: 35, label: "Comedy" },
+    { value: 80, label: "Crime" },
+    { value: 18, label: "Drama" },
+    { value: 10751, label: "Family" },
+    { value: 14, label: "Fantasy" },
+    { value: 9648, label: "Mystery" },
+    { value: 10764, label: "Reality" },
+    { value: 10765, label: "Sci-Fi & Fantasy" },
+    { value: 10766, label: "Soap" },
+    { value: 10767, label: "Talk" },
+    { value: 10768, label: "War & Politics" },
+    { value: 37, label: "Western" },
+  ];
+
   return (
     <Card
       elevation={0}
@@ -75,6 +115,9 @@ export const MoviesSeriesForm = () => {
           handleBlur,
           errors,
         }) => {
+          const genreOptions =
+            values.content === "movies" ? movieGenres : seriesGenres;
+
           return (
             <form onSubmit={handleSubmit}>
               <Stack
@@ -106,31 +149,10 @@ export const MoviesSeriesForm = () => {
                         // Change content type
                         const newContentValue = e.target.value;
                         await setFieldValue("content", newContentValue);
-
-                        // Switch content value if action or sci-fi selected for tmdb genre labelling
-                        if (
-                          newContentValue === "series" &&
-                          values.genre === 28
-                        ) {
-                          await setFieldValue("genre", 10759);
-                        } else if (
-                          newContentValue === "movies" &&
-                          values.genre === 10759
-                        ) {
-                          await setFieldValue("genre", 28);
-                        } else if (
-                          newContentValue === "series" &&
-                          values.genre === 878
-                        ) {
-                          await setFieldValue("genre", 10765);
-                        } else if (
-                          newContentValue === "movies" &&
-                          values.genre === 10765
-                        ) {
-                          await setFieldValue("genre", 878);
-                        }
+                        await setFieldValue("genre", 0);
 
                         handleSubmit();
+                        console.log(values.genre);
                       }}
                       labelId="content-select-label"
                     >
@@ -161,19 +183,11 @@ export const MoviesSeriesForm = () => {
                       labelId="genre-select-label"
                     >
                       <MenuItem value={0}>Any</MenuItem>
-                      <MenuItem
-                        value={values.content === "movies" ? 28 : 10759}
-                      >
-                        Action
-                      </MenuItem>
-                      <MenuItem value={18}>Drama</MenuItem>
-                      <MenuItem value={80}>Crime</MenuItem>
-                      <MenuItem value={35}>Comedy</MenuItem>
-                      <MenuItem
-                        value={values.content === "movies" ? 878 : 10765}
-                      >
-                        Sci-Fi
-                      </MenuItem>
+                      {genreOptions.map((genre) => (
+                        <MenuItem key={genre.label} value={genre.value}>
+                          {genre.label}
+                        </MenuItem>
+                      ))}
                     </Select>
                     {errors.genre && touched.genre && (
                       <FormHelperText>{errors.genre}</FormHelperText>

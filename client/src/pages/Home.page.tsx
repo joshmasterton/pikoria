@@ -5,24 +5,41 @@ import { useAppDispatch, useAppSelector } from "../redux/store.redux";
 import {
   clearFavourites,
   getFavouriteMoviesSeries,
+  setFavouritesFromData,
   setFavouritesPage,
 } from "../redux/moviesSeriesSlice.redux";
 import { useEffect } from "react";
-import Grid from "@mui/material/Grid2";
 import Pagination from "@mui/material/Pagination";
 import { MoviesSeriesCardAdvanced } from "../comp/card/MoviesSeriesCard.comp";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
+import Card from "@mui/material/Card";
+import Avatar from "@mui/material/Avatar";
+import movies from "../assets/movies.jpg";
+import { Formik } from "formik";
+import { favouriteMoviesSeriesSchema } from "../validations/form.validation";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
 
 export const Home = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
-  const { loadingFavourites, favouriteMoviesSeries, favouritesPage } =
-    useAppSelector((state) => state.moviesSeries);
+  const {
+    loadingFavourites,
+    favouriteMoviesSeries,
+    favouriteMoviesSeriesForm,
+    favouritesPage,
+  } = useAppSelector((state) => state.moviesSeries);
 
   useEffect(() => {
-    dispatch(getFavouriteMoviesSeries({ page: favouritesPage }));
-  }, [dispatch, user, favouritesPage]);
+    dispatch(
+      getFavouriteMoviesSeries({
+        page: favouritesPage,
+        search: favouriteMoviesSeriesForm?.search,
+      })
+    );
+  }, [dispatch, user, favouritesPage, favouriteMoviesSeriesForm]);
 
   useEffect(() => {
     return () => {
@@ -37,6 +54,7 @@ export const Home = () => {
     });
   }, [favouritesPage]);
 
+  // Scroll to last scroll position
   useEffect(() => {
     const saveScrollPosition = () => {
       sessionStorage.setItem(
@@ -53,18 +71,20 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
-    const savedScrollPosition = sessionStorage.getItem(
-      "pikoria_favourite_movies_series_scroll_position"
-    );
+    if (!loadingFavourites && favouriteMoviesSeries) {
+      const savedScrollPosition = sessionStorage.getItem(
+        "pikoria_favourite_movies_series_scroll_position"
+      );
 
-    if (savedScrollPosition) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: parseInt(savedScrollPosition, 10),
-        });
-      }, 100);
+      if (savedScrollPosition) {
+        setTimeout(() => {
+          window.scrollTo({
+            top: parseInt(savedScrollPosition, 10),
+          });
+        }, 100);
+      }
     }
-  }, [favouriteMoviesSeries]);
+  }, [favouriteMoviesSeries, loadingFavourites]);
 
   return (
     <>
@@ -79,16 +99,92 @@ export const Home = () => {
         ) : (
           favouriteMoviesSeries &&
           favouriteMoviesSeries.results.length > 0 && (
-            <Grid container spacing={2} position="relative">
-              {favouriteMoviesSeries.results?.map((movieSeries) => (
-                <Grid
-                  size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
-                  key={movieSeries.id}
-                >
-                  <MoviesSeriesCardAdvanced movieSeries={movieSeries} />
-                </Grid>
-              ))}
-              <Stack minWidth="100%" flex={1} gap={2} alignItems="center">
+            <Card variant="outlined">
+              <Stack gap={2} position="relative" p={2}>
+                <Avatar
+                  variant="square"
+                  src={movies}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+                <Stack
+                  top={0}
+                  left={0}
+                  width="100%"
+                  height="100%"
+                  position="absolute"
+                  sx={{
+                    backdropFilter: "blur(5rem)",
+                    WebkitBackdropFilter: "blur(5rem)",
+                  }}
+                />
+                <Stack flexGrow={1}>
+                  <Formik
+                    validationSchema={favouriteMoviesSeriesSchema}
+                    initialValues={{
+                      search: favouriteMoviesSeriesForm?.search
+                        ? favouriteMoviesSeriesForm.search
+                        : "",
+                    }}
+                    onSubmit={async (values) => {
+                      await dispatch(
+                        getFavouriteMoviesSeries({
+                          page: favouritesPage,
+                          search: values.search,
+                        })
+                      );
+                      dispatch(
+                        setFavouritesFromData({
+                          search: values.search,
+                        })
+                      );
+                    }}
+                  >
+                    {({ handleSubmit, handleChange, values }) => {
+                      return (
+                        <form onSubmit={handleSubmit}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            onChange={handleChange}
+                            name="search"
+                            label="Search"
+                            value={values.search}
+                            disabled={loadingFavourites}
+                            sx={{ flexGrow: 1 }}
+                            id="moviesSeriesSearch"
+                            slotProps={{
+                              input: {
+                                endAdornment: (
+                                  <IconButton type="submit" size="small">
+                                    <SearchIcon />
+                                  </IconButton>
+                                ),
+                              },
+                            }}
+                          />
+                        </form>
+                      );
+                    }}
+                  </Formik>
+                </Stack>
+                <Stack direction="row" overflow="auto" gap={2}>
+                  {favouriteMoviesSeries.results?.map((movieSeries) => (
+                    <Stack
+                      key={movieSeries.id}
+                      minWidth={{ xs: "100%", sm: 350 }}
+                    >
+                      <MoviesSeriesCardAdvanced movieSeries={movieSeries} />
+                    </Stack>
+                  ))}
+                </Stack>
+              </Stack>
+              <Stack minWidth="100%" flex={1} p={2} gap={2} alignItems="center">
                 <Pagination
                   key={favouritesPage}
                   shape="rounded"
@@ -102,12 +198,13 @@ export const Home = () => {
                     await dispatch(
                       getFavouriteMoviesSeries({
                         page: value - 1,
+                        search: favouriteMoviesSeriesForm?.search,
                       })
                     );
                   }}
                 />
               </Stack>
-            </Grid>
+            </Card>
           )
         )}
       </Stack>

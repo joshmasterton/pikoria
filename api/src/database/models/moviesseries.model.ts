@@ -98,25 +98,37 @@ export const insertFavouriteMovieSeries = async (
 // Get favourite movies_series
 export const getFavouriteMoviesSeries = async (
   user_id: string,
-  page: number
+  page: number,
+  search?: string
 ) => {
   const client = await pool.connect();
   try {
+    // Check if search term included
+    let searchQuery: string = "";
+    let searchValues: (string | number)[] = [user_id];
+
+    if (search && search.trim() !== "") {
+      searchQuery = `AND (title ILIKE $2 OR name ILIKE $2)`;
+      searchValues.push(`%${search}%`);
+    }
+
     const totalQuery = `
 			SELECT COUNT(*) AS total FROM favourite_movies_series
-			WHERE user_id = $1
+			WHERE user_id = $1 ${searchQuery}
 		`;
-    const totalResponse = await client.query(totalQuery, [user_id]);
+    const totalResponse = await client.query(totalQuery, searchValues);
     const total_results = parseInt(totalResponse.rows[0].total, 10);
     const total_pages = Math.ceil(total_results / 20);
 
     const query = `
 			SELECT * FROM favourite_movies_series
-			WHERE user_id = $1
-			LIMIT 20 OFFSET ${page * 20}
+			WHERE user_id = $1 ${searchQuery}
+			LIMIT 20 OFFSET $${search ? 3 : 2}
 		`;
 
-    const response = await client.query(query, [user_id]);
+    searchValues.push(page * 20);
+
+    const response = await client.query(query, searchValues);
 
     if (response.rowCount && response.rowCount > 0) {
       const favouriteMoviesSeries = response.rows as MoviesSeriesType[];
