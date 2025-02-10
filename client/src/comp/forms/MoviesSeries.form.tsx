@@ -85,10 +85,8 @@ export const MoviesSeriesForm = () => {
             getMoviesSeriesRecommendation({
               genre: values.genre,
               content: values.content,
-              release: values.release,
-              runtime: values.runtime,
               region: values.region,
-              page: 1,
+              page: 0,
               search: values.search,
             })
           );
@@ -96,14 +94,12 @@ export const MoviesSeriesForm = () => {
             setFormData({
               genre: values.genre,
               content: values.content,
-              release: values.release,
-              runtime: values.runtime,
               region: values.region,
-              page: 1,
+              page: 0,
               search: values.search,
             })
           );
-          dispatch(setRecommendationsPage(1));
+          dispatch(setRecommendationsPage(0));
         }}
       >
         {({
@@ -152,7 +148,6 @@ export const MoviesSeriesForm = () => {
                         await setFieldValue("genre", 0);
 
                         handleSubmit();
-                        console.log(values.genre);
                       }}
                       labelId="content-select-label"
                     >
@@ -199,7 +194,7 @@ export const MoviesSeriesForm = () => {
                     size="small"
                     error={Boolean(errors.region && touched.region)}
                   >
-                    <InputLabel id="region-select-label">Region</InputLabel>
+                    <InputLabel id="region-select-label">Language</InputLabel>
                     <Select
                       label="Region"
                       id="region-select"
@@ -213,9 +208,10 @@ export const MoviesSeriesForm = () => {
                       labelId="region-select-label"
                     >
                       <MenuItem value="all">All</MenuItem>
-                      <MenuItem value="US">United states</MenuItem>
-                      <MenuItem value="JP">Japanese</MenuItem>
-                      <MenuItem value="ES">Spanish</MenuItem>
+                      <MenuItem value="en">English</MenuItem>
+                      <MenuItem value="ja">Japanese</MenuItem>
+                      <MenuItem value="ko">Korean</MenuItem>
+                      <MenuItem value="es">Spanish</MenuItem>
                     </Select>
                     {errors.region && touched.region && (
                       <FormHelperText>{errors.region}</FormHelperText>

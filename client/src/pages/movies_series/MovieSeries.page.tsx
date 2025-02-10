@@ -63,7 +63,7 @@ export const MovieSeriesPage = () => {
         ) : (
           movieSeries && (
             <>
-              <Stack position="absolute" width="100%">
+              <Stack position="absolute" width="100% ">
                 <Box
                   width="100%"
                   height="100%"
@@ -136,16 +136,6 @@ export const MovieSeriesPage = () => {
                   >
                     <Typography variant="caption">
                       {movieSeries?.release_date || movieSeries?.first_air_date}
-                    </Typography>
-                    <Typography variant="caption">|</Typography>
-                    <Typography variant="caption">
-                      {movieSeries?.runtime ||
-                        movieSeries?.last_episode_to_air?.runtime}
-                      min
-                    </Typography>
-                    <Typography variant="caption">|</Typography>
-                    <Typography variant="caption">
-                      {movieSeries?.origin_country}
                     </Typography>
                   </Stack>
                   <Stack

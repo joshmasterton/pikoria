@@ -106,6 +106,10 @@ export const Nav = ({ isReturn = false }: { isReturn?: boolean }) => {
             {isReturn ? (
               <IconButton
                 size="small"
+                sx={{
+                  p: 0,
+                  m: 0,
+                }}
                 onClick={() => navigate(location.state.from || "/home")}
               >
                 <ChevronLeftRoundedIcon />

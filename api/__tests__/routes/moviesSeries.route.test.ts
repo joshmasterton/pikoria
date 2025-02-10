@@ -10,10 +10,8 @@ describe("POST /movies-series/recommend", () => {
       .send({
         genre: 16,
         content: "series",
-        release: [2020, 2025],
-        runtime: [0, 300],
         region: "all",
-        page: 1,
+        page: 0,
       });
 
     expect(moviesSeriesResponse.body.results).toBeInstanceOf(Array);
@@ -27,10 +25,8 @@ describe("POST /movies-series/recommend", () => {
       .send({
         genre: 16,
         content: "series",
-        release: [2020, 2025],
-        runtime: [0, 300],
         region: "all",
-        page: 1,
+        page: 0,
         search: "attack on",
       });
 
@@ -45,21 +41,20 @@ describe("POST /movies-series/like", () => {
     const likeMovieSeries = await supertest(app)
       .post("/movies-series/like")
       .send({
-        id: 67915,
+        id: 1,
         content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
 
-    expect(likeMovieSeries.body.adult).toBeDefined();
     expect(likeMovieSeries.body.id).toBeDefined();
     expect(likeMovieSeries.body.liked).toBeTruthy();
   });
 
   test("Should remove a movie if its already in favourites", async () => {
-    await supertest(app)
+    const firstLike = await supertest(app)
       .post("/movies-series/like")
       .send({
-        id: 67915,
+        id: 1,
         content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
@@ -67,12 +62,11 @@ describe("POST /movies-series/like", () => {
     const likeMovieSeries = await supertest(app)
       .post("/movies-series/like")
       .send({
-        id: 67915,
+        id: 1,
         content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
 
-    expect(likeMovieSeries.body.adult).toBeDefined();
     expect(likeMovieSeries.body.id).toBeDefined();
     expect(likeMovieSeries.body.liked).toBeFalsy();
   });
@@ -83,7 +77,7 @@ describe("GET /movies-series/favourites", () => {
     await supertest(app)
       .post("/movies-series/like")
       .send({
-        id: 67915,
+        id: 1,
         content: "series",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
@@ -91,7 +85,7 @@ describe("GET /movies-series/favourites", () => {
     await supertest(app)
       .post("/movies-series/like")
       .send({
-        id: 1241982,
+        id: 2,
         content: "movie",
       })
       .set("Authorization", `Bearer ${fakeToken}`);
@@ -110,9 +104,9 @@ describe("GET /movies-series/favourites", () => {
 describe("GET /movies-series/:id/get?content", () => {
   test("Should return movie_series", async () => {
     const getMovieSeries = await supertest(app).get(
-      `/movies-series/${67915}/get?content=series`
+      `/movies-series/${1}/get?content=series`
     );
 
-    expect(getMovieSeries.body.created_by).toBeDefined();
+    expect(getMovieSeries.body.id).toBeDefined();
   });
 });

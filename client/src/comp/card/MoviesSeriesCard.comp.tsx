@@ -5,10 +5,6 @@ import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
 import Stack from "@mui/material/Stack";
 import { alpha } from "@mui/material/styles";
-import {
-  MoviesSeriesRecommendationsType,
-  MoviesSeriesType,
-} from "../../types/moviesSeries.type";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/store.redux";
 import { likeMovieSeries } from "../../redux/moviesSeriesSlice.redux";
@@ -18,11 +14,12 @@ import FavoriteBorderRounded from "@mui/icons-material/FavoriteBorderRounded";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
+import { MoviesSeries } from "../../types/moviesSeries.type";
 
 export const MoviesSeriesCard = ({
   movieSeries,
 }: {
-  movieSeries: MoviesSeriesRecommendationsType;
+  movieSeries: MoviesSeries;
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -141,7 +138,7 @@ export const MoviesSeriesCard = ({
 export const MoviesSeriesCardAdvanced = ({
   movieSeries,
 }: {
-  movieSeries: MoviesSeriesType;
+  movieSeries: MoviesSeries;
 }) => {
   const location = useLocation();
   const dispatch = useAppDispatch();

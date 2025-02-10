@@ -7,9 +7,8 @@ export const moviesSeriesSchema = yup.object().shape({
         .required("Content type is required")
         .oneOf(["movies", "series"]),
     page: yup.number().required("page is required"),
-    release: yup.array().of(yup.number()),
-    runtime: yup.array().of(yup.number()),
     region: yup.string().required("Region is required"),
+    search: yup.string().optional(),
 });
 // Get movie_series schema
 export const getMovieSeriesSchema = yup.object().shape({
@@ -22,6 +21,7 @@ export const getMovieSeriesSchema = yup.object().shape({
 });
 export const getFavouriteMoviesSeriesSchema = yup.object().shape({
     page: yup.number().required(),
+    string: yup.string().optional(),
 });
 // Like movie_series schema
 export const likeMovieSeriesSchema = yup.object().shape({

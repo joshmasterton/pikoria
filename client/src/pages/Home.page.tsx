@@ -13,14 +13,12 @@ import Pagination from "@mui/material/Pagination";
 import { MoviesSeriesCardAdvanced } from "../comp/card/MoviesSeriesCard.comp";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-import Card from "@mui/material/Card";
-import Avatar from "@mui/material/Avatar";
-import movies from "../assets/movies.jpg";
 import { Formik } from "formik";
 import { favouriteMoviesSeriesSchema } from "../validations/form.validation";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
+import Typography from "@mui/material/Typography";
 
 export const Home = () => {
   const dispatch = useAppDispatch();
@@ -90,89 +88,67 @@ export const Home = () => {
     <>
       <Nav />
       <Side />
-      <Stack p={2} gap={2} flexGrow={1} mt={8} ml={{ xs: 0, sm: 31 }}>
+      <Stack gap={2} p={2} flexGrow={1} mt={8} ml={{ xs: 0, sm: 31 }}>
         <CustomBreadCrumbs />
+        <Stack flexGrow={1}>
+          <Formik
+            validationSchema={favouriteMoviesSeriesSchema}
+            initialValues={{
+              search: favouriteMoviesSeriesForm?.search
+                ? favouriteMoviesSeriesForm.search
+                : "",
+            }}
+            onSubmit={async (values) => {
+              await dispatch(
+                getFavouriteMoviesSeries({
+                  page: favouritesPage,
+                  search: values.search,
+                })
+              );
+              dispatch(
+                setFavouritesFromData({
+                  search: values.search,
+                })
+              );
+            }}
+          >
+            {({ handleSubmit, handleChange, values }) => {
+              return (
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    size="small"
+                    fullWidth
+                    onChange={handleChange}
+                    name="search"
+                    label="Search"
+                    value={values.search}
+                    disabled={loadingFavourites}
+                    sx={{ flexGrow: 1 }}
+                    id="moviesSeriesSearch"
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <IconButton type="submit" size="small">
+                            <SearchIcon />
+                          </IconButton>
+                        ),
+                      },
+                    }}
+                  />
+                </form>
+              );
+            }}
+          </Formik>
+        </Stack>
         {loadingFavourites ? (
           <Stack width="100%" height="100%">
             <LinearProgress color="primary" />
           </Stack>
         ) : (
-          favouriteMoviesSeries &&
-          favouriteMoviesSeries.results.length > 0 && (
-            <Card variant="outlined">
-              <Stack gap={2} position="relative" p={2}>
-                <Avatar
-                  variant="square"
-                  src={movies}
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                  }}
-                />
-                <Stack
-                  top={0}
-                  left={0}
-                  width="100%"
-                  height="100%"
-                  position="absolute"
-                  sx={{
-                    backdropFilter: "blur(5rem)",
-                    WebkitBackdropFilter: "blur(5rem)",
-                  }}
-                />
-                <Stack flexGrow={1}>
-                  <Formik
-                    validationSchema={favouriteMoviesSeriesSchema}
-                    initialValues={{
-                      search: favouriteMoviesSeriesForm?.search
-                        ? favouriteMoviesSeriesForm.search
-                        : "",
-                    }}
-                    onSubmit={async (values) => {
-                      await dispatch(
-                        getFavouriteMoviesSeries({
-                          page: favouritesPage,
-                          search: values.search,
-                        })
-                      );
-                      dispatch(
-                        setFavouritesFromData({
-                          search: values.search,
-                        })
-                      );
-                    }}
-                  >
-                    {({ handleSubmit, handleChange, values }) => {
-                      return (
-                        <form onSubmit={handleSubmit}>
-                          <TextField
-                            size="small"
-                            fullWidth
-                            onChange={handleChange}
-                            name="search"
-                            label="Search"
-                            value={values.search}
-                            disabled={loadingFavourites}
-                            sx={{ flexGrow: 1 }}
-                            id="moviesSeriesSearch"
-                            slotProps={{
-                              input: {
-                                endAdornment: (
-                                  <IconButton type="submit" size="small">
-                                    <SearchIcon />
-                                  </IconButton>
-                                ),
-                              },
-                            }}
-                          />
-                        </form>
-                      );
-                    }}
-                  </Formik>
-                </Stack>
+          <Stack>
+            {favouriteMoviesSeries &&
+            favouriteMoviesSeries.results.length > 0 ? (
+              <Stack>
                 <Stack direction="row" overflow="auto" gap={2}>
                   {favouriteMoviesSeries.results?.map((movieSeries) => (
                     <Stack
@@ -183,29 +159,37 @@ export const Home = () => {
                     </Stack>
                   ))}
                 </Stack>
+                <Stack
+                  minWidth="100%"
+                  flex={1}
+                  p={2}
+                  gap={2}
+                  alignItems="center"
+                >
+                  <Pagination
+                    key={favouritesPage}
+                    shape="rounded"
+                    page={favouritesPage + 1}
+                    disabled={loadingFavourites}
+                    color="primary"
+                    variant="outlined"
+                    count={favouriteMoviesSeries?.total_pages}
+                    onChange={async (_e, value) => {
+                      dispatch(setFavouritesPage(value - 1));
+                      await dispatch(
+                        getFavouriteMoviesSeries({
+                          page: value - 1,
+                          search: favouriteMoviesSeriesForm?.search,
+                        })
+                      );
+                    }}
+                  />
+                </Stack>
               </Stack>
-              <Stack minWidth="100%" flex={1} p={2} gap={2} alignItems="center">
-                <Pagination
-                  key={favouritesPage}
-                  shape="rounded"
-                  page={favouritesPage + 1}
-                  disabled={loadingFavourites}
-                  color="primary"
-                  variant="outlined"
-                  count={favouriteMoviesSeries?.total_pages}
-                  onChange={async (_e, value) => {
-                    dispatch(setFavouritesPage(value - 1));
-                    await dispatch(
-                      getFavouriteMoviesSeries({
-                        page: value - 1,
-                        search: favouriteMoviesSeriesForm?.search,
-                      })
-                    );
-                  }}
-                />
-              </Stack>
-            </Card>
-          )
+            ) : (
+              <Typography>No movies / series found</Typography>
+            )}
+          </Stack>
         )}
       </Stack>
     </>

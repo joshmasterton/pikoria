@@ -9,8 +9,6 @@ export const moviesSeriesSchema = yup.object().shape({
     .string()
     .required("Content type is required")
     .oneOf(["movies", "series"]),
-  release: yup.array().of(yup.number()),
-  runtime: yup.array().of(yup.number()),
   region: yup.string().required("Region is required"),
   search: yup.string().optional(),
 });

@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  MoviesSeries,
   MoviesSeriesForm,
-  MoviesSeriesRecommendationsTypeAll,
-  MoviesSeriesType,
-  MoviesSeriesTypeAll,
+  MoviesSeriesWithResults,
 } from "../types/moviesSeries.type";
 import axios, { AxiosError } from "axios";
 import { API_URL } from "../config/api.config";
@@ -17,14 +16,14 @@ const initialState: {
   loadingMovieSeries: boolean;
   loadingFavourites: boolean;
   loadingMoviesSeriesRecommendations: boolean;
-  moviesSeriesRecommendations: MoviesSeriesRecommendationsTypeAll | undefined;
-  movieSeries: MoviesSeriesType | undefined;
-  favouriteMoviesSeries: MoviesSeriesTypeAll | undefined;
+  moviesSeriesRecommendations: MoviesSeriesWithResults | undefined;
+  movieSeries: MoviesSeries | undefined;
+  favouriteMoviesSeries: MoviesSeriesWithResults | undefined;
   moviesSeriesForm: MoviesSeriesForm | undefined;
   favouriteMoviesSeriesForm: { search?: string } | undefined;
 } = {
   favouritesPage: 0,
-  recommendationsPage: 1,
+  recommendationsPage: 0,
   error: undefined,
   loadingLike: false,
   loadingMovieSeries: false,
@@ -37,9 +36,9 @@ const initialState: {
   favouriteMoviesSeriesForm: undefined,
 };
 
-// Get movie_series recommendation from TMDB
+// Get movies_series
 export const getMoviesSeriesRecommendation = createAsyncThunk<
-  MoviesSeriesRecommendationsTypeAll | undefined,
+  MoviesSeriesWithResults | undefined,
   MoviesSeriesForm & { page: number }
 >("movies-series/recommend", async (formData, { rejectWithValue }) => {
   try {
@@ -56,7 +55,7 @@ export const getMoviesSeriesRecommendation = createAsyncThunk<
       }
     );
 
-    return response.data as MoviesSeriesRecommendationsTypeAll;
+    return response.data as MoviesSeriesWithResults;
   } catch (error) {
     if (error instanceof AxiosError) {
       rejectWithValue(error.response?.data);
@@ -68,7 +67,7 @@ export const getMoviesSeriesRecommendation = createAsyncThunk<
 
 // Like a movie_series
 export const likeMovieSeries = createAsyncThunk<
-  MoviesSeriesType | undefined,
+  MoviesSeries | undefined,
   { id: number; content: "movie" | "series" }
 >("movies-series/like", async ({ id, content }, { rejectWithValue }) => {
   try {
@@ -85,7 +84,7 @@ export const likeMovieSeries = createAsyncThunk<
       }
     );
 
-    return response.data as MoviesSeriesType | undefined;
+    return response.data as MoviesSeries | undefined;
   } catch (error) {
     if (error instanceof AxiosError) {
       rejectWithValue(error.response?.data);
@@ -97,7 +96,7 @@ export const likeMovieSeries = createAsyncThunk<
 
 // Get favourite movies_series
 export const getFavouriteMoviesSeries = createAsyncThunk<
-  MoviesSeriesTypeAll | undefined,
+  MoviesSeriesWithResults | undefined,
   { page: number; search?: string }
 >(
   "/movies-series/favourites",
@@ -117,7 +116,7 @@ export const getFavouriteMoviesSeries = createAsyncThunk<
         }
       );
 
-      return response.data as MoviesSeriesTypeAll | undefined;
+      return response.data as MoviesSeriesWithResults | undefined;
     } catch (error) {
       if (error instanceof AxiosError) {
         rejectWithValue(error.response?.data);
@@ -130,7 +129,7 @@ export const getFavouriteMoviesSeries = createAsyncThunk<
 
 // Get movie_series
 export const getMovieSeries = createAsyncThunk<
-  MoviesSeriesType | undefined,
+  MoviesSeries | undefined,
   { id: number; content: "movie" | "series" }
 >(
   "/movie-series/id/get?content",
@@ -148,7 +147,7 @@ export const getMovieSeries = createAsyncThunk<
         }
       );
 
-      return response.data as MoviesSeriesType | undefined;
+      return response.data as MoviesSeries | undefined;
     } catch (error) {
       if (error instanceof AxiosError) {
         rejectWithValue(error.response?.data);

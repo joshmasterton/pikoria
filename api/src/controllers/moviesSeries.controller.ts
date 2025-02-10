@@ -1,7 +1,7 @@
 import { Response } from "express";
 import {
+  processGetMoviesSeries,
   processLikeMovieSeries,
-  processMoviesSeriesRecommendation,
 } from "../services/moviesSeries.service";
 import { MoviesSeriesForm } from "../types/moviesSeries.type";
 import { RequestWithUser } from "../types/request.type";
@@ -12,7 +12,7 @@ import {
 } from "../database/models/moviesSeries.model";
 
 // Get movies_series recommendations
-export const submitMoviesSeriesRecommendation = async (
+export const submitGetMoviesSeries = async (
   req: RequestWithUser<{}, {}, MoviesSeriesForm>,
   res: Response
 ) => {
@@ -20,7 +20,7 @@ export const submitMoviesSeriesRecommendation = async (
     const recommendationData = req.body;
     const { user } = req;
 
-    const recommendedMoviesSeries = await processMoviesSeriesRecommendation(
+    const recommendedMoviesSeries = await processGetMoviesSeries(
       recommendationData,
       user?.uid
     );
@@ -50,13 +50,7 @@ export const sumbitLikeMovieSeries = async (
       throw new Error("No user present");
     }
 
-    const movieSeriesToLike = await getMovieSeries(id, content, user?.uid);
-
-    if (!movieSeriesToLike) {
-      throw new Error("No movie/series found");
-    }
-
-    await processLikeMovieSeries(user?.uid, movieSeriesToLike);
+    await processLikeMovieSeries(user?.uid, id);
 
     const movieSeries = await getMovieSeries(id, content, user?.uid);
 

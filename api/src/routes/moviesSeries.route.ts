@@ -8,7 +8,7 @@ import {
 import {
   submitGetFavouriteMoviesSeries,
   submitGetMovieSeries,
-  submitMoviesSeriesRecommendation,
+  submitGetMoviesSeries,
   sumbitLikeMovieSeries,
 } from "../controllers/moviesSeries.controller";
 import {
@@ -35,7 +35,7 @@ moviesSeriesRouter.post(
   [
     body("genre").isInt(),
     body("content").trim().escape(),
-    body("page").isInt({ min: 1 }),
+    body("page").isInt({ min: 0 }),
     body("region").trim().escape(),
     body("search").optional().trim().escape(),
   ],
@@ -48,7 +48,7 @@ moviesSeriesRouter.post(
     }
   },
   validate<MoviesSeriesForm>(moviesSeriesSchema),
-  submitMoviesSeriesRecommendation
+  submitGetMoviesSeries
 );
 
 moviesSeriesRouter.post(

@@ -31,8 +31,6 @@ export const MoviesSeriesPage = () => {
         getMoviesSeriesRecommendation({
           genre: 0,
           content: "series",
-          release: [2000, 2025],
-          runtime: [0, 180],
           region: "all",
           page: recommendationsPage,
         })
@@ -53,8 +51,6 @@ export const MoviesSeriesPage = () => {
         getMoviesSeriesRecommendation({
           genre: moviesSeriesForm.genre,
           content: moviesSeriesForm.content,
-          release: [2000, 2025],
-          runtime: [0, 180],
           region: moviesSeriesForm.region,
           page: recommendationsPage,
           search: moviesSeriesForm.search,
@@ -135,22 +131,21 @@ export const MoviesSeriesPage = () => {
                 <Pagination
                   key={recommendationsPage}
                   shape="rounded"
-                  page={recommendationsPage}
+                  page={recommendationsPage + 1}
                   disabled={loadingMoviesSeriesRecommendations}
                   color="primary"
                   variant="outlined"
                   count={moviesSeriesRecommendations?.total_pages}
                   onChange={async (_e, value) => {
                     if (moviesSeriesForm) {
-                      dispatch(setRecommendationsPage(value));
+                      dispatch(setRecommendationsPage(value - 1));
                       await dispatch(
                         getMoviesSeriesRecommendation({
                           genre: moviesSeriesForm?.genre,
                           content: moviesSeriesForm?.content,
-                          release: [2000, 2025],
-                          runtime: [0, 180],
                           region: moviesSeriesForm?.region,
-                          page: value,
+                          page: value - 1,
+                          search: moviesSeriesForm.search,
                         })
                       );
                     }

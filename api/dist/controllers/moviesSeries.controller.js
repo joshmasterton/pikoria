@@ -1,12 +1,12 @@
-import { processLikeMovieSeries, processMoviesSeriesRecommendation, } from "../services/moviesSeries.service.js";
+import { processGetMoviesSeries, processLikeMovieSeries, } from "../services/moviesSeries.service.js";
 import { AxiosError } from "axios";
 import { getFavouriteMoviesSeries, getMovieSeries, } from "../database/models/moviesSeries.model.js";
 // Get movies_series recommendations
-export const submitMoviesSeriesRecommendation = async (req, res) => {
+export const submitGetMoviesSeries = async (req, res) => {
     try {
         const recommendationData = req.body;
         const { user } = req;
-        const recommendedMoviesSeries = await processMoviesSeriesRecommendation(recommendationData, user?.uid);
+        const recommendedMoviesSeries = await processGetMoviesSeries(recommendationData, user?.uid);
         res.status(200).json(recommendedMoviesSeries);
     }
     catch (error) {
@@ -28,11 +28,7 @@ export const sumbitLikeMovieSeries = async (req, res) => {
         if (!user) {
             throw new Error("No user present");
         }
-        const movieSeriesToLike = await getMovieSeries(id, content, user?.uid);
-        if (!movieSeriesToLike) {
-            throw new Error("No movie/series found");
-        }
-        await processLikeMovieSeries(user?.uid, movieSeriesToLike);
+        await processLikeMovieSeries(user?.uid, id);
         const movieSeries = await getMovieSeries(id, content, user?.uid);
         res.status(200).json(movieSeries);
     }
@@ -43,6 +39,7 @@ export const sumbitLikeMovieSeries = async (req, res) => {
         res.status(400).json({ error: "Error adding movie_series to liked list" });
     }
 };
+// Get a movie or series
 export const submitGetMovieSeries = async (req, res) => {
     try {
         const { user } = req;
@@ -65,11 +62,11 @@ export const submitGetMovieSeries = async (req, res) => {
 export const submitGetFavouriteMoviesSeries = async (req, res) => {
     try {
         const { user } = req;
-        const { page } = req.query;
+        const { page, search } = req.query;
         if (!user) {
             throw new Error("No user present");
         }
-        const favouriteMoviesSeries = await getFavouriteMoviesSeries(user?.uid, page);
+        const favouriteMoviesSeries = await getFavouriteMoviesSeries(user?.uid, page, search);
         res.status(200).json(favouriteMoviesSeries);
     }
     catch (error) {
