@@ -25,7 +25,20 @@ export const MoviesSeriesPage = () => {
     moviesSeriesForm,
   } = useAppSelector((state) => state.moviesSeries);
 
+  const scrollToSavedPosition = () => {
+    const savedScrollPosition = sessionStorage.getItem(
+      "pikoria_movies_series_scroll_position"
+    );
+
+    if (savedScrollPosition) {
+      window.scrollTo({
+        top: parseInt(savedScrollPosition, 10),
+      });
+    }
+  };
+
   useEffect(() => {
+    // If form from redux is present
     if (!moviesSeriesForm) {
       dispatch(
         getMoviesSeriesRecommendation({
@@ -45,6 +58,8 @@ export const MoviesSeriesPage = () => {
             page: recommendationsPage,
           })
         );
+
+        scrollToSavedPosition();
       });
     } else {
       dispatch(
@@ -55,18 +70,15 @@ export const MoviesSeriesPage = () => {
           page: recommendationsPage,
           search: moviesSeriesForm.search,
         })
-      );
+      ).then(() => {
+        // Store to saved scroll position
+        scrollToSavedPosition();
+      });
     }
-  }, [dispatch, moviesSeriesForm, user, recommendationsPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, moviesSeriesForm, user]);
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [recommendationsPage]);
-
-  // Scroll to last scroll position
+  // Save last scroll position
   useEffect(() => {
     const saveScrollPosition = () => {
       sessionStorage.setItem(
@@ -75,27 +87,13 @@ export const MoviesSeriesPage = () => {
       );
     };
 
-    window.addEventListener("scroll", saveScrollPosition);
+    if (!loadingMoviesSeriesRecommendations && moviesSeriesRecommendations) {
+      window.addEventListener("scroll", saveScrollPosition);
+    }
 
     return () => {
       window.removeEventListener("scroll", saveScrollPosition);
     };
-  }, []);
-
-  useEffect(() => {
-    if (!loadingMoviesSeriesRecommendations && moviesSeriesRecommendations) {
-      const savedScrollPosition = sessionStorage.getItem(
-        "pikoria_movies_series_scroll_position"
-      );
-
-      if (savedScrollPosition) {
-        setTimeout(() => {
-          window.scrollTo({
-            top: parseInt(savedScrollPosition, 10),
-          });
-        }, 100);
-      }
-    }
   }, [loadingMoviesSeriesRecommendations, moviesSeriesRecommendations]);
 
   return (
@@ -138,6 +136,7 @@ export const MoviesSeriesPage = () => {
                   count={moviesSeriesRecommendations?.total_pages}
                   onChange={async (_e, value) => {
                     if (moviesSeriesForm) {
+                      // Get new page movies_series
                       dispatch(setRecommendationsPage(value - 1));
                       await dispatch(
                         getMoviesSeriesRecommendation({
@@ -147,7 +146,18 @@ export const MoviesSeriesPage = () => {
                           page: value - 1,
                           search: moviesSeriesForm.search,
                         })
-                      );
+                      ).then(() => {
+                        // Reset scroll position and scroll to top
+                        sessionStorage.setItem(
+                          "pikoria_movies_series_scroll_position",
+                          "0"
+                        );
+
+                        window.scrollTo({
+                          top: 0,
+                          behavior: "smooth",
+                        });
+                      });
                     }
                   }}
                 />

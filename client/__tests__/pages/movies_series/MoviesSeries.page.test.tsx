@@ -10,6 +10,6 @@ describe("MoviesSeries page", () => {
       expect(screen.queryByLabelText("movies-series")).toBeInTheDocument();
     });
 
-    expect(screen.queryByLabelText("Goblin")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Moana 2")).toBeInTheDocument();
   });
 });

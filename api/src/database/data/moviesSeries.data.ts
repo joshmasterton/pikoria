@@ -68,7 +68,7 @@ export const storeMoviesSeries = async (minReleaseYear: number) => {
 					) VALUES (
 						$1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
 						$11, $12, $13, $14, $15, $16
-					) ON CONFLICT (tmdb_id) DO NOTHING;
+					) ON CONFLICT (tmdb_id, type) DO NOTHING;
 				`;
 
         const moviesSeries = response.data.results;

@@ -202,14 +202,6 @@ export const MovieSeriesPage = () => {
                       borderColor: theme.palette.divider,
                     }}
                   />
-                  <Tab
-                    value={2}
-                    label="Details"
-                    sx={{
-                      borderBottom: 1,
-                      borderColor: theme.palette.divider,
-                    }}
-                  />
                 </Tabs>
                 {movieSeriesDetailsTab === 1 && (
                   <Typography p={2} pb={0}>

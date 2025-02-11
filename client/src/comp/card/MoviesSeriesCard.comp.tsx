@@ -80,12 +80,11 @@ export const MoviesSeriesCard = ({
           src={`https://image.tmdb.org/t/p/w500/${movieSeries.poster_path}`}
         />
         <Card
-          variant="outlined"
           sx={{
             p: 1.5,
             position: "absolute",
-            top: 10,
-            right: 10,
+            top: 15,
+            right: 15,
             zIndex: 2,
           }}
         >
@@ -199,12 +198,11 @@ export const MoviesSeriesCardAdvanced = ({
           src={`https://image.tmdb.org/t/p/w500/${movieSeries.poster_path}`}
         />
         <Card
-          variant="outlined"
           sx={{
             p: 1.5,
             position: "absolute",
-            top: 10,
-            right: 10,
+            top: 15,
+            right: 15,
             zIndex: 2,
           }}
         >

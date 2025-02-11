@@ -28,7 +28,7 @@ export const createMoviesSeriesTable = async () => {
   const query = `
 		CREATE TABLE IF NOT EXISTS movies_series (
 			id SERIAL PRIMARY KEY,
-			tmdb_id INT UNIQUE NOT NULL,
+			tmdb_id INT NOT NULL,
 			type VARCHAR(10) CHECK (type IN ('movie', 'series')) NOT NULL,
 			title VARCHAR(255),
 			name VARCHAR(255),
@@ -39,12 +39,13 @@ export const createMoviesSeriesTable = async () => {
 			release_date VARCHAR(100),
 			first_air_date VARCHAR(100),
 			popularity DECIMAL(10, 5),
-			vote_average DECIMAL(3, 2),
+			vote_average DECIMAL(3, 2),	
 			vote_count INT,
 			poster_path TEXT,
 			backdrop_path TEXT,
 			origin_country TEXT[],
-			genre_ids INT[]
+			genre_ids INT[],
+			CONSTRAINT unique_tmdb_id_type UNIQUE (tmdb_id, type)
 		);
 	`;
 

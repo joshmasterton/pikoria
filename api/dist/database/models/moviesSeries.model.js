@@ -68,21 +68,27 @@ export const getMoviesSeries = async (recommendationData, user_id) => {
         const total_pages = Math.ceil(total_results / 20);
         // All movies_series
         const response = await client.query(`
-        SELECT ms.*,
+				WITH filtered_movies_series AS (
+					SELECT DISTINCT ms.*
+					FROM movies_series ms
+					LEFT JOIN favourite_movies_series f
+						ON ms.id = f.movie_Series_id AND f.user_id = $1
+					WHERE 1 = 1
+					${search
+            ? `${searchFilter}`
+            : `${genreFilter}
+					${typeFilter}
+					${regionFilter}`}
+				)
+        SELECT fm.*,
 					CASE
 						WHEN f.user_id IS NOT NULL THEN true
 						ELSE false
 						END AS liked
-				FROM movies_series ms
+				FROM filtered_movies_series fm
 				LEFT JOIN favourite_movies_series f
-					ON ms.id = f.movie_series_id AND f.user_id = $1
-        WHERE 1 = 1
-				${search
-            ? `${searchFilter}`
-            : `${genreFilter}
-        ${typeFilter}
-        ${regionFilter}`}
-				ORDER BY vote_average DESC
+					ON fm.id = f.movie_series_id AND f.user_id = $1
+				ORDER BY (fm.vote_average * 2 + fm.popularity * 0.5 + fm.vote_count * 0.1) DESC
         OFFSET $2 LIMIT $3;
       `, search
             ? [user_id, page * 20, 20, `%${search}%`]
@@ -121,18 +127,27 @@ export const getFavouriteMoviesSeries = async (user_id, page, search) => {
         const total_pages = Math.ceil(total_results / 20);
         // All favourite_movies_series for user
         const response = await client.query(`
-        SELECT ms.*,
+				WITH filtered_movies_series AS (
+					SELECT DISTINCT ms.*
+					FROM movies_series ms
+					JOIN favourite_movies_series f
+						ON f.movie_series_id = ms.id AND f.user_id = $1
+					WHERE 1 = 1
+					${search ? "AND (title ILIKE $4 OR name ILIKE $4)" : ""}
+				)
+        SELECT fm.*,
 					CASE
 						WHEN f.user_id IS NOT NULL THEN true
 						ELSE false
 						END AS liked
-				FROM movies_series ms
-				JOIN favourite_movies_series f ON f.movie_series_id = ms.id
-        WHERE 1 = 1
-				${search ? "AND (title ILIKE $3 OR name ILIKE $3)" : ""}
-				ORDER BY vote_average DESC
-        OFFSET $1 LIMIT $2;
-      `, search ? [page * 20, 20, `%${search}%`] : [page * 20, 20]);
+				FROM filtered_movies_series fm
+				JOIN favourite_movies_series f
+					ON f.movie_series_id = fm.id AND f.user_id = $1
+				ORDER BY (fm.vote_average * 2 + fm.popularity * 0.5 + fm.vote_count * 0.1) DESC
+        OFFSET $2 LIMIT $3;
+      `, search
+            ? [user_id, page * 20, 20, `%${search}%`]
+            : [user_id, page * 20, 20]);
         return {
             results: response.rows,
             total_pages,

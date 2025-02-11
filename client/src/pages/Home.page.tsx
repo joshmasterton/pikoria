@@ -8,7 +8,7 @@ import {
   setFavouritesFromData,
   setFavouritesPage,
 } from "../redux/moviesSeriesSlice.redux";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import { MoviesSeriesCardAdvanced } from "../comp/card/MoviesSeriesCard.comp";
 import Stack from "@mui/material/Stack";
@@ -19,8 +19,10 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
+import { ScrollCard } from "../comp/card/ScrollCard.comp";
 
 export const Home = () => {
+  const favouriteMoviesSeriesScrollRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const {
@@ -29,6 +31,21 @@ export const Home = () => {
     favouriteMoviesSeriesForm,
     favouritesPage,
   } = useAppSelector((state) => state.moviesSeries);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const scrollToSavedPosition = () => {
+    const savedScrollPosition = sessionStorage.getItem(
+      "pikoria_favourite_movies_series_scroll_position"
+    );
+
+    if (savedScrollPosition) {
+      if (favouriteMoviesSeriesScrollRef.current) {
+        favouriteMoviesSeriesScrollRef.current.scrollTo({
+          left: parseInt(savedScrollPosition, 10),
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     dispatch(
@@ -36,8 +53,11 @@ export const Home = () => {
         page: favouritesPage,
         search: favouriteMoviesSeriesForm?.search,
       })
-    );
-  }, [dispatch, user, favouritesPage, favouriteMoviesSeriesForm]);
+    ).then(() => {
+      scrollToSavedPosition();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, user, favouriteMoviesSeriesForm]);
 
   useEffect(() => {
     return () => {
@@ -46,43 +66,31 @@ export const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [favouritesPage]);
+    const ref = favouriteMoviesSeriesScrollRef.current;
 
-  // Scroll to last scroll position
-  useEffect(() => {
     const saveScrollPosition = () => {
-      sessionStorage.setItem(
-        "pikoria_favourite_movies_series_scroll_position",
-        window.scrollY.toString()
-      );
+      if (ref) {
+        const { scrollLeft, scrollWidth, clientWidth } = ref;
+        const progress = (scrollLeft / (scrollWidth - clientWidth)) * 100;
+        setScrollProgress(progress);
+
+        sessionStorage.setItem(
+          "pikoria_favourite_movies_series_scroll_position",
+          scrollLeft.toString()
+        );
+      }
     };
 
-    window.addEventListener("scroll", saveScrollPosition);
+    if (ref && !loadingFavourites && favouriteMoviesSeries) {
+      ref.addEventListener("scroll", saveScrollPosition);
+    }
 
     return () => {
-      window.removeEventListener("scroll", saveScrollPosition);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!loadingFavourites && favouriteMoviesSeries) {
-      const savedScrollPosition = sessionStorage.getItem(
-        "pikoria_favourite_movies_series_scroll_position"
-      );
-
-      if (savedScrollPosition) {
-        setTimeout(() => {
-          window.scrollTo({
-            top: parseInt(savedScrollPosition, 10),
-          });
-        }, 100);
+      if (ref) {
+        ref.removeEventListener("scroll", saveScrollPosition);
       }
-    }
-  }, [favouriteMoviesSeries, loadingFavourites]);
+    };
+  }, [loadingFavourites, favouriteMoviesSeries]);
 
   return (
     <>
@@ -104,7 +112,21 @@ export const Home = () => {
                   page: favouritesPage,
                   search: values.search,
                 })
-              );
+              ).then(() => {
+                // Reset scroll position and scroll to top
+                sessionStorage.setItem(
+                  "pikoria_movies_series_scroll_position",
+                  "0"
+                );
+
+                if (favouriteMoviesSeriesScrollRef.current) {
+                  favouriteMoviesSeriesScrollRef.current.scrollTo({
+                    left: 0,
+                  });
+
+                  setScrollProgress(0);
+                }
+              });
               dispatch(
                 setFavouritesFromData({
                   search: values.search,
@@ -145,20 +167,25 @@ export const Home = () => {
             <LinearProgress color="primary" />
           </Stack>
         ) : (
-          <Stack>
+          <Stack borderRadius={1}>
             {favouriteMoviesSeries &&
             favouriteMoviesSeries.results.length > 0 ? (
               <Stack>
-                <Stack direction="row" overflow="auto" gap={2}>
-                  {favouriteMoviesSeries.results?.map((movieSeries) => (
-                    <Stack
-                      key={movieSeries.id}
-                      minWidth={{ xs: "100%", sm: 350 }}
-                    >
-                      <MoviesSeriesCardAdvanced movieSeries={movieSeries} />
-                    </Stack>
-                  ))}
-                </Stack>
+                <ScrollCard
+                  ref={favouriteMoviesSeriesScrollRef}
+                  scrollProgress={scrollProgress}
+                >
+                  <>
+                    {favouriteMoviesSeries.results?.map((movieSeries) => (
+                      <Stack
+                        key={movieSeries.id}
+                        minWidth={{ xs: "100%", sm: 350 }}
+                      >
+                        <MoviesSeriesCardAdvanced movieSeries={movieSeries} />
+                      </Stack>
+                    ))}
+                  </>
+                </ScrollCard>
                 <Stack
                   minWidth="100%"
                   flex={1}
@@ -181,7 +208,21 @@ export const Home = () => {
                           page: value - 1,
                           search: favouriteMoviesSeriesForm?.search,
                         })
-                      );
+                      ).then(() => {
+                        // Reset scroll position and scroll to top
+                        sessionStorage.setItem(
+                          "pikoria_movies_series_scroll_position",
+                          "0"
+                        );
+
+                        if (favouriteMoviesSeriesScrollRef.current) {
+                          favouriteMoviesSeriesScrollRef.current.scrollTo({
+                            left: 0,
+                          });
+
+                          setScrollProgress(0);
+                        }
+                      });
                     }}
                   />
                 </Stack>
