@@ -22,7 +22,7 @@ export const CustomBreadCrumbs = () => {
 
   return (
     <Breadcrumbs>
-      <CustomTooltip title="/home">
+      <CustomTooltip title="/">
         <Link color="textPrimary" underline="hover" component={NavLink} to="/">
           Pikoria
         </Link>

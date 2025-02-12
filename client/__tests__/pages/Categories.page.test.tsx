@@ -6,7 +6,7 @@ describe("Categories page", () => {
   test("Should render categories page", async () => {
     render(<Wrapper initialEntries="/categories" />);
 
-    expect(screen.queryByText("Movies / Series")).toBeInTheDocument();
-    expect(screen.queryByText("Games")).toBeInTheDocument();
+    expect(screen.queryByLabelText("tv")).toBeInTheDocument();
+    expect(screen.queryByLabelText("games")).toBeInTheDocument();
   });
 });

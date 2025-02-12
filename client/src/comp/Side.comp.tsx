@@ -3,7 +3,6 @@ import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import ListItemButton from "@mui/material/ListItemButton";
-import SettingsIcon from "@mui/icons-material/Settings";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
@@ -73,10 +72,6 @@ export const Side = () => {
         </List>
         <Divider />
         <List>
-          <ListItemButton>
-            <SettingsIcon fontSize="small" sx={{ mr: 2 }} />
-            Settings
-          </ListItemButton>
           <ListItemButton onClick={() => dispatch(changeTheme())}>
             {localTheme === "dark" ? (
               <DarkModeRoundedIcon fontSize="small" sx={{ mr: 2 }} />

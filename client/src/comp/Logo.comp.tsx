@@ -7,7 +7,7 @@ export const Logo = () => {
     <Box flexDirection="row" display="flex" gap={2} alignItems="center">
       <Avatar
         variant="square"
-        sx={{ width: 20, height: 20 }}
+        sx={{ width: 20, height: 20, ml: 0.5 }}
         alt="Pikoria"
         src={logo}
       />
