@@ -4,28 +4,52 @@
 
 # Pikoria
 
-Pikoria is a personalized recommendation platform designed to help users find movies, series, and games based on their tastes and preferences. With the ability to favorite recommendations, Pikoria makes it easy to keep track of the content you love, offering tailored suggestions that match your interests. Whether you're exploring new entertainment options or revisiting favorites, Pikoria streamlines your discovery process and keeps your favorites all in one place.
+**Pikoria** is a personalized recommendation platform designed to help users find movies, series, and games based on their tastes and preferences. With the ability to favorite recommendations, Pikoria makes it easy to keep track of the content you love, offering tailored suggestions that match your interests. Whether you're exploring new entertainment options or revisiting favorites, Pikoria streamlines your discovery process and keeps your favorites all in one place.
 
 ## Features
 
-- User-Friendly Interface: A sleek and intuitive design for seamless interaction.
+- **Personalized Recommendations**: Get tailored suggestions based on your tastes and preferences.
 
-- Filter results to get what you want.
+- **Favorites System**: Save your favorite movies, series, and games for easy access.
 
-- Secure Authentication: Built-in authentication using Firebase for secure access.
+- **User-Friendly Interface**: Clean, intuitive design for seamless interaction.
 
-- Scalable Architecture: Dockerized setup for development and deployment.
+- **Filtering Options**: Filter results to find exactly what you're looking for.
+
+- **Secure Authentication**: Firebase Authentication ensures safe, secure access to your account.
+
+- **Responsive and Scalable**: Dockerized for easy development and deployment, ensuring the platform can scale as needed.
 
 ## Tech Stack
 
-- Frontend: React, TypeScript, MUI (Material-UI).
+- **Frontend**: 
+  - React
+  - TypeScript
+  - Material-UI (MUI)
+  
+- **Backend**: 
+  - Node.js
+  - Express
+  - PostgreSQL
+  
+- **Authentication**: Firebase Authentication
 
-- Backend: Node.js, Express, PostgreSQL
+- **Hosting**: Vercel (Frontend), Railway (Backend)
 
-- Authentication: Firebase Authentication
+- **Testing**: Vitest
 
-- Hosting: Vercel, Railway.
+- **Containerization**: Docker
 
-- Testing: Vitest
+## Live Demo
 
-- Containerization: Docker
+Try the live demo of Pikoria here: [Pikoria Live Demo](https://pikoria.vercel.app/)
+
+## Deployment
+
+Pikoria is deployed on Vercel (Frontend) and Railway (Backend).
+
+## License
+
+Copyright 2025 Josh Masterton All Rights Reserved.
+
+This project is proprietary and cannot be used, modified, or distributed without explicit permission from the author.
