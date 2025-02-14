@@ -154,7 +154,7 @@ export const MoviesSeriesCardAdvanced = ({
     >
       <Checkbox
         color="error"
-        sx={{ position: "absolute", zIndex: 3, bottom: 10, right: 10 }}
+        sx={{ position: "absolute", zIndex: 5, bottom: 10, right: 10 }}
         onClick={async () => {
           setLoadingLike(true);
           await dispatch(
@@ -203,7 +203,7 @@ export const MoviesSeriesCardAdvanced = ({
             position: "absolute",
             top: 15,
             right: 15,
-            zIndex: 2,
+            zIndex: 4,
           }}
         >
           {Math.floor(movieSeries.vote_average * 10) / 10}
@@ -242,7 +242,7 @@ export const MoviesSeriesCardAdvanced = ({
               color="white"
               textOverflow="ellipsis"
               overflow="hidden"
-              sx={{ whiteSpace: "nowrap" }}
+              sx={{ whiteSpace: "nowrap", zIndex: 4 }}
             >
               {movieSeries.name || movieSeries.title}
             </Typography>

@@ -14,7 +14,7 @@ import Box from "@mui/material/Box";
 import TvIcon from "@mui/icons-material/Tv";
 import GamesIcon from "@mui/icons-material/Games";
 import Grid from "@mui/material/Grid2";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export const Categories = () => {
   const navigate = useNavigate();
@@ -33,23 +33,13 @@ export const Categories = () => {
       <Stack flexGrow={1} p={2} gap={2} mt={8} ml={{ xs: 0, sm: 31 }}>
         <CustomBreadCrumbs />
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card elevation={0} sx={{ width: "100%", height: 200 }}>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <Card elevation={0} sx={{ width: "100%", height: 250 }}>
               <CardActionArea
                 sx={{ height: "100%" }}
                 onClick={() => navigate("/categories/movies-series")}
                 aria-label="Movies/Series"
               >
-                <TvIcon
-                  aria-label="tv"
-                  sx={{
-                    color: "white",
-                    top: 20,
-                    left: 20,
-                    position: "absolute",
-                    zIndex: 2,
-                  }}
-                />
                 <Box
                   sx={{
                     position: "absolute",
@@ -62,6 +52,18 @@ export const Categories = () => {
                     WebkitBackdropFilter: "blur(0rem)",
                   }}
                 />
+                <Stack height="100%" direction="row" gap={2} p={2}>
+                  <TvIcon
+                    aria-label="tv"
+                    sx={{
+                      color: "white",
+                      zIndex: 2,
+                    }}
+                  />
+                  <Typography color="white" sx={{ zIndex: 2 }}>
+                    Movies & series
+                  </Typography>
+                </Stack>
                 <Avatar
                   variant="square"
                   src={movies}
@@ -77,10 +79,10 @@ export const Categories = () => {
               </CardActionArea>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 12 }}>
             <Card
               elevation={0}
-              sx={{ width: "100%", height: 200, position: "relative" }}
+              sx={{ width: "100%", height: 250, position: "relative" }}
             >
               <Stack
                 position="absolute"
@@ -105,16 +107,18 @@ export const Categories = () => {
                   height: "100%",
                 }}
               >
-                <GamesIcon
-                  aria-label="games"
-                  sx={{
-                    color: "white",
-                    top: 20,
-                    left: 20,
-                    position: "absolute",
-                    zIndex: 2,
-                  }}
-                />
+                <Stack height="100%" direction="row" gap={2} p={2}>
+                  <GamesIcon
+                    aria-label="games"
+                    sx={{
+                      color: "white",
+                      zIndex: 2,
+                    }}
+                  />
+                  <Typography sx={{ zIndex: 2 }} color="white">
+                    Games
+                  </Typography>
+                </Stack>
                 <Box
                   sx={{
                     position: "absolute",

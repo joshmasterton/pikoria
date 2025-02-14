@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Nav } from "../comp/Nav.comp";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import portable from "../assets/portable.png";
-import CardMedia from "@mui/material/CardMedia";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -22,6 +20,7 @@ export const Landing = () => {
           direction="row"
           gap={5}
           p={5}
+          textAlign="center"
           flexWrap="wrap"
           justifyContent="center"
           alignItems="center"
@@ -34,24 +33,13 @@ export const Landing = () => {
               </Typography>
               <Button
                 onClick={() => navigate("/categories")}
-                sx={{ alignSelf: "end", width: "fit-content" }}
+                sx={{ alignSelf: "center", width: "fit-content" }}
                 variant="contained"
               >
                 Let's go!
               </Button>
             </Stack>
           </Stack>
-          <CardMedia
-            component="img"
-            sx={{
-              p: 5,
-              width: "100%",
-              maxWidth: 400,
-              height: "100%",
-              Height: 400,
-            }}
-            src={portable}
-          />
         </Stack>
         <Divider />
         <Stack
@@ -74,8 +62,7 @@ export const Landing = () => {
               <Stack gap={1}>
                 <Typography variant="h5">Find what you'll love</Typography>
                 <Typography>
-                  Get tailored movies and games suggestions based on your
-                  interests.
+                  Get tailored movies and suggestions based on your taste.
                 </Typography>
               </Stack>
             </Stack>
@@ -112,10 +99,12 @@ export const Landing = () => {
             <Stack p={2} gap={2}>
               <BubbleChartIcon />
               <Stack gap={1}>
-                <Typography variant="h5">Curate your perfect list</Typography>
+                <Typography variant="h5">
+                  Save your liked recommendations
+                </Typography>
                 <Typography>
-                  Mark recommendations as watched, played, or not interested to
-                  refine your picks.
+                  Like your favorite movies and series to easily access them
+                  later.
                 </Typography>
               </Stack>
             </Stack>

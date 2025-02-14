@@ -20,10 +20,13 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
 import { ScrollCard } from "../comp/card/ScrollCard.comp";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const favouriteMoviesSeriesScrollRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
   const {
     loadingFavourites,
@@ -227,8 +230,30 @@ export const Home = () => {
                   />
                 </Stack>
               </Stack>
+            ) : !user ? (
+              <Stack gap={2}>
+                <Typography>
+                  Sign in to see your favourite movies / series
+                </Typography>
+                <Button
+                  onClick={() => navigate("/auth/signin")}
+                  variant="contained"
+                  sx={{ width: "fit-content" }}
+                >
+                  Sign in
+                </Button>
+              </Stack>
             ) : (
-              <Typography>No movies / series found</Typography>
+              <Stack gap={2}>
+                <Typography>No movies / series found</Typography>
+                <Button
+                  onClick={() => navigate("/categories")}
+                  variant="contained"
+                  sx={{ width: "fit-content" }}
+                >
+                  Browse
+                </Button>
+              </Stack>
             )}
           </Stack>
         )}
