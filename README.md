@@ -9,15 +9,10 @@
 ## Features
 
 - **Personalized Recommendations**: Get tailored suggestions based on your tastes and preferences.
-
 - **Favorites System**: Save your favorite movies, series, and games for easy access.
-
 - **User-Friendly Interface**: Clean, intuitive design for seamless interaction.
-
 - **Filtering Options**: Filter results to find exactly what you're looking for.
-
 - **Secure Authentication**: Firebase Authentication ensures safe, secure access to your account.
-
 - **Responsive and Scalable**: Dockerized for easy development and deployment, ensuring the platform can scale as needed.
 
 ## Tech Stack
